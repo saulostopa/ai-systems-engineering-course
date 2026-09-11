@@ -1,0 +1,147 @@
+/**
+ * Tema do curso — tokens do design system Eleanor (Webmotors)
+ * Fonte: webmotors.ds.eleanor.tokens (Color Mode Dark + primitives)
+ */
+
+:root {
+  --ds-red-500: #d81f41;
+  --ds-red-400: #e53858;
+  --ds-red-300: #e45770;
+  --ds-red-700: #490916;
+
+  --ds-gray-50: #ffffff;
+  --ds-gray-100: #f4f4f8;
+  --ds-gray-200: #e4e4ea;
+  --ds-gray-300: #d3d3d9;
+  --ds-gray-400: #a2a2a9;
+  --ds-gray-500: #72727a;
+  --ds-gray-600: #515159;
+  --ds-gray-700: #3f3f47;
+  --ds-gray-800: #262629;
+  --ds-gray-900: #171719;
+  --ds-gray-950: #0a0a0c;
+
+  --ds-indigo-400: #4c4ca0;
+  --ds-indigo-300: #7676b4;
+  --ds-indigo-700: #181832;
+
+  --ds-font-family: 'Figtree', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  --vp-font-family-base: var(--ds-font-family);
+  --vp-font-family-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+
+  --vp-c-brand-1: var(--ds-red-500);
+  --vp-c-brand-2: var(--ds-red-400);
+  --vp-c-brand-3: var(--ds-red-300);
+  --vp-c-brand-soft: rgba(216, 31, 65, 0.16);
+
+  --vp-c-bg: var(--ds-gray-950);
+  --vp-c-bg-alt: var(--ds-gray-900);
+  --vp-c-bg-soft: var(--ds-gray-900);
+  --vp-c-bg-elv: var(--ds-gray-900);
+  --vp-c-bg-elv-active: var(--ds-gray-800);
+
+  --vp-c-divider: var(--ds-gray-700);
+  --vp-c-divider-light: var(--ds-gray-800);
+  --vp-c-divider-dark: var(--ds-gray-700);
+
+  --vp-c-text-1: var(--ds-gray-100);
+  --vp-c-text-2: var(--ds-gray-400);
+  --vp-c-text-3: var(--ds-gray-500);
+
+  --vp-c-border: var(--ds-gray-700);
+  --vp-c-border-hard: var(--ds-gray-600);
+
+  --vp-c-gutter: var(--ds-gray-800);
+
+  --vp-c-green-1: #4cc38a;
+  --vp-c-yellow-1: #e0c040;
+  --vp-c-red-1: var(--ds-red-400);
+  --vp-c-red-2: var(--ds-red-500);
+  --vp-c-red-3: var(--ds-red-300);
+
+  --vp-c-indigo-1: var(--ds-indigo-400);
+  --vp-c-indigo-2: var(--ds-indigo-300);
+  --vp-c-indigo-3: var(--ds-indigo-300);
+
+  --vp-c-mute: var(--ds-gray-700);
+  --vp-c-mute-dark: var(--ds-gray-800);
+  --vp-c-mute-darker: var(--ds-gray-900);
+  --vp-c-mute-light: var(--ds-gray-600);
+  --vp-c-mute-lighter: var(--ds-gray-500);
+
+  --vp-sidebar-bg-color: var(--ds-gray-950);
+  --vp-custom-block-font-size: 14px;
+
+  --vp-shadow-1: 0 1px 2px rgba(10, 10, 12, 0.4);
+  --vp-shadow-2: 0 2px 4px rgba(10, 10, 12, 0.5);
+  --vp-shadow-3: 0 12px 32px rgba(10, 10, 12, 0.6);
+}
+
+html.dark {
+  --vp-c-bg: var(--ds-gray-950);
+  --vp-c-bg-alt: var(--ds-gray-900);
+  --vp-c-bg-soft: var(--ds-gray-900);
+}
+
+/* Figtree por padrão, com fallback visual consistente */
+body {
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* Brand mark no header */
+.VPNavBarTitle .title {
+  font-weight: 700;
+}
+
+/* Links com o vermelho Eleanor */
+.vp-doc a {
+  color: var(--ds-red-400);
+}
+.vp-doc a:hover {
+  color: var(--ds-red-300);
+}
+
+/* Badges e destaques de código */
+.vp-doc .badge {
+  border: 1px solid var(--ds-gray-700);
+  color: var(--ds-gray-300);
+}
+
+/* Callouts alinhados aos tokens semânticos Eleanor */
+.custom-block.tip {
+  border-color: var(--ds-indigo-400);
+  background-color: rgba(76, 76, 160, 0.1);
+}
+
+/* Home hero com a identidade Eleanor */
+.VPHero .name,
+.VPHero .text {
+  color: var(--ds-gray-50);
+}
+.VPHero .actions .primary {
+  background-color: var(--ds-red-500);
+  border-color: var(--ds-red-500);
+}
+.VPHero .actions .primary:hover {
+  background-color: var(--ds-red-400);
+  border-color: var(--ds-red-400);
+}
+
+/* Botões de feature (npm, github) alinhados */
+.VPFeature {
+  background-color: var(--ds-gray-900);
+  border: 1px solid var(--ds-gray-700);
+}
+.VPFeature:hover {
+  border-color: var(--ds-red-500);
+}
+.VPFeature .title {
+  color: var(--ds-gray-50);
+}
+
+/* Nav ativa */
+.VPNavBarMenuLink.active {
+  color: var(--ds-red-400);
+}

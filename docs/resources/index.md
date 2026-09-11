@@ -1,0 +1,12 @@
+# Biblioteca
+
+Templates prontos para copiar e referências externas. É aqui que você começa
+quando quer um harness hoje, sem esperar o curso inteiro.
+
+- [Templates](/resources/templates) — AGENTS.md, `feature_list.json`, `claude-progress.md`, `session-handoff.md` e skill packs.
+- [Referências externas](/resources/references) — os materiais que fundamentam o curso (OpenAI, Anthropic, walkinglabs e mais).
+
+::: tip Status
+Os templates completos são entregues na Story **A4 — Biblioteca de templates**
+do EPIC A.
+:::
