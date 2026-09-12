@@ -48,6 +48,20 @@ A camada que distingue o app harness de um "repo com testes". O agente:
 5. **Fecha o loop** — cada achado da exploração vira teste E2E novo na camada 1
    (o exploratório encontra; o determinístico imortaliza).
 
+A skill que implementa este protocolo está em
+`app-harness/skills/agentic-navigation/SKILL.md` — instale-a em
+`.claude/skills/` (ou `.agents/skills/`) do projeto do app e acione com:
+
+```
+"valida a tela de busca que a gente acabou de implementar"
+```
+
+O protocolo da skill: Gather (diff + testes + critérios de aceite) → subir o
+app → estado determinístico (interceptação) → percorrer fluxos e estados de
+borda → screenshots por passo → **veredito por critério** (ACEITO/REJEITADO
+com screenshot). O formato do veredito é tabela + achados com causa provável
+— pronto para virar teste E2E na camada 1.
+
 ```
 build → E2E (gate) → navegação agêntica (visão) → achados → novos testes E2E → ...
 ```
