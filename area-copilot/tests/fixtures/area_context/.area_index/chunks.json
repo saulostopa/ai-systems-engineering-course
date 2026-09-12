@@ -1,0 +1,38 @@
+[
+ {
+  "path": "/home/svslwm/wm/harness-plannig/area-copilot/tests/fixtures/area_context/planilhas/metas_2026.csv",
+  "kind": "sheet",
+  "name": "metas_2026.csv L2-5",
+  "text": "regiao, mes, meta_vendas, veiculos_vendidos\nlinha 2: regiao:sudeste | mes:junho | meta_vendas:1000000 | veiculos_vendidos:340\nlinha 3: regiao:sudeste | mes:julho | meta_vendas:1200000 | veiculos_vendidos:412\nlinha 4: regiao:nordeste | mes:junho | meta_vendas:600000 | veiculos_vendidos:215\nlinha 5: regiao:nordeste | mes:julho | meta_vendas:720000 | veiculos_vendidos:251",
+  "start_line": 2,
+  "end_line": 5,
+  "hash": "4949299b2172f3f8a0308208d2a35f38b22ac45991c2320aa32a6dacf2197525"
+ },
+ {
+  "path": "/home/svslwm/wm/harness-plannig/area-copilot/tests/fixtures/area_context/documentos/precificacao.md",
+  "kind": "section",
+  "name": "precificacao.md L1",
+  "text": "# Regras de precificação — seminovos\n\n",
+  "start_line": 1,
+  "end_line": 3,
+  "hash": "2c24bb595af400fdbf72abd4bff2c072d75f416382962fbfb0fadec572f12522"
+ },
+ {
+  "path": "/home/svslwm/wm/harness-plannig/area-copilot/tests/fixtures/area_context/documentos/precificacao.md",
+  "kind": "section",
+  "name": "precificacao.md L3",
+  "text": "## Regra principal\nSeminovos acima de 5 anos recebem desconto de 8% sobre a tabela FIPE.\n\n",
+  "start_line": 3,
+  "end_line": 6,
+  "hash": "045f64e63000c0e4336e752ea7cfe907ade8eb2f5b8aec9844ab3d1ee5cb62fe"
+ },
+ {
+  "path": "/home/svslwm/wm/harness-plannig/area-copilot/tests/fixtures/area_context/documentos/precificacao.md",
+  "kind": "section",
+  "name": "precificacao.md L6",
+  "text": "## Regra complementar\nVeículos com mais de 100.000 km acumulam mais 3% de desconto, independente da idade.",
+  "start_line": 6,
+  "end_line": 7,
+  "hash": "9da771f0e5f28611a87f3ae20dff378eb01c9bac7616223253f4973b7668ee5b"
+ }
+]
