@@ -23,7 +23,12 @@ harness engineering consumindo os artefatos que o harness produz.
 | 13 | [De prompts manuais a loops autônomos](/lectures/lecture-13) | Loop engineering: planejar, agir, verificar, repetir. |
 | 14 | [De loops únicos a engenharia de grafos](/lectures/lecture-14) | Múltiplos agentes, orquestração e o futuro multi-agente. |
 
-::: tip Status
-Os conteúdos completos das aulas são entregues na Story **A2 — Adaptação das 14
-lectures** do EPIC A. Esta estrutura já reflete o currículo final.
+::: tip Como estudar
+Cada aula termina com a instrução do quiz — peça ao seu agente:
+
+```
+"quiz me on a Aula 01"   (ou a aula que você acabou de ler)
+```
+
+A skill `feature-quiz` gera o quiz em 4 níveis e você valida o que absorveu.
 :::
