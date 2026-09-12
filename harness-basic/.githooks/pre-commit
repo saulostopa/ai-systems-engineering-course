@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# pre-commit — gatekeeper mecânico (Aula 07/09)
+exec "$(dirname "$0")/../scripts/gatekeeper.sh"
