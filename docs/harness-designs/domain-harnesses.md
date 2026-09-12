@@ -46,9 +46,9 @@ um playbook quebrado — conhecimento é o que diferencia domínios, não proces
 
 | Domínio | Skills | Verificação própria | Artefato |
 |---|---|---|---|
-| [Games](E2 — preenchido) | game-design, roblox-publish | playteste simulado + validação de publish | design doc da feature |
-| [Finanças](E3) | spreadsheet-analysis, report-generation | reconciliação esperado vs. real | relatório publicado (madrugada) |
-| [Comercial](E4) | deck-generation, proposal-workflow | check contra briefing + revisão cruzada | deck/proposta versionada |
+| [Games](/harness-designs/domain-harnesses) (E2) | game-design, roblox-publish | playteste simulado + validação de publish | design doc da feature |
+| [Finanças](/harness-designs/domain-harnesses) (E3) | spreadsheet-analysis, report-generation | reconciliação esperado vs. real | relatório publicado (madrugada) |
+| [Comercial](/harness-designs/domain-harnesses) (E4) | deck-generation, proposal-workflow | check contra briefing + revisão cruzada | deck/proposta versionada |
 
 ## Regra de ouro compartilhada
 
