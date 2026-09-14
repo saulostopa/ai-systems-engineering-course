@@ -1,0 +1,248 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Harness Básico — pipeline de feature com gates",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "happy-path",
+        "label": "Feature entregue com evidência",
+        "focus": [
+          "dev",
+          "init",
+          "feature_list",
+          "code",
+          "gatekeeper",
+          "test",
+          "harness_ok",
+          "commit_push"
+        ],
+        "note": "O caminho feliz: declaração de escopo até a feature passing."
+      },
+      {
+        "id": "gates",
+        "label": "Gates mecânicos",
+        "focus": [
+          "gatekeeper",
+          "harness_ok"
+        ],
+        "note": "Onde o harness bloqueia: sem feature in_progress, sem validação."
+      }
+    ],
+    "output": "pilots/archify-demo/harness-basic-pipeline.html"
+  },
+  "lanes": [
+    {
+      "id": "dev",
+      "label": "Desenvolvedor"
+    },
+    {
+      "id": "system",
+      "label": "Harness + Repositório"
+    }
+  ],
+  "phases": [
+    {
+      "id": "boot",
+      "label": "Boot",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "work",
+      "label": "Implementação",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "close",
+      "label": "Gates + encerramento",
+      "fromCol": 4,
+      "toCol": 5
+    }
+  ],
+  "groups": [
+    {
+      "id": "gate_zone",
+      "label": "Zona de gates",
+      "lane": "system",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "security"
+    }
+  ],
+  "mainPath": [
+    "dev",
+    "init",
+    "feature_list",
+    "code",
+    "gatekeeper",
+    "test",
+    "harness_ok",
+    "commit_push"
+  ],
+  "nodes": [
+    {
+      "id": "dev",
+      "lane": "dev",
+      "col": 0,
+      "type": "external",
+      "label": "Pessoa ou Agente",
+      "sublabel": "pede a feature",
+      "width": 132
+    },
+    {
+      "id": "init",
+      "lane": "dev",
+      "col": 1,
+      "type": "frontend",
+      "label": "init.sh",
+      "sublabel": "boot do harness",
+      "width": 132
+    },
+    {
+      "id": "feature_list",
+      "lane": "dev",
+      "col": 2,
+      "type": "database",
+      "label": "feature_list.json",
+      "sublabel": "1 feature in_progress",
+      "tag": "fonte de verdade",
+      "width": 132
+    },
+    {
+      "id": "code",
+      "lane": "dev",
+      "col": 3,
+      "type": "frontend",
+      "label": "Implementação",
+      "sublabel": "escopo declarado",
+      "width": 132
+    },
+    {
+      "id": "test",
+      "lane": "dev",
+      "col": 4,
+      "type": "backend",
+      "label": "Build + Testes",
+      "sublabel": "evidência anexada",
+      "width": 132
+    },
+    {
+      "id": "gatekeeper",
+      "lane": "system",
+      "col": 3,
+      "type": "security",
+      "label": "Gatekeeper",
+      "sublabel": "pre-commit",
+      "tag": "bloqueia sem feature",
+      "width": 132
+    },
+    {
+      "id": "harness_ok",
+      "lane": "dev",
+      "col": 5,
+      "type": "security",
+      "label": "validate-harness",
+      "sublabel": "HARNESS OK",
+      "tag": "pré-push",
+      "width": 132
+    },
+    {
+      "id": "commit_push",
+      "lane": "system",
+      "col": 5,
+      "type": "cloud",
+      "label": "Commit + Push",
+      "sublabel": "feature passing — report + quiz gerados",
+      "width": 170
+    }
+  ],
+  "edges": [
+    {
+      "id": "dev-init",
+      "from": "dev",
+      "to": "init",
+      "variant": "default"
+    },
+    {
+      "id": "init-list",
+      "from": "init",
+      "to": "feature_list",
+      "label": "declara",
+      "variant": "emphasis"
+    },
+    {
+      "id": "list-code",
+      "from": "feature_list",
+      "to": "code",
+      "variant": "default"
+    },
+    {
+      "id": "code-gate",
+      "from": "code",
+      "to": "gatekeeper",
+      "label": "commit",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gate-back",
+      "from": "gatekeeper",
+      "to": "feature_list",
+      "label": "sem feature — declare",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "gate-test",
+      "from": "gatekeeper",
+      "to": "test",
+      "label": "liberado",
+      "variant": "emphasis"
+    },
+    {
+      "id": "test-harness",
+      "from": "test",
+      "to": "harness_ok",
+      "label": "pré-push",
+      "variant": "default"
+    },
+    {
+      "id": "harness-push",
+      "from": "harness_ok",
+      "to": "commit_push",
+      "label": "OK",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Regras dos gates (Aulas 07-09)",
+      "items": [
+        "Uma feature in_progress por vez — escopo declarado antes de editar",
+        "Nada de 'done' sem evidência: build, testes e validate-harness executados"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Ao concluir — artefatos de aprendizado",
+      "items": [
+        "feature-report (o que foi entregue) + feature-quiz (o que aprender)",
+        "Diagrama Archify do fluxo/arquitetura da mudança — como este"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Achado do piloto G1",
+      "items": [
+        "O gatekeeper bloqueia até a atualização da própria feature_list",
+        "Melhoria recomendada: permitir commits só-de-estado"
+      ]
+    }
+  ]
+}
