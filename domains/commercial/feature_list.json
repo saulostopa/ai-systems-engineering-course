@@ -1,3 +1,25 @@
 {
-  "features": []
+  "features": [
+    {
+      "id": "com-001",
+      "title": "Deck para rede de concessionárias (julho)",
+      "description": "Apresentação de resultados com números de vendas FONTE: area_context/planilhas.",
+      "status": "not_started",
+      "priority": 1
+    },
+    {
+      "id": "com-002",
+      "title": "Proposta de assinatura de dados FIPE",
+      "description": "Proposta com requisitos do briefing, revisão cruzada e registro de aprovação.",
+      "status": "not_started",
+      "priority": 2
+    },
+    {
+      "id": "com-003",
+      "title": "Material de vendas — pós-venda",
+      "description": "Deck de onboarding de cliente com números do CRM (fonte citada).",
+      "status": "not_started",
+      "priority": 3
+    }
+  ]
 }
