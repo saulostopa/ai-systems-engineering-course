@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<title data-i18n="title">Harness artifact</title>
+<style>
+/* system.css é injetado AQUI inteiro — nunca via template engine */
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">W</span>
+      <span data-i18n="brand">Harness · Webmotors</span>
+    </div>
+    <div class="toolbar">
+      <button type="button" id="lang-toggle" aria-label="Alternar idioma / Toggle language">EN</button>
+      <button type="button" id="theme-toggle" aria-label="Alternar tema / Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ═══ CONTEÚDO DO ARTEFATO ═══
+         O gerador insere aqui: título, cards, tabelas, quiz.
+         O quiz usa: .quiz-level > .quiz-stem + .quiz-opt + .quiz-why.
+         Cada pergunta: 3 .quiz-opt, exatamente uma com data-correct="true".
+         Níveis: data-level="tier-1..4", data-level-label, data-level-hint. -->
+
+    <section class="card" aria-label="Conteúdo">
+      <h1 data-i18n="heading">Título do artefato</h1>
+      <p data-i18n="lede">Resumo em uma frase.</p>
+    </section>
+
+    <!-- Quiz dinâmico: as seções .quiz-level são geradas aqui.
+         O script abaixo pontua, anuncia por aria-live e oferece
+         modo de revisão (itens errados repetidos) quando habilitado. -->
+    <section class="card" id="quiz-root" aria-label="Quiz">
+      <h2 data-i18n="quiz-title">Verifique seu aprendizado</h2>
+      <div class="progress" aria-hidden="true">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-label" id="progress-label">0%</span>
+      </div>
+      <div id="quiz-levels"><!-- .quiz-level gerados aqui --></div>
+      <button type="button" class="quiz-opt" id="submit-quiz" style="font-weight:600;text-align:center" hidden>
+        <span data-i18n="submit">Conferir respostas</span>
+      </button>
+      <div class="result" id="quiz-result" role="status" aria-live="polite" hidden></div>
+      <div id="review-root" hidden>
+        <h3 data-i18n="review-title">Revisão (questões para reforçar)</h3>
+        <div id="review-items"></div>
+        <button type="button" class="quiz-opt" id="review-submit" style="font-weight:600;text-align:center">
+          <span data-i18n="review-submit">Conferir revisão</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer style="margin-top:var(--space-7);color:var(--color-text-muted);font-size:var(--text-sm)">
+    <span data-i18n="footer">Gerado por skill de harness · Webmotors</span>
+  </footer>
+</div>
+
+<script>
+/* ═══ Skeleton scripts — copiar inteiros, nunca reescrever (skill-design.md) ═══ */
+
+/* Tema */
+(function () {
+  const btn = document.getElementById("theme-toggle");
+  const root = document.documentElement;
+  const saved = localStorage.getItem("hsk-theme");
+  if (saved) root.dataset.theme = saved;
+  btn.addEventListener("click", () => {
+    root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("hsk-theme", root.dataset.theme);
+  });
+})();
+
+/* Idioma: os atributos data-i18n são trocados por pares data-i18n-pt/en.
+   Ex.: <h1 data-i18n="heading" data-i18n-pt="Título" data-i18n-en="Title"> */
+(function () {
+  const btn = document.getElementById("lang-toggle");
+  let lang = localStorage.getItem("hsk-lang") || "pt";
+  const apply = () => {
+    document.documentElement.lang = lang === "pt" ? "pt-BR" : "en";
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const k = "data-i18n-" + lang;
+      if (el.hasAttribute(k)) el.textContent = el.getAttribute(k);
+    });
+    btn.textContent = lang === "pt" ? "EN" : "PT";
+  };
+  btn.addEventListener("click", () => { lang = lang === "pt" ? "en" : "pt"; localStorage.setItem("hsk-lang", lang); apply(); });
+  apply();
+})();
+
+/* Pontuação por nível + progresso + resultado (aria-live) */
+function updateLevelScore(level) {
+  const opts = level.querySelectorAll(".quiz-opt");
+  const correct = level.querySelectorAll('.quiz-opt[data-correct="true"]').length;
+  const picked = level.querySelectorAll('.quiz-opt[aria-pressed="true"]').length;
+  const score = Math.min(picked, correct);
+  const total = opts.length ? 3 : 0;
+  const label = level.querySelector(".quiz-level-score");
+  if (label) label.textContent = score + "/" + total;
+  return { score, total };
+}
+function updateProgress() {
+  const levels = document.querySelectorAll(".quiz-level");
+  let done = 0, total = 0;
+  levels.forEach((l) => { const s = updateLevelScore(l); done += s.score; total += Math.max(1, s.total); });
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const fill = document.getElementById("progress-fill");
+  const label = document.getElementById("progress-label");
+  if (fill) fill.style.width = pct + "%";
+  if (label) label.textContent = pct + "%";
+}
+function revealResult() {
+  const levels = document.querySelectorAll(".quiz-level");
+  let correct = 0, total = 0;
+  const wrong = [];
+  levels.forEach((l) => {
+    const opts = l.querySelectorAll(".quiz-opt");
+    total += opts.length;
+    opts.forEach((o) => {
+      o.disabled = true;
+      const picked = o.getAttribute("aria-pressed") === "true";
+      const isCorrect = o.dataset.correct === "true";
+      if (isCorrect && picked) correct++;
+      if (picked && !isCorrect) wrong.push({ level: l.dataset.levelLabel, text: l.querySelector(".quiz-stem").textContent, why: l.querySelector(".quiz-why") });
+    });
+    l.querySelectorAll(".quiz-why").forEach((w) => w.dataset.visible = "true");
+  });
+  const result = document.getElementById("quiz-result");
+  const pct = total ? Math.round((correct / total) * 100) : 0;
+  const verdict = pct >= 80 ? "Ótimo" : pct >= 50 ? "Bom, mas revise" : "Revise as fontes e refaça";
+  result.innerHTML = "<h2>Resultado: " + verdict + "</h2><p>" + correct + " de " + total + " (" + pct + "%)</p>";
+  result.hidden = false;
+  /* Modo revisão adaptativo: erradas entram na revisão */
+  if (wrong.length) {
+    const review = document.getElementById("review-root");
+    const items = document.getElementById("review-items");
+    items.innerHTML = "";
+    wrong.forEach((w, i) => {
+      const d = document.createElement("div");
+      d.className = "review-item";
+      d.innerHTML = "<strong>Q" + (i + 1) + " · " + w.level + "</strong><br>" + w.text;
+      items.appendChild(d);
+    });
+    review.hidden = false;
+  }
+  document.getElementById("submit-quiz").hidden = true;
+}
+document.addEventListener("click", (e) => {
+  const opt = e.target.closest(".quiz-opt");
+  if (!opt) return;
+  if (opt.closest("#quiz-levels")) {
+    opt.parentElement.querySelectorAll(".quiz-opt").forEach((o) => o.removeAttribute("aria-pressed"));
+    opt.setAttribute("aria-pressed", "true");
+    updateProgress();
+  }
+  if (e.target.closest("#submit-quiz")) revealResult();
+});
+</script>
+</body>
+</html>
