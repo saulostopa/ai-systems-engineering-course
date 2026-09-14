@@ -75,16 +75,33 @@ OLLAMA_API_URL=http://localhost:11434 python -m rag_harness index ../harness-bas
 ## D3 — Area Copilot (contexto de negócio)
 
 O mesmo motor, o domínio das áreas: planilhas, documentos, imagens, dados.
-O padrão por convenção (índice + fontes) está no
-[Projeto 05](/projects/project-05); o motor híbrido deste EPIC substitui o
-índice manual quando o volume cresce:
+Entregue em `area-copilot/` — funcional e avaliado:
 
-| Peça | Negócio |
+| Peça | Entrega |
 |---|---|
-| Chunker | por arquivo/aba/planilha (CSV/stdlib; openpyxl opcional) |
-| Índice | `area-context/index.md` (por convenção) → `rag_harness` (por volume) |
-| Verificação | artefato cita a fonte (arquivo + linha/aba) — nunca número inventado |
-| Skill | `area-report` (o artefato da área com fontes citadas) |
+| `area_harness/business_chunker.py` | Chunks de negócio com **fonte citável**: CSV (stdlib), XLSX por aba (openpyxl opcional), Markdown por seção |
+| `area_harness/__main__.py` | CLI: `index`, `query` (responde com FONTE + linhas), `eval` |
+| `templates/AGENTS.area.md` | Roteador da área — regra de ouro: **número sem fonte é proibido** |
+| `skills/area-report/SKILL.md` | Skill instalável que gera o artefato da área com fontes citadas |
+| `tests/` | Fixture (planilha de metas + regra de precificação) + 3 testes |
+
+**Métrica (evidência)**: precisão = **3/3 = 1.0** nas queries de negócio
+("meta de julho do sudeste" → linha da CSV com `meta_vendas:1200000`;
+"regra de precificação" → seção do `precificacao.md`). Toda resposta sai com
+`FONTE: <caminho> (linhas X-Y)` — o artefato da área nunca carrega número
+sem origem.
+
+```sh
+cd area-copilot
+python3 tests/test_area.py                              # 3 testes
+python3 -m area_harness index tests/fixtures/area_context --verbose
+python3 -m area_harness query tests/fixtures/area_context "qual a meta de julho do sudeste"
+python3 -m area_harness eval tests/fixtures/area_context  # precisão
+```
+
+**Modo madrugada** (finanças): o harness de domínio agenda
+`area_harness query` + `area-report` via cron — o relatório está publicado
+com fontes quando o time chega (Aula 13: loop autônomo com critério de saída).
 
 ## O que NÃO é (limites honestos)
 
