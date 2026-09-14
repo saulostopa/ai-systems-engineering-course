@@ -1,3 +1,25 @@
 {
-  "features": []
+  "features": [
+    {
+      "id": "fin-001",
+      "title": "Resumo diário de vendas (pipeline noturno)",
+      "description": "Reconciliação de metas vs. vendas por região, publicado às 6h com fontes citadas.",
+      "status": "not_started",
+      "priority": 1
+    },
+    {
+      "id": "fin-002",
+      "title": "Detecção de divergências em planilhas",
+      "description": "Alertas automáticos de total que não bate, com linha citada de cada divergência.",
+      "status": "not_started",
+      "priority": 2
+    },
+    {
+      "id": "fin-003",
+      "title": "Relatório semanal de precificação",
+      "description": "Análise de descontos aplicados vs. regra de precificação (seminovos), com outliers.",
+      "status": "not_started",
+      "priority": 3
+    }
+  ]
 }
