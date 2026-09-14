@@ -13,6 +13,7 @@ versionados, revisáveis em PR e instaláveis em qualquer harness que leia
 | [feature-animation](/skills/feature-animation) | Animação HTML de um dado atravessando a feature. |
 | [qa-playwright-e2e](/skills/qa-playwright-e2e) | Testes E2E com Playwright (Python), locators semânticos. |
 | [qa-perf-triage](/skills/qa-perf-triage) | Diagnóstico de regressões de latência sob carga. |
+| [feature-archify](/skills/feature-archify) | Diagramas verificáveis (Archify) da feature concluída — o mapa que ensina o fluxo. |
 | [Criar uma skill nova](/skills/how-to-create) | O pipeline: ideia → SKILL.md → teste → publicação. |
 
 ::: tip Status
