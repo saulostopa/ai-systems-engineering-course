@@ -46,6 +46,19 @@ class AgentController:
         hits = [c for c in self.index.chunks if rx.search(c.text)]
         return hits[:top_k]
 
+    @staticmethod
+    def _exact_symbol_patterns(query: str) -> list[str]:
+        """Extrai padrões de símbolo exato: quoted ('foo'), CamelCase, snake_case
+        com ponto (models.Veiculo), nomes de método (registerItem)."""
+        patterns: list[str] = []
+        for m in re.findall(r'"([a-zA-Z_][\w.]*)"', query):
+            patterns.append(re.escape(m))
+        for m in re.findall(r"\b[A-Z][a-zA-Z0-9]*(?:\.[A-Z][a-zA-Z0-9]*)+", query):
+            patterns.append(re.escape(m))
+        for m in re.findall(r"\b[a-z]+_[a-z0-9_]+", query):
+            patterns.append(re.escape(m))
+        return patterns[:3]
+
     # ── Heurística de suficiência ────────────────────────────────
 
     def _sufficient(self, query: str, chunks: list[Chunk]) -> bool:
@@ -81,6 +94,15 @@ class AgentController:
                 gathered.extend(g)
                 if self._sufficient(query, gathered):
                     return gathered[:5]
+
+        # Iter 2.5: regex para símbolos exatos (quoted ou CamelCase/snake_case
+        # com ponto, ex.: 'registerItem', 'models.Veiculo', "exato")
+        exact = AgentController._exact_symbol_patterns(query)
+        for pat in exact:
+            rx = self.tool_regex_search(pat, 5)
+            gathered.extend(rx)
+            if self._sufficient(query, gathered):
+                return gathered[:5]
 
         # Iter 3: semântica (conceito) — a mais cara, por último
         sem = self.tool_semantic_search(query, 5)

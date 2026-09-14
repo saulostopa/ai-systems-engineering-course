@@ -34,7 +34,7 @@ def file_hash(path: str) -> str:
     return h.hexdigest()
 
 
-def discover_files(root: str, exts: tuple[str, ...] = (".py", ".md", ".txt")) -> list[str]:
+def discover_files(root: str, exts: tuple[str, ...] = (".py", ".md", ".txt", ".sh", ".yaml", ".yml", ".json")) -> list[str]:
     files: list[str] = []
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if not d.startswith((".", "__")) and d != "node_modules"]

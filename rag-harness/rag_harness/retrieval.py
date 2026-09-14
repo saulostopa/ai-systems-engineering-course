@@ -6,7 +6,9 @@ símbolos exatos) e semantic matches (similaridade conceitual) numa lista só'.
 from __future__ import annotations
 
 import math
+import os
 import re
+import unicodedata
 from collections import Counter
 
 from .chunker import Chunk
@@ -14,7 +16,26 @@ from .indexer import Index, semantic_search
 
 
 def tokenize(text: str) -> list[str]:
+    """Tokeniza com split de camelCase (hooksPath -> hooks, path) e
+    normalização de acentos (fricção -> friccao)."""
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    text = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", text)
     return re.findall(r"[a-z0-9_]+", text.lower())
+
+
+def _path_tokens(chunk: Chunk) -> list[str]:
+    """Tokens do nome de arquivo (sem extensão) — boost de identificação."""
+    base = os.path.basename(chunk.path)
+    return tokenize(base.replace("_", " ").replace("-", " ").replace(".", " "))
+
+
+def _prefix_match(t: str, doc_terms: Counter[str]) -> bool:
+    """Prefixo mútuo (min 5 chars): instalador↔install, definicao↔definition."""
+    for dt in doc_terms:
+        if (len(t) >= 5 and dt.startswith(t[:5])) or (len(dt) >= 5 and t.startswith(dt[:5])):
+            return True
+    return False
 
 
 def _idf(index: Index) -> dict[str, float]:
@@ -33,10 +54,17 @@ def lexical_search(index: Index, query: str, top_k: int = 5, idf: dict[str, floa
     scored: list[tuple[Chunk, float]] = []
     for c in index.chunks:
         terms = Counter(tokenize(c.text))
+        path_terms = Counter(_path_tokens(c))
         score = 0.0
         for t in qterms:
             if t in terms:
                 score += idf.get(t, 1.0) * (1 + math.log(1 + terms[t]))
+            elif path_terms[t] > 0:
+                score += idf.get(t, 1.0) * 2.0  # nome de arquivo vale 2x
+            elif _prefix_match(t, path_terms):
+                score += idf.get(t, 1.0) * 1.5  # prefixo de nome de arquivo
+            elif _prefix_match(t, terms):
+                score += idf.get(t, 1.0) * 1.0  # prefixo no conteúdo (pt-BR ↔ en)
         if score > 0:
             scored.append((c, score))
     scored.sort(key=lambda pair: pair[1], reverse=True)

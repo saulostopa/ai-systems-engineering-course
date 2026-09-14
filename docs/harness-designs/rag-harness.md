@@ -46,12 +46,27 @@ extensão para decisão via LLM: `decide_with_llm()`.
 
 ## D2 — RAG de código (em `rag-harness/`)
 
-Indexação de repos de código com o padrão acima. Como rodar:
+Indexação de repos de código com o padrão acima. **Melhorias funcionais do D2
+(validadas por avaliação):**
+
+| Melhoria | Por quê | Como |
+|---|---|---|
+| Índexa `.sh/.yaml/.json` | Scripts e configs são código | `discover_files` com exts ampliadas |
+| Normalização de acentos | `fricção` ≠ `friccao` | `unicodedata` no tokenizer |
+| Split de camelCase | `hooksPath` vira `hooks path` | regex no tokenizer |
+| Boost por nome de arquivo | `install.sh` responde por "instalador" | tokens do path valem 2x |
+| Prefix match mútuo | pt-BR ↔ en (`definicao`→`definition`) | `_prefix_match` (min 5 chars) |
+| Regex de símbolo exato | `models.Veiculo`, quoted, snake_case | `AgentController._exact_symbol_patterns` |
+
+**Métrica (evidência, Aula 11)**: precisão@3 = **5/5 = 1.0** nas 5 queries do
+`tests/queries.json` contra o `harness-basic` — incluindo "instalador que ativa
+core.hooksPath" → `install.sh` (via nome de arquivo) e "como registrar friccao"
+→ `log-event.sh` (via acentos + nome de arquivo).
 
 ```sh
 cd rag-harness
-python tests/test_rag.py                       # 5 testes
-python -m rag_harness index ../harness-basic   # indexa (cache por hash)
+python tests/test_rag.py                       # 7 testes
+python -m rag_harness eval ../harness-basic    # precisão@k (métrica de saúde)
 python -m rag_harness agent ../harness-basic "como o gatekeeper bloqueia commit"
 # semântica real (opcional, com Ollama):
 OLLAMA_API_URL=http://localhost:11434 python -m rag_harness index ../harness-basic

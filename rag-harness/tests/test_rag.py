@@ -93,6 +93,32 @@ def test_cache_reindexacao_reaproveita_vetores():
         assert len(index2.chunks) == len(index_dir(tmp, emb).chunks)
 
 
+def test_lexical_normaliza_acentos_e_splits_camelcase():
+    with tempfile.TemporaryDirectory() as tmp:
+        with open(os.path.join(tmp, "log-event.sh"), "w", encoding="utf-8") as fh:
+            fh.write("registra fricção do harness\nativa core.hooksPath\n")
+        with open(os.path.join(tmp, "README.md"), "w", encoding="utf-8") as fh:
+            fh.write("relatório genérico sem os termos exatos\n")
+        emb = NGramEmbedder()
+        index = index_dir(tmp, emb)
+        top = lexical_search(index, "como registrar friccao e o hookspath", top_k=1)
+        assert top and "log-event" in top[0][0].path, f"esperava log-event.sh, veio {top[:1]}"
+
+
+def test_lexical_boost_por_nome_de_arquivo():
+    with tempfile.TemporaryDirectory() as tmp:
+        # Fixture realista: o conteúdo do install.sh NÃO repete o termo raro
+        # "instalador" — só o nome do arquivo carrega essa identificação.
+        with open(os.path.join(tmp, "install.sh"), "w", encoding="utf-8") as fh:
+            fh.write("Instalando harness básico em: ativa core.hooksPath\n")
+        with open(os.path.join(tmp, "AGENTS.md"), "w", encoding="utf-8") as fh:
+            fh.write("roteador do projeto: leia antes de qualquer trabalho\n")
+        emb = NGramEmbedder()
+        index = index_dir(tmp, emb)
+        top = lexical_search(index, "instalador que ativa hooksPath", top_k=1)
+        assert top and "install.sh" in top[0][0].path, f"esperava install.sh, veio {top[:1]}"
+
+
 if __name__ == "__main__":
     import traceback
 

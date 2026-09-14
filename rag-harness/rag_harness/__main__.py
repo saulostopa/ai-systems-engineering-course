@@ -15,6 +15,7 @@ import sys
 
 from .agentic import AgentController, pretty
 from .embeddings import make_embedder
+from .eval import load_queries
 from .indexer import index_dir, load_index
 from .retrieval import hybrid_search, lexical_search
 
@@ -45,9 +46,28 @@ def main() -> None:
     p_agent.add_argument("root")
     p_agent.add_argument("text")
 
+    p_eval = sub.add_parser("eval")
+    p_eval.add_argument("root")
+    p_eval.add_argument("--queries", default=os.path.join(os.path.dirname(__file__), "..", "tests", "queries.json"))
+    p_eval.add_argument("--top-k", type=int, default=3)
+
     args = ap.parse_args()
     embedder = make_embedder()
     print(f"embedder: {type(embedder).__name__}")
+
+    if args.cmd == "eval":
+        from .eval import run_eval
+
+        summary = run_eval(args.root, load_queries(args.queries), args.top_k, embedder)
+        print(f"\n== Precisão@{summary['top_k']}: {summary['hits']}/{summary['total']} = {summary['precision_at_k']}")
+        print(f"== Ferramentas usadas: {', '.join(summary['tools_used'])}")
+        for r in summary["rows"]:
+            mark = "✓" if r["hit"] else "✗"
+            print(f"\n[{mark}] {r['query']}")
+            print(f"     esperado: {r['expected']}")
+            print(f"     tools: {', '.join(r['tools'])}")
+            print(f"     top: {', '.join(r['top'])}")
+        return
 
     if args.cmd == "index":
         index = index_dir(args.root, embedder, verbose=args.verbose)
