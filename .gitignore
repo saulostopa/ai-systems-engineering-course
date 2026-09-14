@@ -3,4 +3,7 @@ docs/.vitepress/cache/
 docs/.vitepress/dist/
 *.local
 .env
-.DS_Store
+.DS_Store__pycache__/
+*.pyc
+.rag_index/
+.area_index/
