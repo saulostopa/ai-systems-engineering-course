@@ -86,6 +86,30 @@ artefatos) e 3) gates (suas verificações — reconciliação, playteste,
 proposal-check). O `domains/` continua sendo a biblioteca de conhecimento; o
 `hard-harness` é o único motor.
 
+## LLM providers — OpenRouter (padrão), Ollama (opcional)
+
+Os agentes do núcleo recebem um provider injetável
+(`hard_harness/llm/providers.py`). Seleção por ambiente, sem surpresa de rede:
+
+```sh
+# padrão (mesmo fluxo desta sessão):
+OPENROUTER_API_KEY=... PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+
+# opcional — local:
+OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+
+# sem env: stub determinístico (aviso claro), perfeito para testes/offline
+```
+
+- **OpenRouterProvider** — API compatível com OpenAI (stdlib urllib), modelo
+  padrão `deepseek/deepseek-v4-flash-0731` (o mesmo desta sessão), usage capturado.
+- **OllamaProvider** — endpoint local `/v1/chat/completions`, probe de disponibilidade.
+- **Custo no runner** — o provider anexa `llm_cost` (usage em k-tokens) ao
+  payload do agente; o runner aplica `Limits.llm_budget` em cima do custo real.
+- **Evidência viva**: o workflow completo rodou com OpenRouter real — planner
+  gerou plano (1.157 k-tokens), reviewer pediu changes no diff do stub
+  (raciocínio real), evidence sintetizou; 4 chamadas, 19 eventos, status closed.
+
 ## Decisões de arquitetura (e limites honestos)
 
 | Decisão | Por quê |

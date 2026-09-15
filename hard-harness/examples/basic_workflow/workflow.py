@@ -93,11 +93,12 @@ def close(ninput: NodeInput) -> NodeOutput:
     return NodeOutput(node_id="close", ok=True, payload={"closed": True})
 
 
-def build_graph(agent_impls: dict[str, object] | None = None) -> WorkflowGraph:
-    """Monta o grafo. agent_impls permite injetar stubs nos testes."""
-    planner = PlannerAgent(provider=agent_impls.get("planner") if agent_impls else None)
-    coder = CoderAgent(provider=agent_impls.get("coder") if agent_impls else None)
-    reviewer = ReviewerAgent(provider=agent_impls.get("reviewer") if agent_impls else None)
+def build_graph(agent_impls: dict[str, object] | None = None,
+                providers: dict[str, object] | None = None) -> WorkflowGraph:
+    """Monta o grafo. agent_impls: nós inteiros; providers: LLM providers por agente."""
+    planner = PlannerAgent(provider=(providers or {}).get("planner"))
+    coder = CoderAgent(provider=(providers or {}).get("coder"))
+    reviewer = ReviewerAgent(provider=(providers or {}).get("reviewer"))
 
     def correction_agent(ninput: NodeInput) -> NodeOutput:
         return NodeOutput(node_id="correction_agent", ok=True, payload={"corrected": True}, proposed_next="coder_agent")
@@ -133,9 +134,13 @@ def build_graph(agent_impls: dict[str, object] | None = None) -> WorkflowGraph:
     return g
 
 
-def run(scope: dict | None = None, root: str = "example_run") -> dict:
-    """Executa o workflow com persistência em <root>/.harness e retorna o estado."""
-    graph = build_graph()
+def run(scope: dict | None = None, root: str = "example_run", providers: dict[str, object] | None = None) -> dict:
+    """Executa o workflow com persistência em <root>/.harness e retorna o estado.
+
+    providers: LLM providers por agente (ex.: StubProvider em testes; sem
+    argumento, make_provider() decide por env — OpenRouter/Ollama/Stub).
+    """
+    graph = build_graph(providers=providers)
     problems = graph.validate()
     if problems:
         raise RuntimeError(f"grafo inválido: {problems}")

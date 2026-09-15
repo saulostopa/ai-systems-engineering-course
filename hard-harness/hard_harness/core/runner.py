@@ -99,6 +99,7 @@ class Runner:
 
         state.data[node_id] = output.payload
         state.llm_calls += 1 if node.kind is NodeKind.AGENT else 0
+        self._apply_llm_cost(output, node)
         self._check_llm_limits(state, node)
 
         # Gates anexados à saída (ex.: validação de plano) bloqueiam a transição
@@ -215,13 +216,20 @@ class Runner:
 
     # ── Limites ──────────────────────────────────────────────────
 
+    def _apply_llm_cost(self, output: NodeOutput, node: Node) -> None:
+        """Custo real do LLM (usage do provider) entra no orçamento do runner."""
+        if node.kind is NodeKind.AGENT:
+            cost = output.payload.get("llm_cost", 1.0)
+            try:
+                self._llm_cost += float(cost)
+            except (TypeError, ValueError):
+                self._llm_cost += 1.0
+
     def _check_llm_limits(self, state: WorkflowState, node: Node) -> None:
         if state.llm_calls > self.limits.max_llm_calls:
             raise RuntimeError(f"MAX_LLM_CALLS excedido ({self.limits.max_llm_calls})")
-        if self.limits.llm_budget > 0 and node.kind is NodeKind.AGENT:
-            self._llm_cost += 1.0
-            if self._llm_cost > self.limits.llm_budget:
-                raise RuntimeError(f"llm_budget excedido ({self.limits.llm_budget})")
+        if self.limits.llm_budget > 0 and self._llm_cost > self.limits.llm_budget:
+            raise RuntimeError(f"llm_budget excedido ({self.limits.llm_budget})")
 
     def _elapsed(self) -> float:
         return time.monotonic() - self._started_at

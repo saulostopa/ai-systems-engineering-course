@@ -15,6 +15,7 @@ for f in hard_harness/core/schemas.py hard_harness/core/graph.py hard_harness/co
          hard_harness/core/gates.py hard_harness/core/events.py \
          hard_harness/stores/base.py hard_harness/stores/file_store.py hard_harness/stores/agenfk_store.py \
          hard_harness/adapters/adk2.py hard_harness/adapters/rag.py \
+         hard_harness/llm/providers.py \
          hard_harness/agents/base.py \
          examples/basic_workflow/workflow.py examples/app_harness/workflow.py tests/test_hard_harness.py; do
   [ -f "$ROOT/$f" ] && ok "existe: $f" || fail "faltando: $f"
@@ -31,10 +32,10 @@ else
 fi
 
 section "Suíte de testes"
-if (cd "$ROOT" && PYTHONPATH=. python3 tests/test_hard_harness.py >/dev/null 2>&1); then
-  ok "19 testes PASS"
+if (cd "$ROOT" && PYTHONPATH=. python3 tests/test_hard_harness.py >/dev/null 2>&1     && PYTHONPATH=. OPENROUTER_API_KEY= python3 tests/test_llm_providers.py >/dev/null 2>&1); then
+  ok "30 testes PASS (19 núcleo + 11 providers)"
 else
-  fail "testes falharam (rode: PYTHONPATH=. python3 tests/test_hard_harness.py)"
+  fail "testes falharam (rode os dois suites em tests/)"
 fi
 
 section "Exemplo básico (grafo completo)"

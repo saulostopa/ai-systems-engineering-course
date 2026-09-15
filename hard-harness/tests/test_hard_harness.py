@@ -26,6 +26,16 @@ from hard_harness.core.events import EventBus  # noqa: E402
 from hard_harness.core.gates import gate_from_command, gate_node_output  # noqa: E402
 from hard_harness.core.schemas import WorkflowStatus  # noqa: E402
 from hard_harness.stores import FileStateStore  # noqa: E402
+from hard_harness.llm.providers import StubProvider  # noqa: E402
+
+
+def example_providers() -> dict:
+    """Stubs estruturados: respostas que os agentes sabem parsear."""
+    return {
+        "planner": StubProvider("- passo 1\n- passo 2\n- passo 3"),
+        "coder": StubProvider("```diff\n+ def nova():\n+     pass\n```"),
+        "reviewer": StubProvider("revisão ok\nVERDICT: approved"),
+    }
 
 DET = NodeKind.DETERMINISTIC
 AGT = NodeKind.AGENT
@@ -369,7 +379,7 @@ def test_exemplo_completo_fecha_com_evidencia():
     import examples.basic_workflow.workflow as wf
 
     with _tmp.TemporaryDirectory() as tmp:
-        result = wf.run(scope={"what": "demo", "why": "curso", "out_of_scope": "nada"}, root=tmp)
+        result = wf.run(scope={"what": "demo", "why": "curso", "out_of_scope": "nada"}, root=tmp, providers=example_providers())
         assert result["status"] == "closed", f"esperava closed, veio {result['status']}"
         state = result["state"]
         assert state.data["join"]["all_ok"] is True
