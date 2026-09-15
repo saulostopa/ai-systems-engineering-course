@@ -7,3 +7,4 @@ docs/.vitepress/dist/
 *.pyc
 .rag_index/
 .area_index/
+hard-harness/example_run/

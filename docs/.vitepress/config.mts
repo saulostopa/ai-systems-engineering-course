@@ -100,6 +100,7 @@ export default defineConfig({
             { text: 'App Harness (QA + navegação agêntica)', link: '/harness-designs/app-harness' },
             { text: 'RAG Harness & Area Copilots', link: '/harness-designs/rag-harness' },
             { text: 'Harnesses de domínio', link: '/harness-designs/domain-harnesses' },
+            { text: 'Hard Harness (orquestração executável)', link: '/harness-designs/hard-harness' },
           ],
         },
       ],
