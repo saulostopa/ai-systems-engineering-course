@@ -67,6 +67,7 @@ cd rag-harness && python3 tests/test_rag.py          # 7 testes do motor RAG
 cd area-copilot && python3 tests/test_area.py        # 3 testes do Area Copilot
 cd artifacts-intranet && python3 tests/test_intranet.py  # 3 testes da intranet
 cd rag-harness && python3 -m rag_harness eval ../harness-basic   # precisão@k
+cd hard-harness && PYTHONPATH=. python3 tests/test_hard_harness.py   # 19 testes do núcleo
 ```
 
 ## Estrutura
@@ -83,6 +84,7 @@ cd rag-harness && python3 -m rag_harness eval ../harness-basic   # precisão@k
 | `artifacts-intranet/` | Intranet com busca RAG sobre os artefatos |
 | `templates/` | Pacote de templates do harness básico |
 | `pilots/` | Evidências dos pilotos G1–G4 + demo final |
+| `hard-harness/` | Orquestração executável: grafo, schemas, gates, persistência (19 testes) |
 
 ## Fluxo de trabalho
 

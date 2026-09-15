@@ -8,6 +8,7 @@ arquitetura, os componentes e o que o torna funcional na prática.
 - [App Harness](/harness-designs/app-harness) — QA (E2E) + navegação agêntica com visão: build → abrir → validar.
 - [RAG Harness & Area Copilots](/harness-designs/rag-harness) — contexto de código e de negócio (planilhas, imagens, docs).
 - [Harnesses de domínio](/harness-designs/domain-harnesses) — o mesmo esqueleto, skill packs por área: games, finanças, comercial.
+- [Hard Harness (orquestração executável)](/harness-designs/hard-harness) — grafo executável, contratos tipados, gates determinísticos e agentes especializados (ADK 2 como referência).
 
 ::: tip Status
 Os blueprints detalhados são entregues pelos EPICs B, C, D e E do projeto.

@@ -1,0 +1,161 @@
+"""Exemplo obrigatório — grafo completo do hard harness.
+
+START
+  → boot
+  → carregar escopo
+  → planner_agent
+  → validar plano (gate)
+  → coder_agent
+  → fan-out: [build, testes, E2E, lint/segurança]
+  → join de resultados
+  → router determinístico
+      - falhou: correction_agent (retorno com limite)
+      - passou: reviewer_agent
+  → evidence
+  → close
+
+Regras demonstradas:
+  - funções para trabalho previsível (boot, escopo, gates, join, close);
+  - agentes somente para raciocínio (planner, coder, reviewer, correction);
+  - router com DEFAULT obrigatório;
+  - agente propõe próximo nó; o runner decide;
+  - persistência FileStateStore + retomada.
+"""
+
+from __future__ import annotations
+
+import os
+
+from hard_harness.adapters.adk2 import to_adk_edges
+from hard_harness.agents import CoderAgent, EvidenceAgent, PlannerAgent, ReviewerAgent
+from hard_harness.core import Limits, Node, NodeInput, NodeKind, NodeOutput, Runner, WorkflowGraph
+from hard_harness.core.gates import gate_scope_valid
+from hard_harness.stores import FileStateStore
+
+
+def boot(ninput: NodeInput) -> NodeOutput:
+    """Determinístico: inicializa dados do workflow."""
+    return NodeOutput(node_id="boot", ok=True, payload={"booted_at": True, "scope": ninput.payload.get("scope", {})})
+
+
+def load_scope(ninput: NodeInput) -> NodeOutput:
+    """Determinístico: carrega o escopo declarado."""
+    scope = ninput.payload.get("scope", {})
+    return NodeOutput(node_id="load_scope", ok=True, payload={"scope": scope})
+
+
+def validate_plan_gate(ninput: NodeInput) -> NodeOutput:
+    """Gate determinístico: o plano do planner precisa existir e ser não-vazio."""
+    from hard_harness.core.schemas import GateResult
+
+    plan = (ninput.state.data.get("planner_agent") or {}).get("plan_steps", [])
+    if plan:
+        return NodeOutput(node_id="validate_plan", ok=True, payload={"plan_ok": True},
+                          gate=GateResult(node_id="validate_plan", passed=True))
+    return NodeOutput(
+        node_id="validate_plan",
+        ok=False,
+        error="plano vazio do planner",
+        gate=GateResult(node_id="validate_plan", passed=False,
+                        failures=[{"check": "plan_steps", "expected": ">=1 passo", "actual": "0"}]),
+    )
+
+
+from hard_harness.core.gates import gate_from_command, gate_node_output
+
+build = gate_node_output("build", gate_from_command("build", "echo 'build ok'", "build"))
+tests = gate_node_output("tests", gate_from_command("tests", "echo 'tests ok'", "test"))
+e2e = gate_node_output("e2e", gate_from_command("e2e", "echo 'e2e ok'", "e2e"))
+lint = gate_node_output("lint", gate_from_command("lint", "echo 'lint ok'", "lint"))
+
+
+def join_results(ninput: NodeInput) -> NodeOutput:
+    """Determinístico: consolida o fan-out; falhas explícitas no payload."""
+    fanout = ninput.state.data.get("fanout_coder_agent", ninput.payload)
+    checks = {k: ("ok" if v.get("error") is None else f"FAIL: {v['error']}") for k, v in fanout.items()}
+    all_ok = all(v == "ok" for v in checks.values())
+    return NodeOutput(node_id="join", ok=True, payload={"checks": checks, "all_ok": all_ok})
+
+
+def route_by_checks(state_data: dict) -> str:
+    """Router determinístico (if-statement, 0 LLM — lição ADK L2b).
+    Lê o payload consolidado do join."""
+    join_payload = state_data.get("join", {})
+    return "passed" if join_payload.get("all_ok") else "failed"
+
+
+def route_node(ninput: NodeInput) -> NodeOutput:
+    """Nó determinístico que só existe para carregar o router."""
+    return NodeOutput(node_id="router", ok=True, payload={"routed": True})
+
+
+def close(ninput: NodeInput) -> NodeOutput:
+    return NodeOutput(node_id="close", ok=True, payload={"closed": True})
+
+
+def build_graph(agent_impls: dict[str, object] | None = None) -> WorkflowGraph:
+    """Monta o grafo. agent_impls permite injetar stubs nos testes."""
+    planner = PlannerAgent(provider=agent_impls.get("planner") if agent_impls else None)
+    coder = CoderAgent(provider=agent_impls.get("coder") if agent_impls else None)
+    reviewer = ReviewerAgent(provider=agent_impls.get("reviewer") if agent_impls else None)
+
+    def correction_agent(ninput: NodeInput) -> NodeOutput:
+        return NodeOutput(node_id="correction_agent", ok=True, payload={"corrected": True}, proposed_next="coder_agent")
+
+    g = WorkflowGraph(name="basic_workflow")
+    g.add_node(Node("boot", NodeKind.DETERMINISTIC, boot))
+    g.add_node(Node("load_scope", NodeKind.DETERMINISTIC, load_scope))
+    g.add_node(Node("planner_agent", NodeKind.AGENT, planner.run))
+    g.add_node(Node("validate_plan", NodeKind.DETERMINISTIC, validate_plan_gate))
+    g.add_node(Node("coder_agent", NodeKind.AGENT, coder.run))
+    g.add_node(Node("build", NodeKind.DETERMINISTIC, build))
+    g.add_node(Node("tests", NodeKind.DETERMINISTIC, tests))
+    g.add_node(Node("e2e", NodeKind.DETERMINISTIC, e2e))
+    g.add_node(Node("lint", NodeKind.DETERMINISTIC, lint))
+    g.add_node(Node("join", NodeKind.DETERMINISTIC, join_results))
+    g.add_node(Node("router", NodeKind.DETERMINISTIC, route_node))
+    g.add_node(Node("reviewer_agent", NodeKind.AGENT, reviewer.run))
+    g.add_node(Node("correction_agent", NodeKind.AGENT, correction_agent))
+    g.add_node(Node("evidence", NodeKind.AGENT, EvidenceAgent().run))
+    g.add_node(Node("close", NodeKind.DETERMINISTIC, close))
+
+    g.set_start("boot")
+    g.edge("boot", "load_scope")
+    g.edge("load_scope", "planner_agent")
+    g.edge("planner_agent", "validate_plan")
+    g.edge("validate_plan", "coder_agent")
+    g.fan_out("coder_agent", ["build", "tests", "e2e", "lint"])
+    g.join("join", ["build", "tests", "e2e", "lint"], "router")
+    g.router("router", route_by_checks, {"passed": "reviewer_agent", "failed": "correction_agent"}, default="correction_agent")
+    g.edge("reviewer_agent", "evidence")
+    g.edge("correction_agent", "coder_agent")
+    g.edge("evidence", "close")
+    return g
+
+
+def run(scope: dict | None = None, root: str = "example_run") -> dict:
+    """Executa o workflow com persistência em <root>/.harness e retorna o estado."""
+    graph = build_graph()
+    problems = graph.validate()
+    if problems:
+        raise RuntimeError(f"grafo inválido: {problems}")
+
+    store = FileStateStore(root)
+    limits = Limits(max_retries=2, max_llm_calls=40, run_timeout_s=120, max_depth=16)
+    runner = Runner(graph, store=store, limits=limits)
+
+    # auditoria: eventos vão para o store e stdout
+    runner.bus.subscribe(lambda ev: store.append_event(ev))
+    runner.bus.subscribe(lambda ev: print(f"[{ev.kind}] {ev.node_id}: {ev.message[:80]}"))
+
+    state = runner.run(initial={"scope": scope or {"what": "feature demo", "why": "hard harness", "out_of_scope": "nada"}})
+    return {"status": state.status.value, "state": state, "store": store}
+
+
+if __name__ == "__main__":
+    result = run()
+    print(f"\n== status final: {result['status']}")
+    events = result["store"].list_events()
+    print(f"== eventos persistidos: {len(events)}")
+    for ev in events[-8:]:
+        print(f"   [{ev.ts}] {ev.kind} {ev.node_id}: {ev.message[:70]}")

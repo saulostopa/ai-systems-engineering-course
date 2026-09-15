@@ -68,6 +68,27 @@ Esta aula fecha o curso apontando para o que os harnesses de domínio (EPIC E) e
 
 E o grafo se retroalimenta: os artefatos de um nó viram contexto (RAG) para o nó seguinte — conhecimento acumulado como ativo, não como conversa perdida.
 
+## Da teoria ao executável — o hard harness
+
+A Aula 14 descreveu grafos como conceito; as aulas 15-17 o transformam em
+**código executável**. O componente `hard-harness/` deste curso materializa
+exatamente o que esta aula desenhou:
+
+| Teoria (Aula 14) | Executável (hard-harness) |
+|---|---|
+| Nós especializados | `agents/` (planner, coder, reviewer, evidence) |
+| Arestas com contrato | `core/graph.py` (fan_out, join, router com default) |
+| Comunicação por artefatos | `NodeOutput.artifacts` + `ArtifactRef` |
+| Revisão cruzada | `ReviewResult` — quem escreve não revisa |
+| Quem governa o grafo | `core/runner.py` — única autoridade de estado |
+| Loops com critério | retries/limites em `Limits` + gates determinísticos |
+| Evidência | `Evidence` gerada por gates e consolidada no nó evidence |
+
+O grafo da Aula 14 deixou de ser diagrama: virou `examples/basic_workflow` —
+rodável com `PYTHONPATH=. python3 hard-harness/examples/basic_workflow/workflow.py`,
+com o mesmo formato do ADK 2 (funções para previsível, agentes para
+raciocínio, routers explícitos).
+
 ## Principais aprendizados
 
 1. Loop único concentra custo, erro e viés; o grafo distribui e especializa.
@@ -82,4 +103,5 @@ E o grafo se retroalimenta: os artefatos de um nó viram contexto (RAG) para o n
 "quiz me on a Aula 14"
 ```
 
-**Você terminou as aulas!** Siga para os [Projetos](/projects/) para colocar tudo em prática — começando pelo [Projeto 01: Baseline vs. harness mínimo](/projects/project-01).
+**Continue**: [15 — Do Markdown ao runtime executável](/lectures/lecture-15) ·
+[16 — ADK 2](/lectures/lecture-16) · [17 — Construindo um Hard Harness](/lectures/lecture-17).
