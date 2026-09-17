@@ -22,8 +22,16 @@ harness engineering consumindo os artefatos que o harness produz.
 | 12 | [Sessões terminam com estado limpo](/lectures/lecture-12) | Clean state, handoff e a próxima sessão agradece. |
 | 13 | [De prompts manuais a loops autônomos](/lectures/lecture-13) | Loop engineering: planejar, agir, verificar, repetir. |
 | 14 | [De loops únicos a engenharia de grafos](/lectures/lecture-14) | Múltiplos agentes, orquestração e o futuro multi-agente. |
+| 15 | [Do Markdown ao runtime executável](/lectures/lecture-15) | Instrução vs. contrato vs. controle; por que o agente não é a autoridade. |
+| 16 | [ADK 2 e os três padrões de orquestração](/lectures/lecture-16) | Graph, Collaborative e Dynamic — quem decide o próximo passo. |
+| 17 | [Construindo um Hard Harness](/lectures/lecture-17) | O componente `hard-harness/`: grafo, schemas, gates, persistência. |
 
-::: tip Status
-Os conteúdos completos das aulas são entregues na Story **A2 — Adaptação das 14
-lectures** do EPIC A. Esta estrutura já reflete o currículo final.
+::: tip Como estudar
+Cada aula termina com a instrução do quiz — peça ao seu agente:
+
+```
+"quiz me on a Aula 01"   (ou a aula que você acabou de ler)
+```
+
+A skill `feature-quiz` gera o quiz em 4 níveis e você valida o que absorveu.
 :::

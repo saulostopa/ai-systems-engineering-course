@@ -11,7 +11,8 @@ você terá um harness completo no seu próprio repositório — ou no da sua á
 | [04 · Harness de domínio](/projects/project-04) | Playbook para games, finanças ou comercial. |
 | [05 · Area Copilot com RAG](/projects/project-05) | Contexto da sua área disponível para o agente. |
 
-::: tip Status
-O passo a passo completo de cada projeto é entregue na Story **A3 — Projetos
-práticos** do EPIC A.
+::: tip Como estudar
+Os projetos são cumulativos: o 01 cria seu baseline, o 02 empacota o harness,
+o 03 adiciona QA, o 04 o domínio e o 05 o contexto da área. Faça na ordem —
+cada um assume o anterior.
 :::

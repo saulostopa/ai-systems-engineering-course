@@ -1,9 +1,11 @@
 /**
  * Tema do curso — tokens do design system Eleanor (Webmotors)
- * Fonte: webmotors.ds.eleanor.tokens (Color Mode Dark + primitives)
+ * Fonte: webmotors.ds.eleanor.tokens (Color Mode Light/Dark + primitives)
+ * Estrutura: :root = tema CLARO · html.dark = tema ESCURO
  */
 
 :root {
+  /* ── Primitives Eleanor ── */
   --ds-red-500: #d81f41;
   --ds-red-400: #e53858;
   --ds-red-300: #e45770;
@@ -33,8 +35,56 @@
   --vp-c-brand-1: var(--ds-red-500);
   --vp-c-brand-2: var(--ds-red-400);
   --vp-c-brand-3: var(--ds-red-300);
-  --vp-c-brand-soft: rgba(216, 31, 65, 0.16);
+  --vp-c-brand-soft: rgba(216, 31, 65, 0.12);
+}
 
+/* ═══ Tema CLARO (default) — Eleanor Color Mode Light ═══ */
+:root {
+  --vp-c-bg: var(--ds-gray-50);
+  --vp-c-bg-alt: var(--ds-gray-100);
+  --vp-c-bg-soft: var(--ds-gray-100);
+  --vp-c-bg-elv: var(--ds-gray-50);
+  --vp-c-bg-elv-active: var(--ds-gray-100);
+
+  --vp-c-divider: var(--ds-gray-300);
+  --vp-c-divider-light: var(--ds-gray-200);
+  --vp-c-divider-dark: var(--ds-gray-300);
+
+  --vp-c-text-1: var(--ds-gray-950);
+  --vp-c-text-2: var(--ds-gray-600);
+  --vp-c-text-3: var(--ds-gray-500);
+
+  --vp-c-border: var(--ds-gray-300);
+  --vp-c-border-hard: var(--ds-gray-400);
+
+  --vp-c-gutter: var(--ds-gray-200);
+
+  --vp-c-green-1: #2e7d4f;
+  --vp-c-yellow-1: #b98a00;
+  --vp-c-red-1: var(--ds-red-500);
+  --vp-c-red-2: var(--ds-red-400);
+  --vp-c-red-3: var(--ds-red-300);
+
+  --vp-c-indigo-1: var(--ds-indigo-400);
+  --vp-c-indigo-2: var(--ds-indigo-300);
+  --vp-c-indigo-3: var(--ds-indigo-300);
+
+  --vp-c-mute: var(--ds-gray-300);
+  --vp-c-mute-dark: var(--ds-gray-400);
+  --vp-c-mute-darker: var(--ds-gray-500);
+  --vp-c-mute-light: var(--ds-gray-200);
+  --vp-c-mute-lighter: var(--ds-gray-100);
+
+  --vp-sidebar-bg-color: var(--ds-gray-50);
+  --vp-custom-block-font-size: 14px;
+
+  --vp-shadow-1: 0 1px 2px rgba(10, 10, 12, 0.1);
+  --vp-shadow-2: 0 2px 8px rgba(10, 10, 12, 0.12);
+  --vp-shadow-3: 0 12px 32px rgba(10, 10, 12, 0.16);
+}
+
+/* ═══ Tema ESCURO — Eleanor Color Mode Dark ═══ */
+html.dark {
   --vp-c-bg: var(--ds-gray-950);
   --vp-c-bg-alt: var(--ds-gray-900);
   --vp-c-bg-soft: var(--ds-gray-900);
@@ -71,17 +121,10 @@
   --vp-c-mute-lighter: var(--ds-gray-500);
 
   --vp-sidebar-bg-color: var(--ds-gray-950);
-  --vp-custom-block-font-size: 14px;
 
-  --vp-shadow-1: 0 1px 2px rgba(10, 10, 12, 0.4);
-  --vp-shadow-2: 0 2px 4px rgba(10, 10, 12, 0.5);
-  --vp-shadow-3: 0 12px 32px rgba(10, 10, 12, 0.6);
-}
-
-html.dark {
-  --vp-c-bg: var(--ds-gray-950);
-  --vp-c-bg-alt: var(--ds-gray-900);
-  --vp-c-bg-soft: var(--ds-gray-900);
+  --vp-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --vp-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --vp-shadow-3: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
 
 /* Figtree por padrão, com fallback visual consistente */
@@ -97,28 +140,31 @@ body {
 
 /* Links com o vermelho Eleanor */
 .vp-doc a {
+  color: var(--ds-red-500);
+}
+html.dark .vp-doc a {
   color: var(--ds-red-400);
 }
 .vp-doc a:hover {
-  color: var(--ds-red-300);
+  color: var(--ds-red-400);
 }
 
 /* Badges e destaques de código */
 .vp-doc .badge {
-  border: 1px solid var(--ds-gray-700);
-  color: var(--ds-gray-300);
+  border: 1px solid var(--vp-c-border);
+  color: var(--vp-c-text-2);
 }
 
 /* Callouts alinhados aos tokens semânticos Eleanor */
 .custom-block.tip {
   border-color: var(--ds-indigo-400);
-  background-color: rgba(76, 76, 160, 0.1);
+  background-color: rgba(76, 76, 160, 0.08);
 }
 
 /* Home hero com a identidade Eleanor */
 .VPHero .name,
 .VPHero .text {
-  color: var(--ds-gray-50);
+  color: var(--vp-c-text-1);
 }
 .VPHero .actions .primary {
   background-color: var(--ds-red-500);
@@ -129,19 +175,22 @@ body {
   border-color: var(--ds-red-400);
 }
 
-/* Botões de feature (npm, github) alinhados */
+/* Botões de feature alinhados */
 .VPFeature {
-  background-color: var(--ds-gray-900);
-  border: 1px solid var(--ds-gray-700);
+  background-color: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
 }
 .VPFeature:hover {
   border-color: var(--ds-red-500);
 }
 .VPFeature .title {
-  color: var(--ds-gray-50);
+  color: var(--vp-c-text-1);
 }
 
 /* Nav ativa */
 .VPNavBarMenuLink.active {
+  color: var(--ds-red-500);
+}
+html.dark .VPNavBarMenuLink.active {
   color: var(--ds-red-400);
 }

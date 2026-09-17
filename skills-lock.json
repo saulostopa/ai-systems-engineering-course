@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "archify": {
+      "source": "tt-a1i/archify",
+      "sourceType": "github",
+      "skillPath": "archify/SKILL.md",
+      "computedHash": "111f1c0ba9680a3cb43f47044540a784a4feda02408edf56a1f3132d795ac5c1",
+      "scanVerdict": {
+        "scanner": "skillspector@v2.11.2",
+        "scannerCommit": "69dcdfb74487d361ba4c811d088cfdea2ff3a9dc",
+        "mode": "static",
+        "scannedAt": "2026-09-17",
+        "score": 2,
+        "severity": "LOW",
+        "issues": 1,
+        "suppressed": 48,
+        "coverage": "partial",
+        "decision": "APROVADO",
+        "baseline": ".harness/baselines/agents-skills-archify.yaml",
+        "rawScore": 100,
+        "rawIssues": 59,
+        "notes": "Scan bruto inicial: 100/100 CRITICAL, 59 achados. Triagem um a um: 57 falsos positivos verificados (fonte WOFF2 embutida lida como YARA de MCP poisoning; a frase 'NOT LIMITED TO' da licenca SIL Open Font; a variavel JS pList; strings /etc/passwd e secret.txt dentro de test/; comentarios HTML/SVG; cobertura parcial de arquivos grandes) suprimidos no baseline com o motivo de cada um. Restavam 2 achados REAIS, nao suprimidos: SC4 (fast-uri==3.1.5, 4 advisories via ajv) e SC1 (ajv sem pin exato). SC4 CORRIGIDO em 2026-09-17 pelo patch local fast-uri 3.1.5 -> 3.1.8 (ver localPatches) — o achado sumiu porque a causa foi corrigida, nao por supressao. Exposicao real era nula: ajv e devDependency de um gerador de build que le schemas locais, com a saida versionada e sem node_modules instalado. Restou SC1, verdadeiro e menor, deliberadamente visivel ate o upstream resolver (https://github.com/tt-a1i/archify/issues/463). Evidencia: pilots/skillspector-demo/scan-results.md"
+      },
+      "localPatches": [
+        {
+          "file": "package-lock.json",
+          "change": "fast-uri 3.1.5 -> 3.1.8 (node_modules/ajv/node_modules/fast-uri)",
+          "reason": "GHSA-5jgf-p345-68v8 (host confusion via IDN canonicalization) e GHSA-f65p-4m7j-42xc (SSRF via normalizacao de IPv6 malformado) — corrigidas em 3.1.6; ajv pede ^3.0.1, entao 3.1.8 entra sem conflito de semver.",
+          "exposure": "Nenhuma na copia vendorada: ajv e devDependency, usado so por scripts/generate-validators.mjs (le schemas locais, sem URI de terceiro); a saida renderers/shared/generated-validators.mjs esta versionada e e o que bin/archify.mjs carrega; nao ha node_modules e o SKILL.md nao manda instalar. O bump protege quem rodar npm install para regenerar os validadores.",
+          "appliedAt": "2026-09-17",
+          "upstream": "https://github.com/tt-a1i/archify/issues/463",
+          "warning": "REINSTALAR O ARCHIFY DESCARTA ESTE PATCH. Reaplique e rode o gate antes de confiar no veredito.",
+          "verifyFile": ".agents/skills/archify/package-lock.json",
+          "verifyContains": "fast-uri-3.1.8.tgz",
+          "verifyAbsent": "fast-uri-3.1.5.tgz"
+        }
+      ]
+    }
+  }
+}
