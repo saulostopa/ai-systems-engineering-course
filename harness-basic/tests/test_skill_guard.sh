@@ -145,21 +145,38 @@ t_gate_aprova_skill_limpa() {
 }
 
 # O prazo existe para bloquear, não para avisar: estourar falha FECHADO.
+# Usa um docker falso que trava para sempre — com o scanner real o teste seria
+# uma corrida (um scan rápido terminaria antes do prazo) e não provaria nada.
+# Também confere a MENSAGEM: um gate que bloqueia por qualquer falha do docker
+# passaria sem nunca exercitar o timeout.
 t_timeout_falha_fechado() {
-  has_image || { _skip "${FUNCNAME[0]}" "imagem $IMAGE ausente"; return; }
-  SKILL_GUARD_TIMEOUT=1 SKILL_GUARD_REPORTS="$TMP/r3" \
-    "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1
-  [ "$?" -eq 1 ] \
-    && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "timeout devia bloquear (exit 1), não aprovar"
+  local fake="$TMP/binto" out rc
+  mkdir -p "$fake"
+  cat > "$fake/docker" <<'SH'
+#!/usr/bin/env bash
+case "$1" in
+  image|rm) exit 0 ;;
+esac
+sleep 600
+SH
+  chmod +x "$fake/docker"
+  out="$(PATH="$fake:$PATH" SKILL_GUARD_TIMEOUT=2 SKILL_GUARD_REPORTS="$TMP/r3" \
+    "$GATE" "$REPO/skills-artifacts/feature-quiz" 2>&1)"
+  rc=$?
+  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'sem relatório (timeout'; then
+    _pass "${FUNCNAME[0]}"
+  else
+    _fail "${FUNCNAME[0]}" "esperado bloqueio por timeout (exit 1 + mensagem), veio exit $rc"
+  fi
 }
 
 t_gate_grava_relatorio_json() {
   has_image || { _skip "${FUNCNAME[0]}" "imagem $IMAGE ausente"; return; }
   SKILL_GUARD_REPORTS="$TMP/r4" "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1
-  local f
+  local rc=$? f
   f="$(find "$TMP/r4" -name '*.json' | head -1)"
-  if [ -n "$f" ] && python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" 2>/dev/null; then
+  if [ "$rc" -eq 0 ] && [ -n "$f" ] \
+     && python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if 'risk_assessment' in d else 1)" "$f" 2>/dev/null; then
     _pass "${FUNCNAME[0]}"
   else
     _fail "${FUNCNAME[0]}" "relatório JSON não foi gravado ou é inválido"
@@ -192,15 +209,141 @@ SH
 
 # --- pin ---------------------------------------------------------------------
 
-t_pin_declarado_bate_com_a_tag_remota() {
-  local refs sha
-  refs="$(git ls-remote "$REPO_URL" "refs/tags/${VERSION}" "refs/tags/${VERSION}^{}" 2>/dev/null)"
-  [ -n "$refs" ] || { _skip "${FUNCNAME[0]}" "sem rede"; return; }
-  sha="$(printf '%s\n' "$refs" | awk '/\^\{\}$/ {print $1; found=1} END {exit !found}')" \
-    || sha="$(printf '%s\n' "$refs" | awk 'NR==1 {print $1}')"
-  [ "$sha" = "$PINNED_SHA" ] \
+# Chama a verify_pin DO GATE, não uma reimplementação: um gate que perdesse a
+# verificação de pin precisa reprovar aqui.
+t_verify_pin_confirma_o_commit_fixado() {
+  local out
+  git ls-remote "$REPO_URL" "refs/tags/${VERSION}" >/dev/null 2>&1 \
+    || { _skip "${FUNCNAME[0]}" "sem rede"; return; }
+  out="$(verify_pin 2>&1)"
+  printf '%s' "$out" | grep -q "pin confirmado: ${VERSION} = ${PINNED_SHA:0:12}" \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "tag $VERSION = $sha, pin declarado = $PINNED_SHA"
+    || _fail "${FUNCNAME[0]}" "verify_pin não confirmou o pin: $out"
+}
+
+# Pin divergente tem que abortar o gate (exit 2), não seguir com um scanner
+# cuja procedência não confere.
+t_verify_pin_rejeita_sha_divergente() {
+  local out rc
+  git ls-remote "$REPO_URL" "refs/tags/${VERSION}" >/dev/null 2>&1 \
+    || { _skip "${FUNCNAME[0]}" "sem rede"; return; }
+  out="$(PINNED_SHA=0000000000000000000000000000000000000000 verify_pin 2>&1)"; rc=$?
+  if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q 'pin divergente'; then
+    _pass "${FUNCNAME[0]}"
+  else
+    _fail "${FUNCNAME[0]}" "pin divergente devia abortar, veio rc=$rc: $out"
+  fi
+}
+
+# --- bypass (achados da revisão externa) --------------------------------------
+
+# CRÍTICO: um baseline dentro do diretório da skill é controlado pela própria
+# skill. O gate não pode usá-lo — e não pode ignorá-lo em silêncio.
+t_baseline_dentro_do_alvo_bloqueia() {
+  local dir="$TMP/skillmal" out rc
+  mkdir -p "$dir"
+  printf -- '---\nname: mal\ndescription: x\n---\n' > "$dir/SKILL.md"
+  printf 'version: 2\nrules:\n  - id: "SC2"\n    reason: "suprime tudo"\n' \
+    > "$dir/.skillspector-baseline.yaml"
+  out="$(SKILL_GUARD_REPORTS="$TMP/rb" "$GATE" "$dir" 2>&1)"; rc=$?
+  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'baseline dentro do diretório'; then
+    _pass "${FUNCNAME[0]}"
+  else
+    _fail "${FUNCNAME[0]}" "baseline interno devia bloquear (exit 1), veio exit $rc"
+  fi
+}
+
+# ALTO: a allowlist de fixtures mora fora da árvore. Um arquivo largado dentro
+# do diretório da skill não pode mais escondê-la do --all.
+t_marcador_interno_nao_esconde_mais_a_skill() {
+  local dir="$TMP/repo_fake/skills/evil"
+  mkdir -p "$dir"
+  printf -- '---\nname: evil\n---\n' > "$dir/SKILL.md"
+  : > "$dir/.skill-guard-fixture"
+  SCAN_ROOT="$TMP/repo_fake" FIXTURES_ALLOW="$TMP/repo_fake/.harness/skill-guard-fixtures" \
+    bash -c 'source "'"$GATE"'"; SCAN_ROOT="'"$TMP"'/repo_fake"; FIXTURES_ALLOW="'"$TMP"'/nao-existe"; discover_skills' \
+    2>/dev/null | grep -q 'skills/evil' \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "marcador interno ainda escondeu a skill do --all"
+}
+
+# A allowlist externa continua funcionando para as fixtures legítimas.
+t_allowlist_externa_pula_a_fixture() {
+  discover_skills | grep -q 'fixture-reprovada' \
+    && _fail "${FUNCNAME[0]}" "fixture listada na allowlist apareceu no --all" \
+    || _pass "${FUNCNAME[0]}"
+}
+
+# ALTO: limiar não-inteiro desarmava o gate (score 70 era aprovado).
+t_limiar_nao_inteiro_aborta() {
+  local rc
+  SKILL_GUARD_MAX_SCORE=abc "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1; rc=$?
+  [ "$rc" -eq 2 ] \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "MAX_SCORE=abc devia abortar com exit 2, veio $rc"
+}
+
+t_limiar_de_aviso_acima_do_de_bloqueio_aborta() {
+  local rc
+  SKILL_GUARD_WARN_SCORE=80 SKILL_GUARD_MAX_SCORE=50 \
+    "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1; rc=$?
+  [ "$rc" -eq 2 ] \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "WARN > MAX devia abortar com exit 2, veio $rc"
+}
+
+t_separador_permite_alvo_com_hifen() {
+  local out
+  out="$("$GATE" -- -alvo-inexistente 2>&1)"
+  printf '%s' "$out" | grep -q 'opção desconhecida' \
+    && _fail "${FUNCNAME[0]}" "alvo após -- foi tratado como opção" \
+    || _pass "${FUNCNAME[0]}"
+}
+
+# O registro do veredito não pode apagar a triagem escrita por uma pessoa.
+t_record_preserva_campos_de_triagem() {
+  local lock="$TMP/lockrepo/skills-lock.json"
+  mkdir -p "$TMP/lockrepo"
+  cat > "$lock" <<'JSON'
+{"version":1,"skills":{"x":{"source":"a/b","scanVerdict":{"decision":"ACEITO_COM_RESSALVA","notes":"triagem manual","rawScore":100}}}}
+JSON
+  SCAN_ROOT="$TMP/lockrepo" record_verdict "$TMP/lockrepo/x" \
+    '{"risk_assessment":{"score":7,"severity":"LOW"},"issues":[],"suppressed_count":3,"analysis_completeness":{"status":"partial"}}' \
+    >/dev/null 2>&1
+  python3 -c "
+import json,sys
+v=json.load(open('$lock'))['skills']['x']['scanVerdict']
+sys.exit(0 if v.get('decision')=='ACEITO_COM_RESSALVA' and v.get('rawScore')==100 and v.get('score')==7 else 1)" \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "record_verdict apagou os campos de triagem"
+}
+
+# O lock registra o que foi APROVADO. Gravar o veredito de uma skill bloqueada
+# faria "tem scanVerdict" virar sinônimo de "passou no gate".
+t_record_nao_grava_skill_bloqueada() {
+  local fake="$TMP/binrec" lock="$TMP/recrepo/skills-lock.json"
+  mkdir -p "$fake" "$TMP/recrepo/evil"
+  printf -- '---\nname: evil\n---\n' > "$TMP/recrepo/evil/SKILL.md"
+  cat > "$lock" <<'JSON'
+{"version":1,"skills":{"evil":{"source":"x/y"}}}
+JSON
+  # docker falso: sempre devolve um relatório CRITICAL acima do limiar
+  cat > "$fake/docker" <<'SH'
+#!/usr/bin/env bash
+case "$1" in
+  image|rm) exit 0 ;;
+esac
+printf '%s' '{"risk_assessment":{"score":91,"severity":"CRITICAL","max_issue_severity":"CRITICAL"},"issues":[1],"suppressed_count":0,"analysis_completeness":{"status":"complete"},"metadata":{}}'
+SH
+  chmod +x "$fake/docker"
+  PATH="$fake:$PATH" SKILL_GUARD_REPORTS="$TMP/rr" \
+    bash -c 'SCAN_ROOT="'"$TMP"'/recrepo" exec "'"$GATE"'" --record "'"$TMP"'/recrepo/evil"' >/dev/null 2>&1
+  python3 -c "
+import json,sys
+v=json.load(open('$lock'))['skills']['evil'].get('scanVerdict')
+sys.exit(1 if v else 0)" \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "veredito de skill bloqueada foi gravado no lock"
 }
 
 # --- execução ----------------------------------------------------------------

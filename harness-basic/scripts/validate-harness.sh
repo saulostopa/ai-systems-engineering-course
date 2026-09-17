@@ -3,7 +3,8 @@
 # Exits non-zero se o harness estiver quebrado. Modelado no factory.
 set -uo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 FAILURES=0
 WARNINGS=0
 
@@ -56,8 +57,8 @@ section "Skills instaladas (skill-guard)"
 # Instalado num projeto alvo, o lock fica ao lado deste diretório. Neste repo
 # (harness-basic é subpasta) ele fica na raiz do git — sem esse fallback a
 # checagem ficaria inerte justamente onde as skills moram.
-LOCK="skills-lock.json"
-[ -f "$LOCK" ] || LOCK="$(git rev-parse --show-toplevel 2>/dev/null)/skills-lock.json"
+LOCK="$ROOT/skills-lock.json"
+[ -f "$LOCK" ] || LOCK="$(git -C "$ROOT" rev-parse --show-toplevel 2>/dev/null)/skills-lock.json"
 
 if [ -f "$LOCK" ]; then
   if command -v node >/dev/null 2>&1; then
@@ -68,13 +69,21 @@ if [ -f "$LOCK" ]; then
       const l = require(process.argv[1]);
       const skills = Object.entries(l.skills || {});
       const sem = skills.filter(([,s]) => !s.scanVerdict).map(([n]) => n);
+      // Presenca nao basta: um veredito acima do limiar registrado no lock
+      // faria ter-scanVerdict virar sinonimo de ter-passado-no-gate.
+      const MAX = Number(process.env.SKILL_GUARD_MAX_SCORE || 50);
+      const ruins = skills
+        .filter(([,s]) => s.scanVerdict && Number(s.scanVerdict.score) > MAX)
+        .map(([n,s]) => n + ' (' + s.scanVerdict.score + '/100)');
       if (sem.length) { console.log('SEM ' + sem.join(', ')); }
+      else if (ruins.length) { console.log('RUIM ' + ruins.join(', ')); }
       else { console.log('OK ' + skills.length); }
     " "$LOCK" 2>/dev/null)"
     case "${LOCK_OUT:-}" in
       "OK 0")  ok "nenhuma skill de terceiro declarada" ;;
       "OK "*)  ok "${LOCK_OUT#OK } skill(s) com scanVerdict registrado" ;;
-      "SEM "*) fail "sem scanVerdict no skills-lock.json: ${LOCK_OUT#SEM } — rode scripts/gate-skill-scan.sh e registre o veredito" ;;
+      "SEM "*)  fail "sem scanVerdict no skills-lock.json: ${LOCK_OUT#SEM } — rode scripts/gate-skill-scan.sh --record e registre o veredito" ;;
+      "RUIM "*) fail "scanVerdict acima do limiar no skills-lock.json: ${LOCK_OUT#RUIM } — a skill não passou no gate" ;;
       *)       fail "skills-lock.json ilegível ou inválido" ;;
     esac
   else

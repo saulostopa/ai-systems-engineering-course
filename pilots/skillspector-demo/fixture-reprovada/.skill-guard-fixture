@@ -1,3 +1,0 @@
-Fixture de teste do gate-skill-scan.sh — NÃO é uma skill instalável.
-Existe para provar que o gate bloqueia: score 72/100 (HIGH), 7 achados.
-O --all do gate pula qualquer diretório com este marcador.

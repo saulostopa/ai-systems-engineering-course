@@ -79,7 +79,7 @@ falso positivo verificado, ele entra num baseline — nunca some por ajuste de
 limiar:
 
 ```yaml
-# .agents/skills/<skill>/.skillspector-baseline.yaml
+# .harness/baselines/agents-skills-archify.yaml
 rules:
   - id: "EA3"
     message: "*NOT LIMITED TO*"
@@ -87,10 +87,21 @@ rules:
       Casa com a frase da licença SIL Open Font embutida no template.
 ```
 
-O baseline fica **dentro do diretório da skill**, não na raiz do repositório.
-Assim ele perdoa só aquela skill, e fica revisável em PR ao lado do código que
-perdoa. Um baseline global desarmaria a regra para todas as outras — é assim
-que um gate morre sem ninguém notar.
+O baseline fica em `.harness/baselines/<slug>.yaml`, **fora da árvore
+escaneada**, e é montado somente-leitura no container. Um por skill — nunca um
+global, que desarmaria a regra para todas as outras.
+
+::: danger Por que não dentro da skill
+A primeira versão guardava o baseline em `<skill>/.skillspector-baseline.yaml`,
+com o argumento de que ficaria "revisável em PR ao lado do código que perdoa".
+A revisão externa derrubou o argumento: é **circular** — o mesmo PR que traz a
+skill traz o baseline. Um autor hostil iteraria o scanner até escrever um YAML
+que suprime todos os próprios achados, e o gate passaria a medir o que ele
+escolheu. "Nenhuma skill entra sem passar pelo scanner" viraria "entra qualquer
+skill que saiba escrever um YAML".
+
+Hoje o gate **bloqueia** qualquer alvo que traga um baseline dentro de si.
+:::
 
 O gate aplica o baseline sozinho quando encontra o arquivo. Toda regra exige
 `reason`: uma supressão sem motivo escrito é uma decisão que ninguém poderá
@@ -123,6 +134,11 @@ Um gate sobre o qual você mente é pior que nenhum gate, então:
   não foi inspecionada; o número aparece ao lado do score de propósito.
 - **O gate vale para o que passa por ele.** Uma skill instalada à mão, fora do
   `skills-lock.json`, não foi escaneada por ninguém.
+- **O pin cobre a tag remota, não a imagem local.** O gate confere que
+  `v2.11.2` ainda aponta para o commit fixado, mas reusa qualquer imagem local
+  com esse nome. Um cache de CI envenenado com uma `skillspector:v2.11.2`
+  adulterada passaria com "pin confirmado" na tela. Onde isso importa, force a
+  reconstrução: `docker rmi skillspector:v2.11.2` antes de rodar o gate.
 
 ## Regras
 
@@ -133,6 +149,22 @@ Um gate sobre o qual você mente é pior que nenhum gate, então:
 - **Nunca suba o limiar para fazer uma skill passar.** Instalar algo que o gate
   bloqueou é uma decisão do usuário, tomada com os achados na frente e
   registrada — não um ajuste silencioso de `SKILL_GUARD_MAX_SCORE`.
+
+## Revisão externa
+
+Este gate passou por uma **revisão adversarial independente** depois de pronto,
+e ela achou coisa séria: o baseline e o marcador de fixtures moravam dentro do
+diretório da skill — os dois controlados pela entidade que o gate deveria estar
+medindo — e um `SKILL_GUARD_MAX_SCORE` não-inteiro desarmava o gate em
+silêncio, aprovando score 70.
+
+O relatório completo (11 achados, com os cenários de falha reproduzidos) está
+em [`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/REVISAO-EXTERNA.md),
+junto do prompt que a produziu.
+
+É a parte mais instrutiva do piloto: **um gate de segurança escrito com
+cuidado ainda tinha um bypass**, e quem o escreveu não o viu. Revisão
+independente não é formalidade de processo.
 
 **Relacionado**: [Criar uma skill nova](/skills/how-to-create) ·
 [feature-archify](/skills/feature-archify) · [Visão geral](/skills/)

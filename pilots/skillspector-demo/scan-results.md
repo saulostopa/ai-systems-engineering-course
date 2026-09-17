@@ -92,7 +92,7 @@ Chega via `ajv`, que o archify usa para validar os schemas de diagrama.
 
 ### O que foi feito com isso
 
-`.agents/skills/archify/.skillspector-baseline.yaml` suprime **apenas os
+`.harness/baselines/agents-skills-archify.yaml` suprime **apenas os
 falsos positivos verificados**, com o motivo de cada um escrito por extenso.
 `SC4` e `SC1` ficam de fora do baseline de propósito — continuam visíveis a
 cada scan até serem corrigidos upstream.
@@ -115,10 +115,9 @@ foi registrado em `skills-lock.json` como `ACEITO_COM_RESSALVA`, com o score
 bruto (100) preservado ao lado do triado (22): quem abrir o arquivo vê as duas
 coisas, não só a confortável.
 
-O baseline fica **dentro do diretório da skill**, não na raiz do repositório:
-assim ele perdoa só aquela skill e fica revisável em PR ao lado do código que
-perdoa. Um baseline global desarmaria a regra para todas as outras — é assim
-que um gate morre sem ninguém perceber.
+O baseline fica **fora da árvore escaneada**, em `.harness/baselines/`, um por
+skill. Ele já esteve dentro do diretório da skill — a revisão externa mostrou
+que era um bypass, e a correção está descrita em `REVISAO-EXTERNA.md`.
 
 ## O gate reprovou a si mesmo
 

@@ -11,3 +11,8 @@ hard-harness/example_run/
 
 # Relatórios do skill-guard (reprodutíveis: gate-skill-scan.sh --all)
 .harness/skill-scans/
+# (.harness/baselines e .harness/skill-guard-fixtures SÃO versionados —
+#  são o controle, não artefato: precisam ser revisáveis em PR)
+
+# Índice gerado pela suíte da intranet (tests/test_intranet.py)
+artifacts-intranet/.intranet_index/

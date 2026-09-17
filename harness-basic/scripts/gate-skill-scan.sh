@@ -40,11 +40,52 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SCAN_ROOT="$(git -C "$ROOT" rev-parse --show-toplevel 2>/dev/null || echo "$ROOT")"
 REPORTS="${SKILL_GUARD_REPORTS:-$SCAN_ROOT/.harness/skill-scans}"
 
+# Baselines e allowlist de fixtures vivem FORA da árvore escaneada, na raiz do
+# projeto. Dentro do diretório da skill, os dois seriam controlados pela
+# entidade que o gate deveria estar medindo.
+BASELINES="${SKILL_GUARD_BASELINES:-$SCAN_ROOT/.harness/baselines}"
+FIXTURES_ALLOW="${SKILL_GUARD_FIXTURES:-$SCAN_ROOT/.harness/skill-guard-fixtures}"
+
 ok()    { printf '  [ok]     %s\n' "$1"; }
 warn()  { printf '  [warn]   %s\n' "$1"; }
 block() { printf '  [BLOCK]  %s\n' "$1"; }
-fail()  { printf '[skill-guard] ERRO: %s\n' "$1" >&2; exit 2; }
+# Sourced (pelos testes), `fail` retorna em vez de encerrar: caso contrário um
+# único teste que chamasse uma função falível derrubaria o runner inteiro.
+fail()  {
+  printf '[skill-guard] ERRO: %s\n' "$1" >&2
+  [ "${BASH_SOURCE[0]}" != "${0}" ] && return 2
+  exit 2
+}
 section() { printf '\n== %s ==\n' "$1"; }
+
+TMPDIR_RUN="$(mktemp -d)"
+trap 'rm -rf "$TMPDIR_RUN"' EXIT
+
+# Os limiares entram por ambiente e vão direto para `[ -gt ]`. Um valor não
+# inteiro faz o teste retornar erro, os dois ramos darem falso e o alvo cair no
+# else — aprovado. Validar aqui é o que impede `SKILL_GUARD_MAX_SCORE=abc` de
+# desarmar o gate em silêncio.
+require_int() {
+  case "$2" in
+    ''|*[!0-9]*) fail "$1 precisa ser um inteiro de 0 a 100 — recebido: '$2'" ;;
+  esac
+  [ "$2" -le 100 ] || fail "$1 precisa ser <= 100 — recebido: '$2'"
+}
+require_int SKILL_GUARD_MAX_SCORE  "$MAX_SCORE"
+require_int SKILL_GUARD_WARN_SCORE "$WARN_SCORE"
+[ "$WARN_SCORE" -le "$MAX_SCORE" ] \
+  || fail "SKILL_GUARD_WARN_SCORE ($WARN_SCORE) não pode ser maior que SKILL_GUARD_MAX_SCORE ($MAX_SCORE)"
+case "$TIMEOUT" in
+  ''|*[!0-9]*) fail "SKILL_GUARD_TIMEOUT precisa ser um inteiro de segundos — recebido: '$TIMEOUT'" ;;
+esac
+
+# `realpath --relative-to` é do GNU coreutils. Em BSD/macOS/busybox ele não
+# existe, `rel` sairia vazio e o scan viraria `scan ./` — o repositório inteiro
+# no lugar da skill, diluindo justamente o alvo que se queria medir.
+command -v realpath >/dev/null 2>&1 \
+  || fail "realpath ausente — o gate exige GNU coreutils"
+realpath --relative-to=/ / >/dev/null 2>&1 \
+  || fail "realpath sem --relative-to (não-GNU) — o gate exige GNU coreutils"
 
 # --- motor -------------------------------------------------------------------
 
@@ -52,10 +93,11 @@ ensure_image() {
   if docker image inspect "$IMAGE" >/dev/null 2>&1; then
     return 0
   fi
-  command -v docker >/dev/null 2>&1 || fail "docker ausente — instale o docker ou rode o skillspector nativamente"
+  command -v docker >/dev/null 2>&1 \
+    || { fail "docker ausente — instale o docker ou rode o skillspector nativamente"; return 2; }
   printf '[skill-guard] imagem %s ausente — construindo de %s#%s (1-2 min)\n' "$IMAGE" "$REPO_URL" "$VERSION"
   docker build -q -t "$IMAGE" "${REPO_URL}#${VERSION}" >/dev/null \
-    || fail "falha ao construir a imagem do SkillSpector"
+    || { fail "falha ao construir a imagem do SkillSpector"; return 2; }
   ok "imagem construída: $IMAGE"
 }
 
@@ -75,6 +117,9 @@ verify_pin() {
   if [ "$sha" != "$PINNED_SHA" ]; then
     block "pin divergente: ${VERSION} aponta para ${sha}, esperado ${PINNED_SHA}"
     fail "a tag do SkillSpector foi reescrita — revise antes de confiar no scanner"
+    return 2   # `fail` só encerra quando o script é executado; sourced ele
+               # retorna, e sem este `return` a função seguiria e diria
+               # "pin confirmado" logo depois de detectar a divergência.
   fi
   ok "pin confirmado: ${VERSION} = ${PINNED_SHA:0:12}"
 }
@@ -88,12 +133,22 @@ scan_target() {
   local target="$1" rel cname rc base=()
   cname="skillguard-$$-${RANDOM}"
 
-  # Baseline por skill, não global: um .skillspector-baseline.yaml dentro do
-  # diretório da skill suprime só os falsos positivos daquela skill, e fica
-  # revisável em PR ao lado do código que ele perdoa. Um baseline global
-  # desarmaria a regra para todas as outras — que é como um gate morre.
-  if [ -e "$target" ] && [ -f "$target/.skillspector-baseline.yaml" ]; then
-    base=(--baseline "./${target#"$SCAN_ROOT"/}/.skillspector-baseline.yaml")
+  # O baseline é buscado em .harness/baselines/<slug>.yaml, FORA da árvore
+  # escaneada, e nunca dentro do alvo. Um baseline que mora dentro da skill é
+  # controlado pela própria skill: bastaria ao autor hostil iterar o scanner
+  # até escrever um YAML que suprime todos os próprios achados, e o gate
+  # passaria a medir o que o atacante quer. "Fica revisável em PR" não salva —
+  # o mesmo PR que traz a skill traz o baseline.
+  # Ficar fora também faz o baseline valer para o alvo `<skill>/SKILL.md`, e
+  # não só para o alvo diretório: a chave é o slug, não a forma do caminho.
+  local slug bmount=()
+  slug="$(report_slug "$1")"
+  # Alvo arquivo (`<skill>/SKILL.md`) herda o baseline do diretório da skill:
+  # sem isso o mesmo conteúdo teria dois vereditos, um por forma de chamar.
+  [ -f "$BASELINES/$slug.yaml" ] || { [ -f "$1" ] && slug="$(report_slug "$(dirname "$1")")"; }
+  if [ -f "$BASELINES/$slug.yaml" ]; then
+    base=(--baseline "/baselines/$slug.yaml")
+    bmount=(-v "$BASELINES:/baselines:ro")
   fi
 
   # `-s KILL` não é exagero, é o que faz o prazo valer. O cliente docker ignora
@@ -103,17 +158,26 @@ scan_target() {
   # ou truncada e o chamador bloqueia o alvo.
   # `--sig-proxy=false` evita que o sinal seja repassado ao processo dentro do
   # container em vez de ao cliente; `docker rm -f` derruba o container órfão.
+  # A saída vai para arquivo, não para uma substituição de comando. Com `$(...)`
+  # o gate espera o stdout FECHAR: se o cliente docker morrer no prazo deixando
+  # um filho órfão com o pipe aberto, o gate pendura muito além do timeout —
+  # verificado com um docker falso, que o prendeu por 600s. Lendo de arquivo, o
+  # prazo vale: o que estiver escrito é o que se lê, e truncado bloqueia.
+  local outf="$TMPDIR_RUN/scan.$cname.json"
   if [ -e "$target" ]; then
     # Caminho local: monta a raiz do repo e referencia o alvo relativo a ela.
     rel="$(realpath --relative-to="$SCAN_ROOT" "$target")"
     timeout -s KILL "$TIMEOUT" docker run --rm --name "$cname" --sig-proxy=false \
-      -v "$SCAN_ROOT:/scan" "$IMAGE" scan "./$rel" --no-llm --format json ${base[@]+"${base[@]}"} 2>/dev/null
+      -v "$SCAN_ROOT:/scan:ro" ${bmount[@]+"${bmount[@]}"} "$IMAGE" \
+      scan "./$rel" --no-llm --format json ${base[@]+"${base[@]}"} >"$outf" 2>/dev/null
   else
     # URL de repo git ou zip: o scanner busca sozinho, sem montar nada.
     timeout -s KILL "$TIMEOUT" docker run --rm --name "$cname" --sig-proxy=false \
-      "$IMAGE" scan "$target" --no-llm --format json 2>/dev/null
+      "$IMAGE" scan "$target" --no-llm --format json >"$outf" 2>/dev/null
   fi
   rc=$?
+  cat "$outf" 2>/dev/null
+  rm -f "$outf" 2>/dev/null
 
   # 124 = prazo estourado. O container sobrevive ao cliente morto: derrube-o.
   if [ "$rc" -ge 124 ]; then
@@ -158,19 +222,87 @@ report_slug() {
 
 # --- descoberta --------------------------------------------------------------
 
-# Descobre as skills do repositório. Um diretório com o marcador
-# .skill-guard-fixture é pulado: são fixtures deliberadamente ruins, usadas
-# para provar que o gate bloqueia. Sem essa saída explícita, o gate do próprio
-# repositório reprovaria para sempre — e a saída é um arquivo versionado e
-# revisável em PR, não um caminho escondido no script.
+# Descobre as skills do repositório, pulando as fixtures deliberadamente ruins
+# (existem para provar que o gate bloqueia).
+#
+# A allowlist fica em .harness/skill-guard-fixtures, na RAIZ — nunca um
+# marcador dentro do diretório da skill. Um marcador interno é controlado pela
+# própria skill: bastaria a um PR hostil trazer `SKILL.md` + o marcador para a
+# skill sumir do `--all` sem ser aprovada nem bloqueada. Dizer que o marcador é
+# "revisável em PR" é circular — é o mesmo PR.
+#
+# Formato: um caminho relativo à raiz por linha; `#` comenta.
+is_fixture() {
+  local rel line
+  [ -f "$FIXTURES_ALLOW" ] || return 1
+  rel="${1#"$SCAN_ROOT"/}"
+  while IFS= read -r line; do
+    line="${line%%#*}"
+    line="$(printf '%s' "$line" | tr -d '[:space:]')"
+    [ -n "$line" ] || continue
+    [ "$line" = "$rel" ] && return 0
+  done < "$FIXTURES_ALLOW"
+  return 1
+}
+
 discover_skills() {
   local dir
   find "$SCAN_ROOT" -name SKILL.md \
     -not -path '*/node_modules/*' \
     -not -path '*/.git/*' \
     -print0 | xargs -0 -n1 dirname | sort -u | while IFS= read -r dir; do
-      [ -f "$dir/.skill-guard-fixture" ] || printf '%s\n' "$dir"
+      is_fixture "$dir" || printf '%s\n' "$dir"
     done
+}
+
+# --- registro do veredito -----------------------------------------------------
+
+# Escreve o scanVerdict da skill no skills-lock.json. Sem isto a mensagem do
+# validate-harness ("rode o gate e registre o veredito") apontaria para um
+# fluxo que não existe, e o lock só poderia ser editado à mão.
+# Só registra skills já declaradas no lock: o gate confere veredito, não decide
+# o que é dependência de terceiro.
+record_verdict() {
+  local target="$1" json="$2" lock="$SCAN_ROOT/skills-lock.json" name
+  name="$(basename "$target")"
+  [ -f "$lock" ] || { warn "$name — skills-lock.json não encontrado; veredito não registrado"; return 0; }
+  LOCK_PATH="$lock" SKILL_NAME="$name" SCANNER="skillspector@$VERSION" PIN="$PINNED_SHA" \
+  python3 -c '
+import json, os, sys, datetime
+lock_path = os.environ["LOCK_PATH"]
+name = os.environ["SKILL_NAME"]
+rep = json.load(sys.stdin)
+with open(lock_path) as fh:
+    lock = json.load(fh)
+entry = lock.get("skills", {}).get(name)
+if entry is None:
+    sys.exit(3)  # não declarada no lock — nada a registrar
+r = rep.get("risk_assessment", {})
+# Mescla, não substitui: o que o scanner mede é atualizado, e o que uma pessoa
+# escreveu ao triar (decision, notes, rawScore, baseline...) permanece. Um
+# re-scan que apagasse a triagem destruiria a única parte auditável do veredito.
+verdict = dict(entry.get("scanVerdict") or {})
+verdict.update({
+    "scanner": os.environ["SCANNER"],
+    "scannerCommit": os.environ["PIN"],
+    "mode": "static",
+    "scannedAt": datetime.date.today().isoformat(),
+    "score": r.get("score"),
+    "severity": r.get("severity"),
+    "issues": len(rep.get("issues", [])),
+    "suppressed": rep.get("suppressed_count", 0),
+    "coverage": rep.get("analysis_completeness", {}).get("status"),
+})
+entry["scanVerdict"] = verdict
+with open(lock_path, "w") as fh:
+    json.dump(lock, fh, indent=2, ensure_ascii=False)
+    fh.write("\n")
+' <<< "$json"
+  case "$?" in
+    0) ok "$name — scanVerdict registrado em skills-lock.json" ;;
+    3) : ;;  # skill não declarada no lock: silêncio, não é erro
+    *) warn "$name — falha ao registrar o scanVerdict" ;;
+  esac
 }
 
 # --- principal ---------------------------------------------------------------
@@ -182,11 +314,16 @@ if [ "${BASH_SOURCE[0]}" != "${0}" ]; then
 fi
 
 TARGETS=()
+RECORD=0
+ONLY_TARGETS=0   # depois de `--`, tudo é alvo (permite alvo começando com `-`)
 for arg in "$@"; do
+  if [ "$ONLY_TARGETS" = 1 ]; then TARGETS+=("$arg"); continue; fi
   case "$arg" in
-    --all) while IFS= read -r d; do TARGETS+=("$d"); done < <(discover_skills) ;;
-    -*)    fail "opção desconhecida: $arg" ;;
-    *)     TARGETS+=("$arg") ;;
+    --)       ONLY_TARGETS=1 ;;
+    --all)    while IFS= read -r d; do TARGETS+=("$d"); done < <(discover_skills) ;;
+    --record) RECORD=1 ;;   # grava o scanVerdict das skills escaneadas no skills-lock.json
+    -*)       fail "opção desconhecida: $arg (use \`--\` antes de um alvo que comece com hífen)" ;;
+    *)        TARGETS+=("$arg") ;;
   esac
 done
 
@@ -198,7 +335,7 @@ done
 section "SkillSpector ${VERSION} — gate de instalação de skills"
 verify_pin
 ensure_image
-mkdir -p "$REPORTS"
+mkdir -p "$REPORTS" || fail "não consegui criar o diretório de relatórios: $REPORTS"
 
 BLOCKED=0
 WARNED=0
@@ -209,13 +346,32 @@ for target in "${TARGETS[@]}"; do
   name="$(basename "$target")"
   report="$REPORTS/$(report_slug "$target").json"
 
+  # Baseline dentro do alvo é tentativa de reescrever o próprio veredito: o
+  # gate não o usa (só lê de .harness/baselines/) e bloqueia o alvo, em vez de
+  # ignorá-lo em silêncio — quem o colocou ali precisa saber que foi visto.
+  if [ -d "$target" ] && [ -f "$target/.skillspector-baseline.yaml" ]; then
+    block "$name — baseline dentro do diretório da skill ($target/.skillspector-baseline.yaml); mova para $BASELINES/$(report_slug "$target").yaml e revise"
+    BLOCKED=$((BLOCKED + 1))
+    continue
+  fi
+
+  # Escanear só o SKILL.md de uma skill que tem outros arquivos mede o texto e
+  # ignora os scripts que vão junto — um 0/100 aí não é "limpo", é escopo
+  # menor. O gate não recusa (o contrato aceita arquivo), mas diz o que ficou
+  # de fora, porque o número sozinho engana.
+  if [ -f "$target" ]; then
+    outros="$(find "$(dirname "$target")" -type f ! -name "$(basename "$target")" 2>/dev/null | wc -l)"
+    [ "$outros" -eq 0 ] || warn "$name — alvo é um arquivo; $outros outro(s) arquivo(s) no diretório NÃO entraram no scan"
+  fi
+
   json="$(scan_target "$target")"
   if [ -z "$json" ]; then
     block "$name — sem relatório (timeout de ${TIMEOUT}s ou falha do scanner) — bloqueado por precaução"
     BLOCKED=$((BLOCKED + 1))
     continue
   fi
-  printf '%s' "$json" > "$report"
+  printf '%s' "$json" > "$report" \
+    || warn "$name — não consegui gravar o relatório em $report (veredito abaixo continua válido)"
 
   verdict="$(printf '%s' "$json" | read_verdict)"
   case "$verdict" in
@@ -237,6 +393,12 @@ for target in "${TARGETS[@]}"; do
       continue
       ;;
   esac
+
+  # O registro vem depois da guarda numérica e nunca para um alvo bloqueado: o
+  # lock é o registro do que foi aprovado. Gravar o veredito de uma skill
+  # reprovada a faria satisfazer a checagem do validate-harness — "tem
+  # scanVerdict" não pode virar sinônimo de "passou".
+  [ "$RECORD" = 1 ] && [ "$score" -le "$MAX_SCORE" ] && record_verdict "$target" "$json"
 
   if [ "$score" -gt "$MAX_SCORE" ]; then
     block "$label — pior achado: ${worst}"

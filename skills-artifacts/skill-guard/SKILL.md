@@ -74,7 +74,7 @@ Toda skill aprovada entra no `skills-lock.json` com o veredito que a aprovou:
     "score": 22, "severity": "MEDIUM", "issues": 2, "suppressed": 57,
     "rawScore": 100, "rawIssues": 59,
     "decision": "ACEITO_COM_RESSALVA",
-    "baseline": ".agents/skills/archify/.skillspector-baseline.yaml",
+    "baseline": ".harness/baselines/agents-skills-archify.yaml",
     "notes": "SC4 fast-uri==3.1.5 (4 CVEs, via ajv) e SC1 sem pin — reais, não suprimidos."
   }
 }
@@ -86,11 +86,17 @@ morre no terminal de quem rodou, e a próxima pessoa reinstala às cegas.
 
 ## Falsos positivos — o baseline
 
-Achado que você abriu, leu e confirmou ser falso positivo entra num
-`.skillspector-baseline.yaml` **dentro do diretório da skill** — com `reason`
-escrito por extenso. Nunca na raiz do repositório: um baseline global desarma a
-regra para todas as outras skills. O gate aplica sozinho quando encontra o
-arquivo.
+Achado que você abriu, leu e confirmou ser falso positivo entra em
+`.harness/baselines/<slug-do-caminho>.yaml` — **fora da árvore escaneada** —
+com `reason` escrito por extenso. O gate aplica sozinho quando encontra o
+arquivo, e monta o diretório somente-leitura no container.
+
+**Nunca dentro do diretório da skill.** Um baseline que mora junto da skill é
+controlado pela própria skill: bastaria ao autor hostil iterar o scanner até
+escrever um YAML que suprime todos os próprios achados, e o gate passaria a
+medir o que o atacante escolheu. "Fica revisável em PR" não protege — é o
+mesmo PR que traz a skill e o baseline. O gate **bloqueia** qualquer alvo com
+um `.skillspector-baseline.yaml` dentro.
 
 **Nunca suprima um achado que você não abriu**, e nunca suprima um achado
 verdadeiro para deixar o gate verde — um achado real fica visível até ser
