@@ -49,6 +49,41 @@ if [ -f "feature_list.json" ]; then
   fi
 fi
 
+section "Skills instaladas (skill-guard)"
+# Checagem barata: toda skill declarada tem que carregar o veredito que a
+# aprovou. O scan em si roda no gate-skill-scan.sh — construir a imagem do
+# scanner a cada health check seria lento demais para ser usado.
+# Instalado num projeto alvo, o lock fica ao lado deste diretório. Neste repo
+# (harness-basic é subpasta) ele fica na raiz do git — sem esse fallback a
+# checagem ficaria inerte justamente onde as skills moram.
+LOCK="skills-lock.json"
+[ -f "$LOCK" ] || LOCK="$(git rev-parse --show-toplevel 2>/dev/null)/skills-lock.json"
+
+if [ -f "$LOCK" ]; then
+  if command -v node >/dev/null 2>&1; then
+    # O node imprime uma linha só: "OK <n>" ou "SEM <nomes>". Os nomes das
+    # skills sem veredito são a única informação acionável da falha, então
+    # precisam sobreviver até a mensagem — não podem ser descartados.
+    LOCK_OUT="$(node -e "
+      const l = require(process.argv[1]);
+      const skills = Object.entries(l.skills || {});
+      const sem = skills.filter(([,s]) => !s.scanVerdict).map(([n]) => n);
+      if (sem.length) { console.log('SEM ' + sem.join(', ')); }
+      else { console.log('OK ' + skills.length); }
+    " "$LOCK" 2>/dev/null)"
+    case "${LOCK_OUT:-}" in
+      "OK 0")  ok "nenhuma skill de terceiro declarada" ;;
+      "OK "*)  ok "${LOCK_OUT#OK } skill(s) com scanVerdict registrado" ;;
+      "SEM "*) fail "sem scanVerdict no skills-lock.json: ${LOCK_OUT#SEM } — rode scripts/gate-skill-scan.sh e registre o veredito" ;;
+      *)       fail "skills-lock.json ilegível ou inválido" ;;
+    esac
+  else
+    warn "node ausente — verificação de scanVerdict pulada"
+  fi
+else
+  ok "sem skills-lock.json (nenhuma skill de terceiro instalada)"
+fi
+
 section "Hooks"
 HOOKS=$(git config core.hooksPath 2>/dev/null || echo "")
 if [ "$HOOKS" = ".githooks" ]; then

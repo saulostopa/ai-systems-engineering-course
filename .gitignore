@@ -8,3 +8,6 @@ docs/.vitepress/dist/
 .rag_index/
 .area_index/
 hard-harness/example_run/
+
+# Relatórios do skill-guard (reprodutíveis: gate-skill-scan.sh --all)
+.harness/skill-scans/

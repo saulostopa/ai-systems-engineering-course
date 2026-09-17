@@ -68,7 +68,22 @@ cd area-copilot && python3 tests/test_area.py        # 3 testes do Area Copilot
 cd artifacts-intranet && python3 tests/test_intranet.py  # 3 testes da intranet
 cd rag-harness && python3 -m rag_harness eval ../harness-basic   # precisão@k
 cd hard-harness && PYTHONPATH=. python3 tests/test_hard_harness.py   # 19 testes do núcleo
+harness-basic/tests/test_skill_guard.sh              # 13 testes do gate de skills
 ```
+
+### 6. Instalar uma skill de fora
+
+Nenhuma skill de terceiro entra sem passar pelo scanner
+([SkillSpector](https://github.com/NVIDIA/SkillSpector), NVIDIA):
+
+```sh
+harness-basic/scripts/gate-skill-scan.sh https://github.com/user/skill   # escaneie ANTES de baixar
+harness-basic/scripts/gate-skill-scan.sh --all                          # todas as skills do repo
+```
+
+Bloqueia score > 50 (exit 1). Requer Docker — a imagem é construída na
+primeira execução. Veja `docs/skills/skill-guard.md` e
+`pilots/skillspector-demo/`.
 
 ## Estrutura
 
