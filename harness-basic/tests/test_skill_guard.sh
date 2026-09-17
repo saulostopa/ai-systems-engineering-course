@@ -249,7 +249,7 @@ t_baseline_dentro_do_alvo_bloqueia() {
   if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'baseline dentro do diretório'; then
     _pass "${FUNCNAME[0]}"
   else
-    _fail "${FUNCNAME[0]}" "baseline interno devia bloquear (exit 1), veio exit $rc"
+    _fail "${FUNCNAME[0]}" "esperado bloqueio COM a razão 'baseline dentro do diretório' (exit 1); veio exit $rc — se bloqueou por outro motivo, a guarda não existe"
   fi
 }
 
