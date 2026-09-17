@@ -125,6 +125,10 @@ if [ -f "$LOCK" ] && command -v node >/dev/null 2>&1; then
     "QUEBRADO "*) fail "${PATCH_OUT#QUEBRADO } — reaplique o patch e rode scripts/gate-skill-scan.sh" ;;
     *)            warn "não consegui verificar os patches locais" ;;
   esac
+elif [ -f "$LOCK" ]; then
+  # Sem node a seção ficaria muda, e silêncio num health check se lê como
+  # aprovação — o patch pode ter sumido sem ninguém ver.
+  warn "node ausente — verificação dos patches locais pulada"
 fi
 
 section "Hooks"
