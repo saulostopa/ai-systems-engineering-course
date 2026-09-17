@@ -68,6 +68,11 @@ variável JS `pList`, strings de teste como `/etc/passwd`) e **2 eram reais** �
 
 Com o baseline dos falsos positivos verificados: **22/100 MEDIUM, 2 achados**.
 
+O `SC4` foi então **corrigido** (`fast-uri` 3.1.5 → 3.1.8 no lockfile vendorado,
+issue upstream [tt-a1i/archify#463](https://github.com/tt-a1i/archify/issues/463)):
+archify agora dá **2/100 LOW, 1 achado** e é aprovado pelo gate. Ver
+`scan-results.md` → "O desfecho do SC4".
+
 Ver `scan-results.md` para a tabela completa e a triagem regra a regra.
 
 ## Códigos de saída verificados

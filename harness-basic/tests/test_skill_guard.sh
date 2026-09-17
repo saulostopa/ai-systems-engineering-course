@@ -346,6 +346,51 @@ sys.exit(1 if v else 0)" \
     || _fail "${FUNCNAME[0]}" "veredito de skill bloqueada foi gravado no lock"
 }
 
+# --- patches locais em skills de terceiro -------------------------------------
+
+VH="$ROOT/scripts/validate-harness.sh"
+
+# Um patch local só vale enquanto aplicado. Reinstalar a skill o descarta em
+# silêncio, e o lock continuaria afirmando uma correção que já não existe.
+_patch_fixture() {  # $1 = conteúdo do arquivo "patchado"
+  local d="$TMP/patchrepo"
+  mkdir -p "$d/vendor"
+  printf '%s' "$1" > "$d/vendor/package-lock.json"
+  cat > "$d/skills-lock.json" <<'JSON'
+{"version":1,"skills":{"x":{"source":"a/b","scanVerdict":{"score":0},
+ "localPatches":[{"verifyFile":"vendor/package-lock.json",
+                  "verifyContains":"dep-2.0.0.tgz","verifyAbsent":"dep-1.0.0.tgz"}]}}}
+JSON
+  printf '%s' "$d/skills-lock.json"
+}
+
+t_patch_local_aplicado_passa() {
+  local lock; lock="$(_patch_fixture 'resolved: dep-2.0.0.tgz')"
+  local out
+  out="$(SKILL_GUARD_LOCK="$lock" "$VH" 2>&1 || true)"
+  printf '%s' "$out" | grep -q 'patch(es) local(is) ainda aplicado' \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "patch aplicado devia passar"
+}
+
+t_patch_local_perdido_falha() {
+  local lock; lock="$(_patch_fixture 'resolved: outra-coisa.tgz')"
+  local out
+  out="$(SKILL_GUARD_LOCK="$lock" "$VH" 2>&1 || true)"
+  printf '%s' "$out" | grep -q 'patch perdido' \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "patch ausente devia falhar"
+}
+
+t_patch_local_revertido_falha() {
+  local lock; lock="$(_patch_fixture 'resolved: dep-2.0.0.tgz e dep-1.0.0.tgz')"
+  local out
+  out="$(SKILL_GUARD_LOCK="$lock" "$VH" 2>&1 || true)"
+  printf '%s' "$out" | grep -q 'patch revertido' \
+    && _pass "${FUNCNAME[0]}" \
+    || _fail "${FUNCNAME[0]}" "volta da versão vulnerável devia falhar"
+}
+
 # --- execução ----------------------------------------------------------------
 
 for t in $(declare -F | awk '{print $3}' | grep '^t_'); do "$t"; done

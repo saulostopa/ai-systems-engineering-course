@@ -102,6 +102,31 @@ um `.skillspector-baseline.yaml` dentro.
 verdadeiro para deixar o gate verde — um achado real fica visível até ser
 corrigido.
 
+## Patch local numa skill de terceiro
+
+Às vezes o achado é real e a correção não está no seu repositório. Corrigir a
+cópia vendorada resolve hoje e cria uma **divergência silenciosa**: a próxima
+atualização da skill apaga o patch sem avisar ninguém.
+
+Três passos, sempre os três:
+
+1. **Aplique** o patch mínimo (de preferência só o lockfile, sem tocar em código).
+   Verifique o `integrity` contra o tarball real — numa correção de supply
+   chain, confiar no hash que alguém passou repete o problema.
+2. **Declare** em `skills-lock.json` → `localPatches`, com uma asserção
+   verificável (`verifyFile`, `verifyContains`, `verifyAbsent`), o motivo e a
+   exposição medida. O `validate-harness.sh` confere a cada health check e falha
+   se o patch sumir.
+3. **Abra upstream** e registre o link. Enquanto a origem não subir, o patch é
+   seu — e alguém precisa saber disso.
+
+Medir a exposição antes vale mais que reagir ao rótulo: "CVE HIGH" não diz se
+alguém está exposto. Dependência de dev, usada por um gerador de build que lê
+arquivos locais, com a saída versionada e sem `node_modules` instalado, tem
+exposição **nenhuma** — e ainda assim vale corrigir, para que o aviso do gate
+continue significando alguma coisa em vez de virar ruído que o time aprende a
+ignorar.
+
 ## Regras
 
 - **Escaneie antes de baixar, não depois.** A ordem é o controle.
