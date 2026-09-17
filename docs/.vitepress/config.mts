@@ -86,6 +86,8 @@ export default defineConfig({
             { text: 'feature-animation', link: '/skills/feature-animation' },
             { text: 'qa-playwright-e2e', link: '/skills/qa-playwright-e2e' },
             { text: 'qa-perf-triage', link: '/skills/qa-perf-triage' },
+            { text: 'feature-archify', link: '/skills/feature-archify' },
+            { text: 'skill-guard', link: '/skills/skill-guard' },
             { text: 'Criar uma skill nova', link: '/skills/how-to-create' },
           ],
         },

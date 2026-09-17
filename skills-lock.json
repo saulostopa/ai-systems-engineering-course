@@ -5,7 +5,23 @@
       "source": "tt-a1i/archify",
       "sourceType": "github",
       "skillPath": "archify/SKILL.md",
-      "computedHash": "111f1c0ba9680a3cb43f47044540a784a4feda02408edf56a1f3132d795ac5c1"
+      "computedHash": "111f1c0ba9680a3cb43f47044540a784a4feda02408edf56a1f3132d795ac5c1",
+      "scanVerdict": {
+        "scanner": "skillspector@v2.11.2",
+        "scannerCommit": "69dcdfb74487d361ba4c811d088cfdea2ff3a9dc",
+        "mode": "static",
+        "scannedAt": "2026-09-17",
+        "score": 22,
+        "severity": "MEDIUM",
+        "issues": 2,
+        "suppressed": 45,
+        "coverage": "partial",
+        "decision": "ACEITO_COM_RESSALVA",
+        "baseline": ".harness/baselines/agents-skills-archify.yaml",
+        "rawScore": 100,
+        "rawIssues": 59,
+        "notes": "Scan bruto: 100/100 CRITICAL, 59 achados. Triagem um a um: 57 falsos positivos verificados (fonte WOFF2 embutida lida como YARA de MCP poisoning; a frase 'NOT LIMITED TO' da licenca SIL Open Font; a variavel JS pList; strings /etc/passwd e secret.txt dentro de test/; comentarios HTML/SVG; cobertura parcial de arquivos grandes) suprimidos no baseline com o motivo de cada um. Restam 2 achados REAIS, deliberadamente nao suprimidos: SC4 fast-uri==3.1.5 com 4 advisories (CVE-2026-75931 host confusion, CVE-2026-75975 e CVE-2026-75899 SSRF) via ajv@8.20.0, e SC1 ajv sem pin exato. Acompanhar correcao upstream. Evidencia: pilots/skillspector-demo/scan-results.md"
+      }
     }
   }
 }

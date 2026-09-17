@@ -1,0 +1,91 @@
+# SkillSpector baseline — archify
+#
+# Falsos positivos VERIFICADOS um a um contra o código, em 2026-09-17, no scan
+# estático do skill-guard. Cada regra abaixo foi aberta, o trecho lido e a
+# causa do casamento identificada — nenhuma foi suprimida por ser inconveniente.
+#
+# O que NÃO está aqui, de propósito:
+#   SC4 — fast-uri==3.1.5 com 4 CVEs (via ajv). Achado REAL, fica visível até
+#         ser corrigido upstream.
+#   SC1 — "ajv": "^8.17.1" sem pin exato. Verdadeiro, ainda que menor.
+#
+# Contexto: archify é um toolkit de renderização vendorado (MIT, ~62k stars) —
+# um CLI Node grande, com suíte de testes e uma fonte WOFF2 embutida no
+# template HTML. Quase todo o ruído vem daí, não da skill.
+#
+# Reavaliar quando a versão do archify mudar: origem nova, veredito novo.
+
+version: 2
+
+rules:
+  - id: "AE1"
+    reason: >-
+      Cobertura parcial, não evasão: bin/archify.mjs (2101 linhas),
+      assets/template.html (14934 linhas) e renderers/ excedem o limite de
+      inspeção por arquivo do scanner. Sinal de cobertura, e já reportado
+      separadamente pelo gate como "cobertura: partial".
+
+  - id: "P2"
+    message: "*"
+    reason: >-
+      "Hidden Instructions" casando com comentários HTML/SVG comuns
+      (<!-- Toolbar -->, <!-- Definitions -->, <!-- Legend -->) no template,
+      nos renderers e nos testes de parsing. São comentários de marcação, não
+      instruções dirigidas a um agente.
+
+  - id: "YR4"
+    reason: >-
+      Regra YARA de MCP tool poisoning casando com o blob base64 da fonte
+      JetBrains Mono embutida no template (prefixo d09GMg = "wOF2", magic de
+      WOFF2) somado a "description =" do CSS. É uma fonte, não um manifesto
+      de ferramenta — archify não expõe nenhum tool MCP.
+
+  - id: "EA3"
+    message: "*NOT LIMITED TO*"
+    reason: >-
+      "Scope Creep" casando com a frase NOT LIMITED TO do texto da SIL Open
+      Font License (assets/JetBrainsMono-OFL.txt e a mesma licença embutida no
+      template e nos exemplos). Boilerplate de licença.
+
+  - id: "RA2"
+    reason: >-
+      "Session Persistence" casando com o identificador JavaScript pList, uma
+      variável local do renderer (assets/template.html) e do teste de
+      relacionamento. Colisão de nome, sem persistência de sessão.
+
+  - id: "PE3"
+    path: "test/*"
+    reason: >-
+      "Credential Access" casando com as strings /etc/passwd, secret.txt e
+      "access tokens" dentro de arquivos de teste — são fixtures que verificam
+      o próprio tratamento desses casos, não leitura de credenciais.
+
+  - id: "RP1"
+    path: "test/*"
+    reason: >-
+      "MCP Rug Pull" em arquivos de teste, sem trecho associado e com
+      confiança 0.7. archify não é servidor MCP e não declara ferramentas.
+
+  - id: "TM1"
+    path: "test/*"
+    reason: >-
+      "Tool Parameter Abuse" casando com a palavra "remove" em um comentário
+      de test/reader-layout-browser.test.mjs.
+
+  - id: "MP3"
+    path: "test/*"
+    reason: >-
+      "Memory Manipulation" casando com "reset state" em
+      test/update-notifier.test.mjs — reset de estado de teste.
+
+  - id: "OH3"
+    path: "test/*"
+    reason: >-
+      "Unbounded Output" casando com "without cutting" em
+      test/readme-showcase.test.mjs, uma asserção sobre truncamento de texto.
+
+  - id: "LP3"
+    path: "SKILL.md"
+    reason: >-
+      "MCP Least Privilege" avaliado sobre um SKILL.md que não declara nenhum
+      servidor nem ferramenta MCP — a regra não se aplica a esta skill.

@@ -3,7 +3,8 @@
 # Exits non-zero se o harness estiver quebrado. Modelado no factory.
 set -uo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 FAILURES=0
 WARNINGS=0
 
@@ -47,6 +48,49 @@ if [ -f "feature_list.json" ]; then
   else
     warn "node ausente — validação de JSON pulada"
   fi
+fi
+
+section "Skills instaladas (skill-guard)"
+# Checagem barata: toda skill declarada tem que carregar o veredito que a
+# aprovou. O scan em si roda no gate-skill-scan.sh — construir a imagem do
+# scanner a cada health check seria lento demais para ser usado.
+# Instalado num projeto alvo, o lock fica ao lado deste diretório. Neste repo
+# (harness-basic é subpasta) ele fica na raiz do git — sem esse fallback a
+# checagem ficaria inerte justamente onde as skills moram.
+LOCK="$ROOT/skills-lock.json"
+[ -f "$LOCK" ] || LOCK="$(git -C "$ROOT" rev-parse --show-toplevel 2>/dev/null)/skills-lock.json"
+
+if [ -f "$LOCK" ]; then
+  if command -v node >/dev/null 2>&1; then
+    # O node imprime uma linha só: "OK <n>" ou "SEM <nomes>". Os nomes das
+    # skills sem veredito são a única informação acionável da falha, então
+    # precisam sobreviver até a mensagem — não podem ser descartados.
+    LOCK_OUT="$(node -e "
+      const l = require(process.argv[1]);
+      const skills = Object.entries(l.skills || {});
+      const sem = skills.filter(([,s]) => !s.scanVerdict).map(([n]) => n);
+      // Presenca nao basta: um veredito acima do limiar registrado no lock
+      // faria ter-scanVerdict virar sinonimo de ter-passado-no-gate.
+      const MAX = Number(process.env.SKILL_GUARD_MAX_SCORE || 50);
+      const ruins = skills
+        .filter(([,s]) => s.scanVerdict && Number(s.scanVerdict.score) > MAX)
+        .map(([n,s]) => n + ' (' + s.scanVerdict.score + '/100)');
+      if (sem.length) { console.log('SEM ' + sem.join(', ')); }
+      else if (ruins.length) { console.log('RUIM ' + ruins.join(', ')); }
+      else { console.log('OK ' + skills.length); }
+    " "$LOCK" 2>/dev/null)"
+    case "${LOCK_OUT:-}" in
+      "OK 0")  ok "nenhuma skill de terceiro declarada" ;;
+      "OK "*)  ok "${LOCK_OUT#OK } skill(s) com scanVerdict registrado" ;;
+      "SEM "*)  fail "sem scanVerdict no skills-lock.json: ${LOCK_OUT#SEM } — rode scripts/gate-skill-scan.sh --record e registre o veredito" ;;
+      "RUIM "*) fail "scanVerdict acima do limiar no skills-lock.json: ${LOCK_OUT#RUIM } — a skill não passou no gate" ;;
+      *)       fail "skills-lock.json ilegível ou inválido" ;;
+    esac
+  else
+    warn "node ausente — verificação de scanVerdict pulada"
+  fi
+else
+  ok "sem skills-lock.json (nenhuma skill de terceiro instalada)"
 fi
 
 section "Hooks"

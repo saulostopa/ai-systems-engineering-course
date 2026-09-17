@@ -1,0 +1,10 @@
+# Allowlist do skill-guard: caminhos (relativos à raiz) que o `--all` pula.
+#
+# São fixtures deliberadamente ruins, usadas para provar que o gate bloqueia.
+# Esta lista mora FORA da árvore escaneada de propósito: um marcador dentro do
+# diretório da skill seria controlado pela própria skill, e qualquer PR hostil
+# se esconderia do gate trazendo o marcador junto.
+#
+# Um caminho por linha; `#` comenta.
+
+pilots/skillspector-demo/fixture-reprovada
