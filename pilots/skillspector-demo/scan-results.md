@@ -119,6 +119,69 @@ O baseline fica **fora da árvore escaneada**, em `.harness/baselines/`, um por
 skill. Ele já esteve dentro do diretório da skill — a revisão externa mostrou
 que era um bypass, e a correção está descrita em `REVISAO-EXTERNA.md`.
 
+## O desfecho do `SC4` — o ciclo completo
+
+O achado real virou correção, e o caminho até ela é o que o gate existe para
+provocar.
+
+**Primeiro, medir a exposição em vez de reagir ao rótulo.** "2 CVEs HIGH" não
+diz se alguém está exposto. O que diz:
+
+| Pergunta | Resposta |
+|---|---|
+| `ajv` é dependência de runtime? | Não — `devDependencies` |
+| Quem usa `ajv`? | Só `scripts/generate-validators.mjs`, gerador de build que lê schemas **locais** |
+| A saída dele está versionada? | Sim — `renderers/shared/generated-validators.mjs`, que é o que `bin/archify.mjs` carrega |
+| Existe `node_modules`? | Não |
+| O `SKILL.md` manda instalar? | Não |
+
+Os CVEs são SSRF e host confusion **no parse de URI**. O único consumidor lê
+JSON do disco. **Exposição real: nenhuma.**
+
+**Mesmo assim, corrigir.** As advisories estão resolvidas na `3.1.6`; o `ajv`
+pede `^3.0.1`, então a `3.1.8` entra sem conflito — uma entrada do lockfile, sem
+tocar em código. Dois motivos, nenhum deles "estamos vulneráveis":
+
+1. Protege quem um dia rodar `npm install` ali para regenerar os validadores.
+   Hoje ninguém roda; a cópia vendorada é permanente e essa suposição não é.
+2. Mantém o aviso do gate significando alguma coisa. Um `SC4` conhecido e nunca
+   resolvido ensina o time a ignorar o aviso do archify — e o próximo achado,
+   que pode ser real, chega no meio desse ruído.
+
+O que **não** foi feito: subir o limiar nem suprimir o `SC4` no baseline.
+Suprimir achado verdadeiro para ficar verde é exatamente o que a skill proíbe.
+
+**O `integrity` foi verificado contra o tarball real** (`sha512` calculado do
+`.tgz` baixado), não copiado da resposta do registry. Numa correção de supply
+chain, confiar no hash que alguém te passou é repetir o problema.
+
+**E o patch precisa sobreviver.** Corrigir um lockfile vendorado cria
+divergência silenciosa com o upstream: a próxima atualização do archify apaga o
+patch sem avisar. Então:
+
+- `skills-lock.json` ganhou `localPatches`, com uma asserção **verificável**
+  (`verifyContains: fast-uri-3.1.8.tgz`, `verifyAbsent: fast-uri-3.1.5.tgz`).
+- `validate-harness.sh` passou a conferir isso a cada health check. Revertendo o
+  patch, ele falha com *"patch perdido — falta fast-uri-3.1.8.tgz"*.
+- Issue upstream: [tt-a1i/archify#463](https://github.com/tt-a1i/archify/issues/463),
+  para o patch deixar de ser nosso.
+
+**Resultado, re-escaneado:**
+
+| | Antes do bump | Depois |
+|---|---|---|
+| Score | 22/100 MEDIUM | **2/100 LOW** |
+| Achados | 2 (`SC4` + `SC1`) | **1 (`SC1`)** |
+| Gate | avisa | **aprova** |
+
+O `SC4` sumiu porque a causa foi corrigida, não porque foi suprimido. O `SC1`
+que resta é o range `"ajv": "^8.17.1"` sem pin exato — verdadeiro, menor, e
+upstream: fica visível.
+
+Um campo que ninguém verifica é uma anotação, não um controle — a mesma lição
+do `scanVerdict`, que só passou a valer quando o `validate-harness` começou a
+conferir o score gravado em vez da mera presença do campo.
+
 ## O gate reprovou a si mesmo
 
 Na primeira varredura completa depois de pronta, a **própria `skill-guard`**

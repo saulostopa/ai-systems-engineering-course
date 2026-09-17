@@ -57,7 +57,9 @@ section "Skills instaladas (skill-guard)"
 # Instalado num projeto alvo, o lock fica ao lado deste diretório. Neste repo
 # (harness-basic é subpasta) ele fica na raiz do git — sem esse fallback a
 # checagem ficaria inerte justamente onde as skills moram.
-LOCK="$ROOT/skills-lock.json"
+# SKILL_GUARD_LOCK existe para os testes apontarem o check a um lock de fixture
+# e exercitarem ESTE script, em vez de reimplementar a lógica dentro do teste.
+LOCK="${SKILL_GUARD_LOCK:-$ROOT/skills-lock.json}"
 [ -f "$LOCK" ] || LOCK="$(git -C "$ROOT" rev-parse --show-toplevel 2>/dev/null)/skills-lock.json"
 
 if [ -f "$LOCK" ]; then
@@ -91,6 +93,42 @@ if [ -f "$LOCK" ]; then
   fi
 else
   ok "sem skills-lock.json (nenhuma skill de terceiro instalada)"
+fi
+
+section "Patches locais em skills de terceiro"
+# Um patch local só vale enquanto estiver aplicado. Reinstalar a skill o
+# descarta em silêncio — e sem esta checagem o skills-lock.json continuaria
+# afirmando uma correção que já não existe. Cada patch declara o que tem de
+# estar presente (verifyContains) e o que não pode voltar (verifyAbsent).
+if [ -f "$LOCK" ] && command -v node >/dev/null 2>&1; then
+  PATCH_OUT="$(node -e "
+    const l = require(process.argv[1]);
+    const fs = require('fs'), path = require('path');
+    const root = path.dirname(process.argv[1]);
+    const out = [];
+    let n = 0;
+    for (const [name, s] of Object.entries(l.skills || {})) {
+      for (const p of (s.localPatches || [])) {
+        n++;
+        const f = path.join(root, p.verifyFile || '');
+        if (!p.verifyFile || !fs.existsSync(f)) { out.push(name + ': arquivo ausente (' + p.verifyFile + ')'); continue; }
+        const txt = fs.readFileSync(f, 'utf8');
+        if (p.verifyContains && !txt.includes(p.verifyContains)) out.push(name + ': patch perdido — falta ' + p.verifyContains);
+        else if (p.verifyAbsent && txt.includes(p.verifyAbsent)) out.push(name + ': patch revertido — voltou ' + p.verifyAbsent);
+      }
+    }
+    console.log(out.length ? 'QUEBRADO ' + out.join('; ') : 'OK ' + n);
+  " "$LOCK" 2>/dev/null)"
+  case "${PATCH_OUT:-}" in
+    "OK 0")       ok "nenhum patch local declarado" ;;
+    "OK "*)       ok "${PATCH_OUT#OK } patch(es) local(is) ainda aplicado(s)" ;;
+    "QUEBRADO "*) fail "${PATCH_OUT#QUEBRADO } — reaplique o patch e rode scripts/gate-skill-scan.sh" ;;
+    *)            warn "não consegui verificar os patches locais" ;;
+  esac
+elif [ -f "$LOCK" ]; then
+  # Sem node a seção ficaria muda, e silêncio num health check se lê como
+  # aprovação — o patch pode ter sumido sem ninguém ver.
+  warn "node ausente — verificação dos patches locais pulada"
 fi
 
 section "Hooks"
