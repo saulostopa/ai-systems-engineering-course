@@ -1,27 +1,27 @@
 ---
 name: spreadsheet-analysis
-description: Analisa planilhas (CSV/XLSX) com validação de totais, detecção de dados faltantes e resumo com fontes citadas. Use quando o usuário pedir análise, reconciliação ou resumo de planilha/dados tabulares.
+description: Analyzes spreadsheets (CSV/XLSX) with total validation, missing-data detection and a summary with cited sources. Use when the user asks for analysis, reconciliation or a summary of a spreadsheet/tabular data.
 ---
 
-# Análise de planilha com fontes
+# Spreadsheet analysis with sources
 
-Consome o motor do Area Copilot (rag_harness): o contexto da planilha vem com
-`FONTE: <arquivo> (linhas X-Y)` — número sem fonte é proibido (regra do domínio).
+Consumes the Area Copilot engine (rag_harness): the spreadsheet context comes
+with `FONTE: <file> (lines X-Y)` — a number without a source is forbidden (domain rule).
 
 ## Gather
 
-1. Indexe o contexto: `python3 -m area_harness index <area_root> --verbose` (ou confirme que o índice existe).
-2. Consulte: `python3 -m area_harness query <area_root> "<pergunta da análise>"`.
-3. Abra o arquivo apontado pela FONTE e confirme o número na linha exata antes de citar.
+1. Index the context: `python3 -m area_harness index <area_root> --verbose` (or confirm the index exists).
+2. Query: `python3 -m area_harness query <area_root> "<analysis question>"`.
+3. Open the file pointed to by the FONTE and confirm the number on the exact line before citing.
 
 ## Write
 
-- **Validação de totais**: some a coluna da fonte e compare com o total declarado — esperado vs. real em tabela.
-- **Dados faltantes**: conte células vazias por coluna e reporte com a linha.
-- **Outliers**: valores além de ±3 desvios da média da coluna — cite a linha de cada um.
-- Cada número do resumo acompanha `FONTE: <caminho> (linhas X-Y)`.
+- **Total validation**: sum the source column and compare with the declared total — expected vs. actual in a table.
+- **Missing data**: count empty cells per column and report with the line.
+- **Outliers**: values beyond ±3 deviations from the column mean — cite the line of each one.
+- Every number in the summary carries `FONTE: <path> (lines X-Y)`.
 
 ## Output
 
-- Resumo em Markdown pronto para o relatório (ou HTML via feature-report).
-- Se a reconciliação falhou (totais não batem): o relatório sai com **status RECONCILIAÇÃO FALHOU** e a lista de divergências com linhas — nunca "arredondado para bater".
+- Markdown summary ready for the report (or HTML via feature-report).
+- If the reconciliation failed (totals do not match): the report goes out with **status RECONCILIATION FAILED** and the list of divergences with lines — never "rounded to fit".

@@ -1,29 +1,29 @@
 ---
 name: report-generation
-description: Gera e publica o relatório financeiro com fontes citadas — o último passo do pipeline noturno (nightly-run.sh). Use quando o usuário pedir o relatório, o resumo da madrugada, ou 'o que saiu de relatório hoje'.
+description: Generates and publishes the financial report with cited sources — the last step of the nightly pipeline (nightly-run.sh). Use when the user asks for the report, the early-morning summary, or 'what came out in today's report'.
 ---
 
-# Geração de relatório financeiro
+# Financial report generation
 
-O relatório noturno é o artefato do harness dormindo: publicado com fontes
-antes do time chegar (Aula 13: loop autônomo com critério de saída).
+The nightly report is the artifact of the harness sleeping: published with
+sources before the team arrives (Lesson 13: autonomous loop with an exit criterion).
 
 ## Gather
 
-- O contexto da área (planilhas) — via Area Copilot (`area_harness query`).
-- A data: o relatório é `relatorios/YYYY-MM-DD-<slug>.md`, um por dia.
+- The area context (spreadsheets) — via the Area Copilot (`area_harness query`).
+- The date: the report is `relatorios/YYYY-MM-DD-<slug>.md`, one per day.
 
 ## Write
 
-Estrutura fixa do relatório:
+Fixed report structure:
 
-1. **Data e pipeline** — quando rodou, com qual versão do playbook.
-2. **Perguntas respondidas** — cada uma com FONTE citada (arquivo + linhas).
-3. **Reconciliação** — esperado vs. real (skill spreadsheet-analysis); falha registrada, nunca arredondada.
-4. **Alertas** — dados faltantes, outliers, divergências; cada um com linha citada.
-5. **Status** — `CONSOLIDADO` (tudo reconciliado) ou `COM DIVERGÊNCIAS` (lista).
+1. **Date and pipeline** — when it ran, with which playbook version.
+2. **Answered questions** — each with a cited FONTE (file + lines).
+3. **Reconciliation** — expected vs. actual (spreadsheet-analysis skill); failure recorded, never rounded.
+4. **Alerts** — missing data, outliers, divergences; each with the cited line.
+5. **Status** — `CONSOLIDATED` (everything reconciled) or `WITH DIVERGENCES` (list).
 
 ## Output
 
-- `relatorios/YYYY-MM-DD-<slug>.md` publicado (pasta versionada do playbook).
-- Se o status for `COM DIVERGÊNCIAS`: registrar no log do harness (log-event.sh) — fricção registrada é dívida que não vira (Aula 11).
+- `relatorios/YYYY-MM-DD-<slug>.md` published (versioned playbook folder).
+- If the status is `WITH DIVERGENCES`: record it in the harness log (log-event.sh) — recorded friction is debt that does not become interest (Lesson 11).

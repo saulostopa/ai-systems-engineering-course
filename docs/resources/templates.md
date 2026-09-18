@@ -1,40 +1,40 @@
 # Templates
 
-Templates **prontos para copiar** — o pacote de harness básico, versionado na
-raiz deste repositório em `templates/`.
+**Ready-to-copy** templates — the basic harness package, versioned at the
+root of this repository in `templates/`.
 
-## Instalação
+## Installation
 
 ```sh
-cp -r templates/ <seu-projeto>/
-cd <seu-projeto>
-./init.sh          # valida o ambiente e imprime os próximos passos
+cp -r templates/ <your-project>/
+cd <your-project>
+./init.sh          # validates the environment and prints the next steps
 ```
 
-## Conteúdo do pacote
+## Package contents
 
-| Arquivo | Papel | Aula relacionada |
+| File | Role | Related lesson |
 |---|---|---|
-| [`AGENTS.md`](https://github.com/svslwm/harness-plannig/tree/develop/templates/AGENTS.md) | Roteador: o que ler, como escolher, como verificar, como terminar | 04 |
-| `feature_list.json` | Fonte de verdade do escopo (estado por feature) | 08 |
-| `claude-progress.md` | Diário da sessão atual | 05 |
-| `session-handoff.md` | Bilhete para a próxima sessão (cabeçalho obrigatório) | 05 |
-| `policies/scope-control.md` | Escopo declarado antes de editar | 07 |
-| `policies/definition-of-done.md` | Critérios verificáveis de "pronto" | 09 |
-| `policies/evidence-required.md` | Formato de evidência (comando → esperado → real) | 09 |
-| `init.sh` | Inicialização do ambiente | 06 |
-| `README.md` | Instruções de instalação e personalização | — |
+| [`AGENTS.md`](https://github.com/svslwm/harness-plannig/tree/develop/templates/AGENTS.md) | Router: what to read, how to choose, how to verify, how to finish | 04 |
+| `feature_list.json` | Scope source of truth (state per feature) | 08 |
+| `claude-progress.md` | Current session diary | 05 |
+| `session-handoff.md` | Note for the next session (required header) | 05 |
+| `policies/scope-control.md` | Scope declared before editing | 07 |
+| `policies/definition-of-done.md` | Verifiable "done" criteria | 09 |
+| `policies/evidence-required.md` | Evidence format (command → expected → actual) | 09 |
+| `init.sh` | Environment initialization | 06 |
+| `README.md` | Installation and customization instructions | — |
 
-Cada arquivo vem com comentários de onde personalizar e a referência à aula
-que o fundamenta.
+Each file comes with comments on where to customize and the reference to the lesson
+that underpins it.
 
-## Como usar no curso
+## How to use in the course
 
-1. **Projeto 02** constrói um pacote como este do zero — compare o seu com o oficial.
-2. **Projeto 04** adiciona o domínio (skills próprias) em cima deste esqueleto.
-3. **Projeto 05** adiciona o contexto da área em cima dele.
+1. **Project 02** builds a package like this from scratch — compare yours with the official one.
+2. **Project 04** adds the domain (own skills) on top of this skeleton.
+3. **Project 05** adds the area context on top of it.
 
 ::: tip Status
-Este pacote é o entregável da Story **A4** do curso. O pacote com gates
-mecânicos (hooks) completos é a Story **B1** (EPIC B).
+This package is the deliverable of Story **A4** of the course. The package with complete
+mechanical gates (hooks) is Story **B1** (EPIC B).
 :::

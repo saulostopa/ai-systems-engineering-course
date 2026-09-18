@@ -1,18 +1,18 @@
-# Projetos
+# Projects
 
-A parte prática: cada projeto entrega um harness funcional. Ao final do curso,
-você terá um harness completo no seu próprio repositório — ou no da sua área.
+The hands-on part: each project delivers a working harness. By the end of the course,
+you will have a complete harness in your own repository — or in your area's.
 
-| Projeto | Entrega |
+| Project | Deliverable |
 |---------|---------|
-| [01 · Baseline vs. harness mínimo](/projects/project-01) | A mesma feature com e sem harness; medir a diferença. |
-| [02 · Harness básico instalável](/projects/project-02) | O pacote que qualquer projeto pequeno baixa e roda. |
-| [03 · Harness de App com QA](/projects/project-03) | E2E Playwright + navegação agêntica com visão. |
-| [04 · Harness de domínio](/projects/project-04) | Playbook para games, finanças ou comercial. |
-| [05 · Area Copilot com RAG](/projects/project-05) | Contexto da sua área disponível para o agente. |
+| [01 · Baseline vs. minimal harness](/projects/project-01) | The same feature with and without a harness; measure the difference. |
+| [02 · Installable basic harness](/projects/project-02) | The package any small project downloads and runs. |
+| [03 · App Harness with QA](/projects/project-03) | E2E Playwright + agentic navigation with vision. |
+| [04 · Domain harness](/projects/project-04) | Playbook for games, finance or sales. |
+| [05 · Area Copilot with RAG](/projects/project-05) | Your area's context available to the agent. |
 
-::: tip Como estudar
-Os projetos são cumulativos: o 01 cria seu baseline, o 02 empacota o harness,
-o 03 adiciona QA, o 04 o domínio e o 05 o contexto da área. Faça na ordem —
-cada um assume o anterior.
+::: tip How to study
+The projects are cumulative: 01 creates your baseline, 02 packages the harness,
+03 adds QA, 04 the domain and 05 the area context. Do them in order —
+each one assumes the previous.
 :::

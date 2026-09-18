@@ -1,38 +1,38 @@
 #!/usr/bin/env bash
-# playtest-simulate.sh — playteste simulado de uma feature (Aula 10: o "E2E"
-# do jogo). Simula variações do fluxo e pontua critérios de aceite do design doc.
-# Uso: playtest-simulate.sh <design-doc.md> [--verbose]
+# playtest-simulate.sh — simulated playtest of a feature (Lesson 10: the "E2E"
+# of the game). Simulates flow variations and scores the design doc's acceptance criteria.
+# Usage: playtest-simulate.sh <design-doc.md> [--verbose]
 set -uo pipefail
 
 DOC="${1:-}"
-[ -f "$DOC" ] || { echo "Uso: playtest-simulate.sh <design-doc.md>"; exit 1; }
+[ -f "$DOC" ] || { echo "Usage: playtest-simulate.sh <design-doc.md>"; exit 1; }
 
 section() { printf '\n== %s ==\n' "$1"; }
 ok()   { printf '  [ok]     %s\n' "$1"; }
 fail() { printf '  [FAIL]   %s\n' "$1"; FAILURES=$((FAILURES + 1)); }
 FAILURES=0
 
-section "Cenários simulados (variações de jogador)"
+section "Simulated scenarios (player variations)"
 
-# Cenário 1: jogador novo (nunca viu a mecânica)
-grep -qi "persona" "$DOC" && ok "persona definida — simulação de jogador novo possível" \
-  || fail "sem persona no design doc — simulação cega"
+# Scenario 1: new player (never saw the mechanic)
+grep -qi "persona" "$DOC" && ok "persona defined — new-player simulation possible" \
+  || fail "no persona in the design doc — blind simulation"
 
-# Cenário 2: loop completo (input -> regra -> feedback)
-grep -qi "feedback" "$DOC" && ok "feedback descrito — loop fechado" \
-  || fail "sem feedback descrito — mecânica sem fechamento"
+# Scenario 2: complete loop (input -> rule -> feedback)
+grep -qi "feedback" "$DOC" && ok "feedback described — closed loop" \
+  || fail "no feedback described — mechanic without closure"
 
-# Cenário 3: economia (se aplicável)
+# Scenario 3: economy (if applicable)
 if grep -qi "economia" "$DOC"; then
   NUMBERS=$(grep -oE '[0-9]{2,}' "$DOC" | wc -l)
-  [ "$NUMBERS" -ge 3 ] && ok "economia com valores ($NUMBERS números) — consistência simulável" \
-    || fail "economia citada mas sem valores suficientes (>=3)"
+  [ "$NUMBERS" -ge 3 ] && ok "economy with values ($NUMBERS numbers) — consistency can be simulated" \
+    || fail "economy mentioned but without enough values (>=3)"
 fi
 
-# Cenário 4: critérios de aceite
-grep -qiE "verificacao|aceit" "$DOC" && ok "critérios de aceite presentes — playteste tem alvo" \
-  || fail "sem critérios de aceite no doc — playteste sem veredito"
+# Scenario 4: acceptance criteria
+grep -qiE "verificacao|aceit" "$DOC" && ok "acceptance criteria present — playtest has a target" \
+  || fail "no acceptance criteria in the doc — playtest without a verdict"
 
-section "Resultado do playteste simulado"
-printf '%s — %d falha(s)\n' "$([ "$FAILURES" -eq 0 ] && echo "PLAYTESTE ACEITO" || echo "PLAYTESTE REJEITADO")" "$FAILURES"
+section "Simulated playtest result"
+printf '%s — %d failure(s)\n' "$([ "$FAILURES" -eq 0 ] && echo "PLAYTEST ACCEPTED" || echo "PLAYTEST REJECTED")" "$FAILURES"
 exit "$FAILURES"

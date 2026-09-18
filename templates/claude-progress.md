@@ -1,25 +1,25 @@
-# Progresso da sessão
+# Session progress
 
-> Diário da sessão atual (Aula 05). Atualize conforme trabalha; nunca apague
-> história — adicione entradas datadas.
+> Diary of the current session (Lesson 05). Update as you work; never delete
+> history — add dated entries.
 
-## Sessão: YYYY-MM-DD (agente/ferramenta)
+## Session: YYYY-MM-DD (agent/tool)
 
-### Trabalho recente
-- [ ] feature-001: escopo declarado (ver policies/scope-control.md)
-- [ ] feature-001: implementacao
-- [ ] feature-001: build + testes
+### Recent work
+- [ ] feature-001: scope declared (see policies/scope-control.md)
+- [ ] feature-001: implementation
+- [ ] feature-001: build + tests
 
-### Trabalho atual
-- feature-001: implementando validacao de email — arquivos: `src/components/email-input.tsx`, `src/utils/email.ts`
+### Current work
+- feature-001: implementing email validation — files: `src/components/email-input.tsx`, `src/utils/email.ts`
 
-### Falhas conhecidas
-- Nenhuma até o momento (ou registre: o que falhou, o que tentou, o que falta)
+### Known failures
+- None so far (or record: what failed, what was tried, what is missing)
 
-### Próxima ação
-1. Terminar `email-input.tsx`
-2. Rodar `npm test`
-3. Registrar evidência em `feature_list.json` (status: passing)
+### Next action
+1. Finish `email-input.tsx`
+2. Run `npm test`
+3. Record evidence in `feature_list.json` (status: passing)
 
-### Exceções de escopo (se houver)
-- Nenhuma (ou documente: o que foi feito fora do escopo e por quê)
+### Scope exceptions (if any)
+- None (or document: what was done out of scope and why)

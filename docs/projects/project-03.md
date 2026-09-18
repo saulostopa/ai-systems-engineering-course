@@ -1,90 +1,90 @@
 ---
-title: Projeto 03 — Harness de App com QA
+title: Project 03 — App Harness with QA
 ---
 
-# Projeto 03 — Harness de App com QA
+# Project 03 — App Harness with QA
 
-> O harness que combina o teste E2E do time de QA com a navegação agêntica — o agente abrindo o app, navegando e validando com visão.
+> The harness that combines the QA team's E2E test with agentic navigation — the agent opening the app, navigating and validating with vision.
 
-## Objetivo
+## Objective
 
-Montar o **App Harness** em duas camadas:
+Assemble the **App Harness** in two layers:
 
-1. **Camada QA** — testes E2E com Playwright como gate mecânico (a skill `qa-playwright-e2e` do `harness-agent-skills`).
-2. **Camada agêntica** — o agente sobe o app, navega como usuário e valida visualmente (screenshots + modelo de visão), do build ao aceite.
+1. **QA layer** — E2E tests with Playwright as a mechanical gate (the `qa-playwright-e2e` skill from `harness-agent-skills`).
+2. **Agentic layer** — the agent starts the app, navigates like a user and validates visually (screenshots + vision model), from build to acceptance.
 
-É o EPIC C do curso — aqui você constrói uma versão funcional dele.
+It is EPIC C of the course — here you build a functional version of it.
 
-## Pré-requisitos
+## Prerequisites
 
-- Um app (pode ser o repo de um app Webmotors ou um app de teste) com `npm run dev`/build funcionando.
-- Playwright instalado (a skill usa Python + Playwright).
-- Um agente com capacidade de visão (Claude, GPT-4o, Gemini).
+- An app (can be a Webmotors app repo or a test app) with `npm run dev`/build working.
+- Playwright installed (the skill uses Python + Playwright).
+- An agent with vision capability (Claude, GPT-4o, Gemini).
 
-## Passo a passo
+## Step by step
 
-### Camada 1 — E2E como gate
+### Layer 1 — E2E as a gate
 
-1. Instale a skill `qa-playwright-e2e` (veja a [Biblioteca](/resources/) para o comando de instalação).
-2. Peça ao agente:
+1. Install the `qa-playwright-e2e` skill (see the [Library](/resources/) for the install command).
+2. Ask the agent:
 
 ```
-"escreve os testes E2E dessa tela com Playwright"
+"write the E2E tests for this screen with Playwright"
 ```
 
-3. Exija os padrões da skill:
-   - locators semânticos (`get_by_role`) — nunca CSS/XPath frágil;
+3. Require the skill's standards:
+   - semantic locators (`get_by_role`) — never fragile CSS/XPath;
    - Page Object Model;
-   - interceptação de rede para setups determinísticos;
-   - testes que falham de verdade se a tela quebrar.
+   - network interception for deterministic setups;
+   - tests that genuinely fail if the screen breaks.
 
-4. Torne o E2E um gate de commit:
+4. Make E2E a commit gate:
 
 ```bash
-# pre-commit (exemplo simplificado)
+# pre-commit (simplified example)
 #!/bin/bash
-# roda E2E para arquivos de frontend alterados
+# runs E2E for changed frontend files
 if git diff --cached --name-only | grep -qE '^src/.*\.(tsx|vue|jsx)$'; then
-  pytest tests/e2e -q || { echo "E2E falhou — commit bloqueado"; exit 1; }
+  pytest tests/e2e -q || { echo "E2E failed — commit blocked"; exit 1; }
 fi
 ```
 
-### Camada 2 — Navegação agêntica com visão
+### Layer 2 — Agentic navigation with vision
 
-1. Suba o app: `npm run dev` (ou build + preview).
-2. Dê ao agente a missão de navegação:
-
-```
-"sobe o app, navega até a tela X como um usuário e valida:
- 1. o fluxo completo funciona;
- 2. não há quebra visual (layout, sobreposição, loading infinito);
- 3. os estados vazios e de erro são aceitáveis.
- Tire screenshots como evidência e me diga o que encontrou."
-```
-
-3. O agente deve produzir **evidência visual** (screenshots) + veredito por critério.
-4. Aprenda com o que ele achar: cada achado vira teste E2E novo na Camada 1 — **o loop fecha**: a navegação agêntica encontra, o E2E imortaliza.
-
-## O loop completo
+1. Start the app: `npm run dev` (or build + preview).
+2. Give the agent the navigation mission:
 
 ```
-build → E2E (gate) → navegação agêntica (visão) → achados → novos testes E2E → ...
+"start the app, navigate to screen X like a user and validate:
+ 1. the complete flow works;
+ 2. there is no visual breakage (layout, overlap, infinite loading);
+ 3. the empty and error states are acceptable.
+ Take screenshots as evidence and tell me what you found."
 ```
 
-O app harness não é "QA ou agente" — é **QA e agente**, cada um pegando o que o outro não pega: o E2E é determinístico e barato; a navegação agêntica é exploratória e vê o que o teste não prevê.
+3. The agent must produce **visual evidence** (screenshots) + verdict per criterion.
+4. Learn from what it finds: each finding becomes a new E2E test in Layer 1 — **the loop closes**: agentic navigation finds, E2E immortalizes.
 
-## Verificação
+## The complete loop
 
-- Uma mudança de frontend **sem** teste E2E é bloqueada pelo hook.
-- A navegação agêntica produz screenshots + veredito por critério (aceito/rejeitado).
-- Pelo menos 1 achado da navegação virou teste E2E novo.
+```
+build → E2E (gate) → agentic navigation (vision) → findings → new E2E tests → ...
+```
 
-## Entregável
+The app harness is not "QA or agent" — it is **QA and agent**, each catching what the other doesn't: E2E is deterministic and cheap; agentic navigation is exploratory and sees what the test doesn't predict.
 
-O hook de E2E funcionando no repo + os testes E2E + o registro de uma rodada de navegação agêntica com screenshots e vereditos.
+## Verification
+
+- A frontend change **without** an E2E test is blocked by the hook.
+- Agentic navigation produces screenshots + verdict per criterion (accepted/rejected).
+- At least 1 navigation finding became a new E2E test.
+
+## Deliverable
+
+The working E2E hook in the repo + the E2E tests + the record of an agentic navigation round with screenshots and verdicts.
 
 ::: tip Status
-A versão oficial com triagem de falhas, perf e integração total é o **EPIC C** do curso.
+The official version with failure triage, perf and full integration is **EPIC C** of the course.
 :::
 
-**Próximo projeto**: [04 — Harness de domínio](/projects/project-04).
+**Next project**: [04 — Domain harness](/projects/project-04).

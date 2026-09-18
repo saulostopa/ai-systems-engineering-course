@@ -1,12 +1,13 @@
-"""Area Copilot — motor de contexto de negócio sobre o rag_harness.
+"""Area Copilot — business-context engine on top of rag_harness.
 
-O índice vive em <root>/area_context/ (por convenção: planilhas/, documentos/,
-imagens/) e o índice vetorial em <root>/.area_index. O agente consulta com
-fonte citável — número sem fonte é proibido (Aula 09).
+The index lives in <root>/area_context/ (by convention: planilhas/,
+documentos/, imagens/) and the vector index in <root>/.area_index. The agent
+queries with citable sources — a number without a source is forbidden
+(Lesson 09).
 
-Uso:
+Usage:
     python -m area_harness index <root> [--verbose]
-    python -m area_harness query <root> "<pergunta>"
+    python -m area_harness query <root> "<question>"
     python -m area_harness eval <root> [--queries area_harness/tests/queries.json]
 """
 
@@ -47,7 +48,7 @@ def index_area(root: str, embedder=None, verbose: bool = False) -> Index:
             indent=1,
         )
     if verbose:
-        print(f"[area-copilot] {len(chunks)} chunks de negócio indexados")
+        print(f"[area-copilot] {len(chunks)} business chunks indexed")
     return index
 
 
@@ -62,18 +63,18 @@ def load_area_index(root: str) -> Index:
 
 
 def answer_with_sources(root: str, question: str, embedder=None, top_k: int = 3) -> str:
-    """Recupera o contexto e devolve o trecho com FONTE CITADA — pronto para
-    o agente (ou a skill area-report) montar o artefato."""
+    """Retrieves the context and returns the excerpt with a CITED SOURCE —
+    ready for the agent (or the area-report skill) to build the artifact."""
     embedder = embedder or make_embedder()
     index = load_area_index(root)
     ctrl = AgentController(index, embedder)
     results = ctrl.retrieve(question, root)
     if not results:
-        return "Sem contexto encontrado na área."
-    lines = [f"Pergunta: {question}", "Contexto com fontes:"]
+        return "No context found in the area."
+    lines = [f"Question: {question}", "Context with sources:"]
     for c in results[:top_k]:
         preview = c.text[:300].replace("\n", " ")
-        lines.append(f"- FONTE: {c.path} (linhas {c.start_line}-{c.end_line})")
+        lines.append(f"- FONTE: {c.path} (lines {c.start_line}-{c.end_line})")
         lines.append(f"  {preview}")
     return "\n".join(lines)
 

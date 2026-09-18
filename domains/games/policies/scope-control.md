@@ -1,2 +1,2 @@
-# scope-control — ver o template oficial em templates/policies/scope-control.md (Story A4)
-> Regra deste domínio: o "pronto" é o que está em policies/definition-of-done.md.
+# scope-control — see the official template at templates/policies/scope-control.md (Story A4)
+> Rule of this domain: "done" is what is in policies/definition-of-done.md.

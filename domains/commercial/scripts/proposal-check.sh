@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
-# proposal-check.sh — valida proposta contra o briefing (comercial).
-# Uso: proposal-check.sh <proposta.md> <briefing.md>
-# Requisitos do briefing com marcador "- [REQ]" são comparados por palavras-chave.
+# proposal-check.sh — validates the proposal against the briefing (commercial).
+# Usage: proposal-check.sh <proposal.md> <briefing.md>
+# Briefing requirements marked with "- [REQ]" are compared by keywords.
 set -uo pipefail
 
 PROPOSTA="${1:-}"
 BRIEFING="${2:-}"
-[ -f "$PROPOSTA" ] && [ -f "$BRIEFING" ] || { echo "Uso: proposal-check.sh <proposta.md> <briefing.md>"; exit 1; }
+[ -f "$PROPOSTA" ] && [ -f "$BRIEFING" ] || { echo "Usage: proposal-check.sh <proposal.md> <briefing.md>"; exit 1; }
 
 FAILURES=0
 ok()   { printf '  [ok]     %s\n' "$1"; }
 fail() { printf '  [FAIL]   %s\n' "$1"; FAILURES=$((FAILURES + 1)); }
 section() { printf '\n== %s ==\n' "$1"; }
 
-# Palavras que não contam como evidência de resposta (stopwords + verbos de pedido)
+# Words that do not count as answer evidence (stopwords + request verbs)
 STOPWORDS='^(para|com|que|este|esta|nossa|assinatura|incluir|propor|pela|pelo|rede|das|dos|uma|uma)$'
 
-section "Requisitos do briefing (item a item)"
+section "Briefing requirements (item by item)"
 TOTAL_REQ=0
 while IFS= read -r req; do
   TOTAL_REQ=$((TOTAL_REQ + 1))
@@ -28,18 +28,18 @@ while IFS= read -r req; do
   done
   TOTAL_KW=$(echo "$KEYWORDS" | wc -w | tr -d ' ')
   if [ "${TOTAL_KW:-0}" -ge 2 ] && [ "${HITS:-0}" -ge 2 ]; then
-    ok "requisito atendido: $term..."
+    ok "requirement met: $term..."
   else
-    fail "requisito SEM resposta clara: $term... (palavras-chave: ${HITS:-0}/${TOTAL_KW:-0})"
+    fail "requirement WITHOUT a clear answer: $term... (keywords: ${HITS:-0}/${TOTAL_KW:-0})"
   fi
 done < <(grep -E "^- \[REQ\]" "$BRIEFING" || true)
 if [ "${TOTAL_REQ:-0}" -eq 0 ]; then
-  echo "  (nenhum requisito marcado - [REQ] no briefing)"
+  echo "  (no requirements marked - [REQ] in the briefing)"
   FAILURES=$((FAILURES + 1))
 fi
 
-section "Números com fonte"
-# Um número é seguro se a linha tem FONTE, ou a linha anterior/seguinte tem.
+section "Numbers with source"
+# A number is safe if the line has FONTE, or the previous/next line does.
 SOLTOS=$(awk '
   { lines[NR] = $0 }
   END {
@@ -54,20 +54,20 @@ SOLTOS=$(awk '
     print bad
   }' "$PROPOSTA")
 FONTES=$(grep -c "FONTE:" "$PROPOSTA" || true)
-ok "fontes citadas: $FONTES"
+ok "sources cited: $FONTES"
 if [ "${SOLTOS:-0}" -gt 0 ]; then
-  fail "$SOLTOS linha(s) numérica(s) sem FONTE"
+  fail "$SOLTOS numeric line(s) without FONTE"
 else
-  ok "nenhum número solto"
+  ok "no loose numbers"
 fi
 
-section "Revisão cruzada"
+section "Cross review"
 if grep -qi "revisor\|revisad" "$PROPOSTA"; then
-  ok "revisão registrada no documento"
+  ok "review recorded in the document"
 else
-  fail "sem registro de revisão cruzada — peça a um revisor independente"
+  fail "no cross-review record — ask an independent reviewer"
 fi
 
-section "Resultado"
-printf '%s — %d falha(s)\n' "$([ "$FAILURES" -eq 0 ] && echo "PROPOSTA APROVADA PARA ENVIO" || echo "PROPOSTA BLOQUEADA")" "$FAILURES"
+section "Result"
+printf '%s — %d failure(s)\n' "$([ "$FAILURES" -eq 0 ] && echo "PROPOSAL APPROVED FOR SUBMISSION" || echo "PROPOSAL BLOCKED")" "$FAILURES"
 exit "$FAILURES"

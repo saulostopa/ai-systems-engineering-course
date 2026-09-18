@@ -1,15 +1,15 @@
-# Design de Harnesses
+# Harness Designs
 
-Blueprints dos harnesses que este projeto entrega. Cada blueprint descreve a
-arquitetura, os componentes e o que o torna funcional na prática.
+Blueprints of the harnesses this project delivers. Each blueprint describes the
+architecture, the components and what makes it functional in practice.
 
-- [Harness básico (download)](/harness-designs/basic-harness) — para projetos pequenos; baixa e roda.
-- [Harness grande (multi-time)](/harness-designs/enterprise-harness) — gatekeepers, políticas e observabilidade para muitas equipes.
-- [App Harness](/harness-designs/app-harness) — QA (E2E) + navegação agêntica com visão: build → abrir → validar.
-- [RAG Harness & Area Copilots](/harness-designs/rag-harness) — contexto de código e de negócio (planilhas, imagens, docs).
-- [Harnesses de domínio](/harness-designs/domain-harnesses) — o mesmo esqueleto, skill packs por área: games, finanças, comercial.
-- [Hard Harness (orquestração executável)](/harness-designs/hard-harness) — grafo executável, contratos tipados, gates determinísticos e agentes especializados (ADK 2 como referência).
+- [Basic harness (download)](/harness-designs/basic-harness) — for small projects; download and run.
+- [Enterprise harness (multi-team)](/harness-designs/enterprise-harness) — gatekeepers, policies and observability for many teams.
+- [App Harness](/harness-designs/app-harness) — QA (E2E) + agentic navigation with vision: build → open → validate.
+- [RAG Harness & Area Copilots](/harness-designs/rag-harness) — code and business context (spreadsheets, images, docs).
+- [Domain harnesses](/harness-designs/domain-harnesses) — the same skeleton, skill packs per area: games, finance, sales.
+- [Hard Harness (executable orchestration)](/harness-designs/hard-harness) — executable graph, typed contracts, deterministic gates and specialized agents (ADK 2 as reference).
 
 ::: tip Status
-Os blueprints detalhados são entregues pelos EPICs B, C, D e E do projeto.
+The detailed blueprints are delivered by EPICs B, C, D and E of the project.
 :::

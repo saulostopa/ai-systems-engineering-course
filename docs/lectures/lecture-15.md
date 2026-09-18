@@ -1,64 +1,64 @@
 ---
-title: Aula 15 — Do Markdown ao runtime executável
+title: Lesson 15 — From Markdown to an executable runtime
 ---
 
-# Aula 15 — Do Markdown ao runtime executável
+# Lesson 15 — From Markdown to an executable runtime
 
-> A evolução deste curso: do harness que *instrui* para o harness que *executa*.
+> The evolution of this course: from the harness that *instructs* to the harness that *executes*.
 
-## O limite do Markdown
+## The limit of Markdown
 
-Até aqui, o harness era Markdown: AGENTS.md, policies, SKILL.md, templates.
-Eles instruem o agente — e funcionam bem para orientação. Mas têm um teto:
+So far, the harness was Markdown: AGENTS.md, policies, SKILL.md, templates.
+They instruct the agent — and they work well for guidance. But they have a ceiling:
 
-| Capacidade | Markdown | Código executável |
+| Capability | Markdown | Executable code |
 |---|---|---|
-| Impor ordem de passos | instrução ("faça X depois de Y") | grafo: o runner executa na ordem |
-| Bloquear transição inválida | gate hook (se instalado) | `runner` recusa em runtime |
-| Garantir "done" só com evidência | política | gate determinístico + schema |
-| Forçar limites (retries, profundidade) | "não exceda..." | `Limits` aplicado em código |
-| Auditoria | git log + narrativa | trilha de eventos persistida |
-| Retomada | session-handoff.md | checkpoint + resume do estado |
+| Enforce step order | instruction ("do X after Y") | graph: the runner executes in order |
+| Block invalid transition | gate hook (if installed) | `runner` refuses at runtime |
+| Guarantee "done" only with evidence | policy | deterministic gate + schema |
+| Enforce limits (retries, depth) | "do not exceed..." | `Limits` enforced in code |
+| Auditability | git log + narrative | persisted event trail |
+| Resumption | session-handoff.md | checkpoint + state resume |
 
-A lição da Aula 04 continua valendo — **roteador curto + docs rotadas** — mas
-agora há uma segunda camada: o que é *controle* (ordem, gates, estado, limites)
-deve virar código; o que é *conhecimento* (contexto, políticas explicadas,
-skills) permanece em Markdown.
+Lesson 04's lesson still holds — **short router + routed docs** — but
+now there is a second layer: what is *control* (order, gates, state, limits)
+must become code; what is *knowledge* (context, explained policies,
+skills) stays in Markdown.
 
-## Instrução, política, contrato, controle
+## Instruction, policy, contract, control
 
-Quatro tipos de regra — e quatro lares:
+Four types of rule — and four homes:
 
-| Tipo | Exemplo | Onde vive |
+| Type | Example | Where it lives |
 |---|---|---|
-| **Instrução** | "leia o AGENTS.md antes de editar" | AGENTS.md / SKILL.md |
-| **Política** | "uma feature `in_progress` por vez" | `policies/*.md` (explicação) |
-| **Contrato** | `NodeInput` → `NodeOutput` tipado | **código** (schemas) |
-| **Controle** | "só o runner avança status" | **código** (runner) |
+| **Instruction** | "read the AGENTS.md before editing" | AGENTS.md / SKILL.md |
+| **Policy** | "one feature `in_progress` at a time" | `policies/*.md` (explanation) |
+| **Contract** | typed `NodeInput` → `NodeOutput` | **code** (schemas) |
+| **Control** | "only the runner advances status" | **code** (runner) |
 
-Markdown **explica**; código **governa**. A regra executável tem **fonte única
-de verdade**: o schema/gate/runner — não cinco markdowns que divergem.
+Markdown **explains**; code **governs**. The executable rule has a **single source
+of truth**: the schema/gate/runner — not five markdowns that diverge.
 
-## O que permanece em Markdown
+## What stays in Markdown
 
-- **AGENTS.md**: o roteador (o quê ler, como trabalhar) — nunca a autoridade de fluxo.
-- **SKILL.md**: conhecimento sob demanda (como fazer X) — carregado quando a tarefa pede.
-- **policies/**: a *razão* das regras (o porquê do DoD, do escopo) — a regra em si vira gate.
-- **Docs e aulas**: explicam o sistema; o sistema executa sozinho.
+- **AGENTS.md**: the router (what to read, how to work) — never the flow authority.
+- **SKILL.md**: on-demand knowledge (how to do X) — loaded when the task asks for it.
+- **policies/**: the *reason* of the rules (the why of the DoD, of the scope) — the rule itself becomes a gate.
+- **Docs and lessons**: explain the system; the system executes by itself.
 
-## Por que o agente não pode ser a autoridade do workflow
+## Why the agent cannot be the workflow authority
 
-O agente raciocina; o workflow **controla efeitos e estado**. Se o agente
-decidisse quando "done", teríamos de volta o auto-engano da Aula 09 — agora
-mecanizado em larga escala. O padrão do ADK 2 (e deste curso):
+The agent reasons; the workflow **controls effects and state**. If the agent
+decided when "done", we would be back to Lesson 09's self-deception — now
+mechanized at scale. The ADK 2 pattern (and of this course):
 
-> **Agentes produzem propostas/resultados; o runner controla efeitos e estado.**
+> **Agents produce proposals/results; the runner controls effects and state.**
 
-No `hard-harness`, o agente devolve `NodeOutput(proposed_next=...)` — e o
-runner decide se aceita, se recusa (com evento auditável) ou se segue o grafo.
-Não existe API de transição para o agente (verificado por teste).
+In `hard-harness`, the agent returns `NodeOutput(proposed_next=...)` — and the
+runner decides whether to accept it, refuse it (with an auditable event) or follow the graph.
+There is no transition API for the agent (verified by test).
 
-## Exemplo executável mínimo
+## Minimal executable example
 
 ```sh
 cd hard-harness
@@ -67,17 +67,17 @@ PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 #   → fan-out [build, tests, e2e, lint] → join → router → reviewer → evidence → close
 ```
 
-## Principais aprendizados
+## Key takeaways
 
-1. Markdown instrui; código executa. Controle ≠ conhecimento.
-2. Contrato e controle moram em schemas/gates/runner — fonte única de verdade.
-3. Políticas explicam o porquê; gates impõem o quê.
-4. O agente propõe; o runner decide. Autoridade de estado nunca é delegada.
+1. Markdown instructs; code executes. Control ≠ knowledge.
+2. Contract and control live in schemas/gates/runner — single source of truth.
+3. Policies explain the why; gates enforce the what.
+4. The agent proposes; the runner decides. State authority is never delegated.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 15"
+"quiz me on Lesson 15"
 ```
 
-**Próxima aula**: [16 — ADK 2 e os três padrões de orquestração](/lectures/lecture-16).
+**Next lesson**: [16 — ADK 2 and the three orchestration patterns](/lectures/lecture-16).

@@ -2,25 +2,25 @@
 title: feature-quiz (v2)
 ---
 
-# feature-quiz (v2 — adaptativo)
+# feature-quiz (v2 — adaptive)
 
-Quiz graduado em 4 níveis sobre a feature recém-implementada, com pontuação automática, feedback por nível e **modo de revisão adaptativo**: cada questão errada entra automaticamente na revisão — o leitor não passa batido pelo erro.
+Quiz graded in 4 levels about the just-implemented feature, with automatic scoring, per-level feedback and an **adaptive review mode**: every wrong answer automatically enters the review — the reader doesn't gloss over the error.
 
-## Entregável F1
+## Deliverable F1
 
-A evolução está em `skills-artifacts/` (raiz deste repo): SKILL.md v2, assets (system.css Eleanor + skeleton com aria-live e toggle EN/PT), build-demo.py e o `quizzes/demo-quiz.html` renderizado como evidência (4 níveis × 3 questões, estrutura validada).
+The evolution is in `skills-artifacts/` (root of this repo): v2 SKILL.md, assets (Eleanor system.css + skeleton with aria-live and EN/PT toggle), build-demo.py and the rendered `quizzes/demo-quiz.html` as evidence (4 levels × 3 questions, validated structure).
 
-## Os 4 níveis
+## The 4 levels
 
-1. **Básico** — fatos de superfície (recall).
-2. **Intermediário** — mecânica (fluxo principal).
-3. **Avançado** — racional (trade-off aceito sobre a alternativa rejeitada).
-4. **Difícil** — bordas e falhas reais do diff/testes (nunca pegadinha inventada).
+1. **Basic** — surface facts (recall).
+2. **Intermediate** — mechanics (main flow).
+3. **Advanced** — rationale (trade-off accepted over the rejected alternative).
+4. **Hard** — edges and real failures of the diff/tests (never an invented trick question).
 
-Cada questão: stem + 3 opções (uma correta) + `quiz-why` com justificativa rastreável ao material lido.
+Each question: stem + 3 options (one correct) + `quiz-why` with a justification traceable to the read material.
 
-## Adaptatividade
+## Adaptivity
 
-O skeleton já implementa: pontuação por nível com `aria-live`, e as questões erradas entram em `#review-root` automaticamente. O gerador só monta os níveis — não reimplementa a lógica.
+The skeleton already implements: per-level scoring with `aria-live`, and wrong questions enter `#review-root` automatically. The generator only assembles the levels — it doesn't reimplement the logic.
 
-**Relacionado**: [feature-report](/skills/feature-report) · [Criar uma skill nova](/skills/how-to-create)
+**Related**: [feature-report](/skills/feature-report) · [Create a new skill](/skills/how-to-create)

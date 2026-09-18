@@ -1,7 +1,8 @@
-"""Base — interface StateStore (Protocol) e helpers de lock.
+"""Base — StateStore interface (Protocol) and lock helpers.
 
-Contrato mínimo de persistência. Novas implementações (SQLite, AgEnFK,
-Redis) implementam o mesmo Protocol — o runner não sabe onde o estado vive.
+Minimum persistence contract. New implementations (SQLite, AgEnFK,
+Redis) implement the same Protocol — the runner does not know where the
+state lives.
 """
 
 from __future__ import annotations

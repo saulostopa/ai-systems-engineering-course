@@ -1,25 +1,25 @@
-"""Exemplo obrigatório — grafo completo do hard harness.
+"""Required example — full hard harness graph.
 
 START
   → boot
-  → carregar escopo
+  → load scope
   → planner_agent
-  → validar plano (gate)
+  → validate plan (gate)
   → coder_agent
-  → fan-out: [build, testes, E2E, lint/segurança]
-  → join de resultados
-  → router determinístico
-      - falhou: correction_agent (retorno com limite)
-      - passou: reviewer_agent
+  → fan-out: [build, tests, E2E, lint/security]
+  → join results
+  → deterministic router
+      - failed: correction_agent (loop with limit)
+      - passed: reviewer_agent
   → evidence
   → close
 
-Regras demonstradas:
-  - funções para trabalho previsível (boot, escopo, gates, join, close);
-  - agentes somente para raciocínio (planner, coder, reviewer, correction);
-  - router com DEFAULT obrigatório;
-  - agente propõe próximo nó; o runner decide;
-  - persistência FileStateStore + retomada.
+Rules demonstrated:
+  - functions for predictable work (boot, scope, gates, join, close);
+  - agents only for reasoning (planner, coder, reviewer, correction);
+  - router with a MANDATORY default;
+  - the agent proposes the next node; the runner decides;
+  - FileStateStore persistence + resume.
 """
 
 from __future__ import annotations
@@ -34,18 +34,18 @@ from hard_harness.stores import FileStateStore
 
 
 def boot(ninput: NodeInput) -> NodeOutput:
-    """Determinístico: inicializa dados do workflow."""
+    """Deterministic: initializes workflow data."""
     return NodeOutput(node_id="boot", ok=True, payload={"booted_at": True, "scope": ninput.payload.get("scope", {})})
 
 
 def load_scope(ninput: NodeInput) -> NodeOutput:
-    """Determinístico: carrega o escopo declarado."""
+    """Deterministic: loads the declared scope."""
     scope = ninput.payload.get("scope", {})
     return NodeOutput(node_id="load_scope", ok=True, payload={"scope": scope})
 
 
 def validate_plan_gate(ninput: NodeInput) -> NodeOutput:
-    """Gate determinístico: o plano do planner precisa existir e ser não-vazio."""
+    """Deterministic gate: the planner's plan must exist and be non-empty."""
     from hard_harness.core.schemas import GateResult
 
     plan = (ninput.state.data.get("planner_agent") or {}).get("plan_steps", [])
@@ -55,9 +55,9 @@ def validate_plan_gate(ninput: NodeInput) -> NodeOutput:
     return NodeOutput(
         node_id="validate_plan",
         ok=False,
-        error="plano vazio do planner",
+        error="empty planner plan",
         gate=GateResult(node_id="validate_plan", passed=False,
-                        failures=[{"check": "plan_steps", "expected": ">=1 passo", "actual": "0"}]),
+                        failures=[{"check": "plan_steps", "expected": ">=1 step", "actual": "0"}]),
     )
 
 
@@ -70,7 +70,7 @@ lint = gate_node_output("lint", gate_from_command("lint", "echo 'lint ok'", "lin
 
 
 def join_results(ninput: NodeInput) -> NodeOutput:
-    """Determinístico: consolida o fan-out; falhas explícitas no payload."""
+    """Deterministic: consolidates the fan-out; failures explicit in the payload."""
     fanout = ninput.state.data.get("fanout_coder_agent", ninput.payload)
     checks = {k: ("ok" if v.get("error") is None else f"FAIL: {v['error']}") for k, v in fanout.items()}
     all_ok = all(v == "ok" for v in checks.values())
@@ -78,14 +78,14 @@ def join_results(ninput: NodeInput) -> NodeOutput:
 
 
 def route_by_checks(state_data: dict) -> str:
-    """Router determinístico (if-statement, 0 LLM — lição ADK L2b).
-    Lê o payload consolidado do join."""
+    """Deterministic router (if-statement, 0 LLM — ADK lesson L2b).
+    Reads the join's consolidated payload."""
     join_payload = state_data.get("join", {})
     return "passed" if join_payload.get("all_ok") else "failed"
 
 
 def route_node(ninput: NodeInput) -> NodeOutput:
-    """Nó determinístico que só existe para carregar o router."""
+    """Deterministic node that exists only to host the router."""
     return NodeOutput(node_id="router", ok=True, payload={"routed": True})
 
 
@@ -95,7 +95,7 @@ def close(ninput: NodeInput) -> NodeOutput:
 
 def build_graph(agent_impls: dict[str, object] | None = None,
                 providers: dict[str, object] | None = None) -> WorkflowGraph:
-    """Monta o grafo. agent_impls: nós inteiros; providers: LLM providers por agente."""
+    """Builds the graph. agent_impls: whole nodes; providers: LLM providers per agent."""
     planner = PlannerAgent(provider=(providers or {}).get("planner"))
     coder = CoderAgent(provider=(providers or {}).get("coder"))
     reviewer = ReviewerAgent(provider=(providers or {}).get("reviewer"))
@@ -135,32 +135,32 @@ def build_graph(agent_impls: dict[str, object] | None = None,
 
 
 def run(scope: dict | None = None, root: str = "example_run", providers: dict[str, object] | None = None) -> dict:
-    """Executa o workflow com persistência em <root>/.harness e retorna o estado.
+    """Runs the workflow with persistence in <root>/.harness and returns the state.
 
-    providers: LLM providers por agente (ex.: StubProvider em testes; sem
-    argumento, make_provider() decide por env — OpenRouter/Ollama/Stub).
+    providers: LLM providers per agent (e.g.: StubProvider in tests; with no
+    argument, make_provider() decides by env — OpenRouter/Ollama/Stub).
     """
     graph = build_graph(providers=providers)
     problems = graph.validate()
     if problems:
-        raise RuntimeError(f"grafo inválido: {problems}")
+        raise RuntimeError(f"invalid graph: {problems}")
 
     store = FileStateStore(root)
     limits = Limits(max_retries=2, max_llm_calls=40, run_timeout_s=120, max_depth=16)
     runner = Runner(graph, store=store, limits=limits)
 
-    # auditoria: eventos vão para o store e stdout
+    # audit: events go to the store and stdout
     runner.bus.subscribe(lambda ev: store.append_event(ev))
     runner.bus.subscribe(lambda ev: print(f"[{ev.kind}] {ev.node_id}: {ev.message[:80]}"))
 
-    state = runner.run(initial={"scope": scope or {"what": "feature demo", "why": "hard harness", "out_of_scope": "nada"}})
+    state = runner.run(initial={"scope": scope or {"what": "feature demo", "why": "hard harness", "out_of_scope": "nothing"}})
     return {"status": state.status.value, "state": state, "store": store}
 
 
 if __name__ == "__main__":
     result = run()
-    print(f"\n== status final: {result['status']}")
+    print(f"\n== final status: {result['status']}")
     events = result["store"].list_events()
-    print(f"== eventos persistidos: {len(events)}")
+    print(f"== persisted events: {len(events)}")
     for ev in events[-8:]:
         print(f"   [{ev.ts}] {ev.kind} {ev.node_id}: {ev.message[:70]}")

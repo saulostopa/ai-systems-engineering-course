@@ -1,26 +1,26 @@
 ---
 name: proposal-workflow
-description: Valida uma proposta/deck contra o briefing antes do envio — checklist de requisitos, revisão cruzada e registro de aprovação. Use quando o usuário pedir para revisar, validar, aprovar ou enviar uma proposta/apresentação.
+description: Validates a proposal/deck against the briefing before submission — requirements checklist, cross review and approval record. Use when the user asks to review, validate, approve or send a proposal/presentation.
 ---
 
-# Validação de proposta antes do envio
+# Proposal validation before submission
 
-Enviar antes de validar é o "commit sem gate" do comercial (Aula 07/10).
-A proposta só sai com o checklist passando.
+Sending before validating is the commercial's "commit without a gate" (Lessons 07/10).
+The proposal only goes out with the checklist passing.
 
 ## Gather
 
-- A proposta (materiais/) e o briefing de origem.
-- O script de verificação: `scripts/proposal-check.sh <proposta> <briefing>`.
+- The proposal (materiais/) and the source briefing.
+- The verification script: `scripts/proposal-check.sh <proposal> <briefing>`.
 
 ## Write / Validate — checklist
 
-1. **Requisitos do briefing** — cada requisito do briefing tem resposta na proposta (scripts/proposal-check.sh compara item a item).
-2. **Números com fonte** — todo número do deck tem `FONTE:` citada; nenhum número solto.
-3. **Revisão cruzada** — a proposta foi lida por um revisor diferente de quem gerou (outro agente/pessoa); o revisor registra o veredito.
-4. **Registro de aprovação** — aprovado/rejeitado fica registrado na feature (comentário/estado), nunca só na conversa.
+1. **Briefing requirements** — every briefing requirement has an answer in the proposal (scripts/proposal-check.sh compares item by item).
+2. **Numbers with source** — every number in the deck has `FONTE:` cited; no loose numbers.
+3. **Cross review** — the proposal was read by a reviewer different from the one who generated it (another agent/person); the reviewer records the verdict.
+4. **Approval record** — approved/rejected is recorded in the feature (comment/state), never only in the conversation.
 
 ## Output
 
-- `relatorios/YYYY-MM-DD-<slug>-aprovacao.md`: checklist com STATUS por item + veredito do revisor.
-- Qualquer FAIL bloqueia o envio (log-event.sh registra a fricção).
+- `relatorios/YYYY-MM-DD-<slug>-aprovacao.md`: checklist with STATUS per item + reviewer verdict.
+- Any FAIL blocks the submission (log-event.sh records the friction).

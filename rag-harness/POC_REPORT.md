@@ -1,72 +1,74 @@
-# POC do RAG híbrido — decisão (D1)
+# Hybrid RAG POC — decision (D1)
 
-> Status: **POC validada**. Reabre a proposta do `rag-harness.md` (webmotors-harness-factory)
-> com uma implementação mínima e funcional. O que ficou validado, o que ficou
-> de fora e por quê — decida por evidência (Aula 11), não por intuição.
+> Status: **POC validated**. Reopens the proposal from `rag-harness.md` (webmotors-harness-factory)
+> with a minimal, functional implementation. What was validated, what was left
+> out and why — decide by evidence (Lesson 11), not by intuition.
 
-## O que foi construído
+## What was built
 
 ```
 rag-harness/
 ├── rag_harness/
-│   ├── chunker.py      # chunking AST-aware (stdlib ast) — funções/classes completas
-│   ├── embeddings.py   # NGramEmbedder (local, determinístico) OU Ollama (nomic-embed-text)
-│   ├── indexer.py      # cache por content-hash: re-embed só o que mudou
-│   ├── retrieval.py    # léxico (BM25-ish) + semântico (coseno) + RRF
-│   ├── agentic.py      # Agent Controller: glob→léxico→semântica, suficiente? decide
+│   ├── chunker.py      # AST-aware chunking (stdlib ast) — complete functions/classes
+│   ├── embeddings.py   # NGramEmbedder (local, deterministic) OR Ollama (nomic-embed-text)
+│   ├── indexer.py      # content-hash cache: re-embeds only what changed
+│   ├── retrieval.py    # lexical (BM25-ish) + semantic (cosine) + RRF
+│   ├── agentic.py      # Agent Controller: glob→lexical→semantic, enough? decides
 │   └── __main__.py     # CLI: index / query / hybrid / agent
-└── tests/test_rag.py   # 5 testes (pytest ou python direto)
+└── tests/test_rag.py   # 5 tests (pytest or plain python)
 ```
 
-## O que a POC validou (vs. o rag-harness.md)
+## What the POC validated (vs. the rag-harness.md)
 
-| Idéia do rag-harness.md | Status na POC | Evidência |
+| Idea from rag-harness.md | Status in the POC | Evidence |
 |---|---|---|
-| Chunking por AST (unidade completa) | ✅ validado | `test_chunk_python_extrai_funcoes_e_classes` — toda função/ classe é um chunk íntegro |
-| Embeddings como cache de computação (content-hash) | ✅ validado | `indexer.py` re-usa vetores de chunks inalterados; 2ª indexação não re-embed |
-| Híbrido léxico+semântico com RRF | ✅ validado | `rrf_merge` + `hybrid_search`; teste cobre a fusão |
-| Recuperação agêntica (ferramentas + suficiência) | ✅ validado | `AgentController.retrieve` — barato primeiro, escala sob demanda |
-| Sem provider hardcoded | ✅ validado | `make_embedder()`: Ollama se alcançável, senão NGram local |
+| AST chunking (complete unit) | ✅ validated | `test_chunk_python_extrai_funcoes_e_classes` — every function/class is an intact chunk |
+| Embeddings as a computation cache (content-hash) | ✅ validated | `indexer.py` reuses vectors of unchanged chunks; 2nd indexing does not re-embed |
+| Hybrid lexical+semantic with RRF | ✅ validated | `rrf_merge` + `hybrid_search`; test covers the merge |
+| Agentic retrieval (tools + sufficiency) | ✅ validated | `AgentController.retrieve` — cheap first, scales on demand |
+| No hardcoded provider | ✅ validated | `make_embedder()`: Ollama if reachable, otherwise local NGram |
 
-## O que ficou DE FORA (intencional) — e por quê
+## What was LEFT OUT (intentionally) — and why
 
-| Peça do rag-harness.md | Fora da POC | Motivo |
+| Piece from rag-harness.md | Out of the POC | Reason |
 |---|---|---|
-| File watcher (Rust/Go, inotify) | Sim | POC roda indexação sob demanda; watcher é otimização de escala, não de validade |
-| Fila (LISTEN/NOTIFY, Redis) | Sim | Sem workers concorrentes na POC — não há o que enfileirar |
-| Postgres + pgvector | Sim | SQLite/JSON serve para validar o *padrão*; pgvector resolve volume |
-| OCR de imagens | Sim | D3 (Area Copilot) cobre negócio; OCR é item separado |
-| Decisão de ferramenta via LLM | Parcial | `decide_with_llm` é o ponto de extensão; a heurística já decide bem na POC |
+| File watcher (Rust/Go, inotify) | Yes | POC runs on-demand indexing; watcher is a scale optimization, not a validity one |
+| Queue (LISTEN/NOTIFY, Redis) | Yes | No concurrent workers in the POC — nothing to queue |
+| Postgres + pgvector | Yes | SQLite/JSON is enough to validate the *pattern*; pgvector solves volume |
+| Image OCR | Yes | D3 (Area Copilot) covers business; OCR is a separate item |
+| LLM-based tool decision | Partial | `decide_with_llm` is the extension point; the heuristic already decides well in the POC |
 
-## Condições de reabertura (do rag-harness.md) — revisitadas
+## Reopening conditions (from the rag-harness.md) — revisited
 
-1. **Harness em uso real em código grande** — ❌ ainda não (pilotos no EPIC G).
-2. **Fricção real de recuperação registrada** — ⚠️ parcial: a POC mede a *qualidade*
-   de recuperação (pode-se medir precisão@k), mas o custo-benefício de *adotar*
-   depende do EPIC G.
-3. **Agentes em uso não resolvem nativamente** — ⚠️ a decidir: os agentes modernos
-   já trazem glob/grep nativos; a POC mostra que o valor agregado do RAG híbrido
-   está no **contexto de negócio** (D3) e na **qualidade do chunking** para grandes
-   repos, não na busca de código simples.
+1. **Harness in real use on large code** — ❌ not yet (pilots in EPIC G).
+2. **Real retrieval friction logged** — ⚠️ partial: the POC measures retrieval
+   *quality* (precision@k can be measured), but the cost-benefit of *adopting*
+   depends on EPIC G.
+3. **Agents in use do not solve natively** — ⚠️ to be decided: modern agents
+   already come with native glob/grep; the POC shows the added value of hybrid
+   RAG lies in **business context** (D3) and in **chunking quality** for large
+   repos, not in simple code search.
 
-## Decisão
+## Decision
 
-- **Adotar a arquitetura**: sim, como base de código do RAG — o padrão
-  (AST chunks + cache hash + RRF + agência) está validado e é portável para
-  pgvector sem redesenho.
-- **Adotar em produção (watcher+pg)**: **não ainda** — aguardar evidência do
-  EPIC G (condição 1-2). A POC já roda sem infra: indexação sob demanda.
-- **Prioridade de valor**: inverter a ordem do plano — o **RAG de negócio (D3)**
-  tem mais ROI imediato que o watcher; a infra pesada só quando o volume pedir.
+- **Adopt the architecture**: yes, as the RAG code base — the pattern
+  (AST chunks + hash cache + RRF + agency) is validated and portable to
+  pgvector without redesign.
+- **Adopt in production (watcher+pg)**: **not yet** — wait for evidence from
+  EPIC G (conditions 1-2). The POC already runs without infrastructure:
+  on-demand indexing.
+- **Value priority**: invert the plan order — **business RAG (D3)** has more
+  immediate ROI than the watcher; heavy infrastructure only when volume
+  demands it.
 
-## Como rodar
+## How to run
 
 ```sh
 cd rag-harness
-python tests/test_rag.py                    # testes (stdlib)
+python tests/test_rag.py                    # tests (stdlib)
 python -m rag_harness index ../harness-basic --verbose
 python -m rag_harness hybrid ../harness-basic "gatekeeper pre-commit"
-python -m rag_harness agent ../harness-basic "como validar o harness"
-# com Ollama (semântica real):
+python -m rag_harness agent ../harness-basic "how to validate the harness"
+# with Ollama (real semantics):
 OLLAMA_API_URL=http://localhost:11434 python -m rag_harness index ../harness-basic
 ```

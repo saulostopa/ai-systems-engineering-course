@@ -1,22 +1,22 @@
-# AGENTS.md — Playbook de domínio: Commercial
+# AGENTS.md — Domain playbook: Commercial
 
-> Esqueleto multi-domínio (mesmo para games, finanças, comercial...).
-> Só o conteúdo das skills muda — o processo não.
+> Multi-domain skeleton (same for games, finance, commercial...).
+> Only the skill content changes — the process does not.
 
-## 1. O que este playbook governa
-Entregas de Commercial. A feature list abaixo é a fonte de verdade do escopo.
+## 1. What this playbook governs
+Commercial deliveries. The feature list below is the source of truth for scope.
 
-## 2. Como trabalhar
-- UMA feature `in_progress` por vez (regra do harness básico).
-- Skills do domínio carregam SOB DEMANDA (frontmatter name+description).
-- Escopo declarado em policies/scope-control.md antes de editar.
+## 2. How to work
+- ONE feature `in_progress` at a time (basic harness rule).
+- Domain skills load ON DEMAND (frontmatter name+description).
+- Scope declared in policies/scope-control.md before editing.
 
-## 3. Como verificar
-- policies/definition-of-done.md: o que prova "pronto" no domínio.
-- policies/evidence-required.md: evidência antes de "done" (Aula 09).
-- scripts/validate-playbook.sh: saúde do playbook (Aula 11).
+## 3. How to verify
+- policies/definition-of-done.md: what proves "done" in the domain.
+- policies/evidence-required.md: evidence before "done" (Lesson 09).
+- scripts/validate-playbook.sh: playbook health (Lesson 11).
 
-## 4. Onde mora o conhecimento
-- skills/ — pacotes de instrução do domínio (SKILL.md).
-- feature_list.json — estado de cada entrega.
-- relatorios/ — artefatos gerados (com fonte citada).
+## 4. Where knowledge lives
+- skills/ — domain instruction packages (SKILL.md).
+- feature_list.json — state of each delivery.
+- relatorios/ — generated artifacts (with cited source).

@@ -1,9 +1,9 @@
-"""Exemplo de Page Object Model (POM) — padrão exigido pela skill qa-playwright-e2e.
+"""Example Page Object Model (POM) — the pattern required by the qa-playwright-e2e skill.
 
-Regras (Aula 10):
-- Locators SEMÂNTICOS: get_by_role / get_by_label — nunca CSS/XPath frágil.
-- Cada tela = uma classe; cada fluxo = um método reutilizável.
-- Interceptação de rede para setups determinísticos.
+Rules (Lesson 10):
+- SEMANTIC locators: get_by_role / get_by_label — never fragile CSS/XPath.
+- Each screen = one class; each flow = one reusable method.
+- Network interception for deterministic setups.
 """
 
 from playwright.sync_api import Page
@@ -12,7 +12,7 @@ from playwright.sync_api import Page
 class SearchPage:
     def __init__(self, page: Page):
         self.page = page
-        # Locators semânticos — únicos pontos de contato com o DOM
+        # Semantic locators — the only points of contact with the DOM
         self.search_input = page.get_by_role("searchbox", name="Buscar veículos")
         self.search_button = page.get_by_role("button", name="Buscar")
         self.result_list = page.get_by_role("list", name="Resultados")

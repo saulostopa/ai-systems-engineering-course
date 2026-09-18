@@ -1,107 +1,107 @@
 ---
-title: Aula 14 — De loops únicos a engenharia de grafos
+title: Lesson 14 — From single loops to graph engineering
 ---
 
-# Aula 14 — De loops únicos a engenharia de grafos
+# Lesson 14 — From single loops to graph engineering
 
-> Quando um agente não basta, você não contrata mais um agente: você projeta um grafo de agentes. E o grafo é um harness.
+> When one agent isn't enough, you don't hire another agent: you design a graph of agents. And the graph is a harness.
 
-## O limite do loop único
+## The limit of the single loop
 
-Um loop único funciona para uma feature bem delimitada. Mas o trabalho real é composto: escopo, implementação, QA, revisão, evidência, publicação. Fazer tudo num loop único significa:
+A single loop works for a well-delimited feature. But real work is composite: scope, implementation, QA, review, evidence, publication. Doing everything in a single loop means:
 
-- um contexto só carrega o peso de tudo (custo e deriva);
-- um único ponto de decisão concentra os erros;
-- nenhuma especialização (o mesmo agente que escreve código também revisa — o que anula a revisão);
-- sem paralelismo (QA espera o código; o código espera o QA).
+- one context carries the weight of everything (cost and drift);
+- a single decision point concentrates the errors;
+- no specialization (the same agent that writes code also reviews — which nullifies the review);
+- no parallelism (QA waits for the code; the code waits for QA).
 
-## O grafo de agentes
+## The graph of agents
 
-A **engenharia de grafos** trata o trabalho como um grafo de **nós** (agentes/especialistas) e **arestas** (transferências com contrato). O harness deixa de governar um loop e passa a governar o **roteamento entre loops**:
+**Graph engineering** treats work as a graph of **nodes** (agents/experts) and **edges** (transfers with a contract). The harness stops governing a loop and starts governing the **routing between loops**:
 
 ```
           ┌──────────┐
- humano ─▶│ planejar │─▶ escopo aprovado
+ human ──▶│  plan    │──▶ approved scope
           └──────────┘
                │
           ┌────▼─────┐   diff     ┌────────┐   report   ┌──────────┐
-          │ codificar │──────────▶│ revisar │──────────▶│ evidenciar│──▶ artefatos
+          │  code    │──────────▶│ review │──────────▶│ evidence │──▶ artifacts
           └──────────┘            └────────┘            └──────────┘
                │                                              ▲
-               └─────── testes E2E / gates mecânicos ─────────┘
+               └─────── E2E tests / mechanical gates ─────────┘
 ```
 
-Cada nó:
+Each node:
 
-- tem **entrada definida** (contrato do que recebe);
-- tem **saída verificável** (o que produz e como se prova);
-- pode ter **ferramentas próprias** (QA usa Playwright; o planejador usa a feature list);
-- **não precisa conversar** com os outros nós — comunica por artefatos (diff, teste, report), que é exatamente a lição da Aula 03 (repo como sistema de registro).
+- has a **defined input** (contract of what it receives);
+- has a **verifiable output** (what it produces and how it's proven);
+- can have **its own tools** (QA uses Playwright; the planner uses the feature list);
+- **doesn't need to talk** to the other nodes — it communicates through artifacts (diff, test, report), which is exactly the lesson of Lesson 03 (repo as system of record).
 
-## O padrão mais importante: especialização e revisão cruzada
+## The most important pattern: specialization and cross-review
 
-No grafo, o agente que **escreve** não é o mesmo que **revisa**. Isso não é burocracia — é a correção de um defeito estrutural do loop único: quem implementou já decidiu que está certo (viés da Aula 09). A revisão cruzada traz:
+In the graph, the agent that **writes** is not the same one that **reviews**. This is not bureaucracy — it is the correction of a structural defect of the single loop: whoever implemented already decided it's right (Lesson 09 bias). Cross-review brings:
 
-- olhos novos sobre o diff;
-- o revisor quebra o auto-engano;
-- a evidência do revisor é registrada como etapa do fluxo.
+- fresh eyes on the diff;
+- the reviewer breaks the self-deception;
+- the reviewer's evidence is recorded as a flow step.
 
-No AgEnFK, isso é nativo: as fases `code` e `review` são steps separados, e o item só avança com a validação de cada um. O "grafo" mínimo de um item AgEnFK já é: plan → code → test → review → close.
+In AgEnFK, this is native: the `code` and `review` phases are separate steps, and the item only advances with each one's validation. The minimal "graph" of an AgEnFK item is already: plan → code → test → review → close.
 
-## Como o harness governa o grafo
+## How the harness governs the graph
 
-| Mecanismo | Papel no grafo |
+| Mechanism | Role in the graph |
 |---|---|
-| Itens com estado | O "token" que trafega entre nós |
-| Gates por etapa | Impedem arestas inválidas (ex.: code sem teste) |
-| Evidência por etapa | Prova que o nó cumpriu a saída antes de transferir |
-| Artefatos no repo | A linguagem comum entre nós (diff, report, quiz) |
-| Telemetria | Mede o custo de cada nó e da travessia inteira |
+| Items with state | The "token" that travels between nodes |
+| Gates per step | Prevent invalid edges (e.g.: code without test) |
+| Evidence per step | Proves the node fulfilled its output before transferring |
+| Artifacts in the repo | The common language between nodes (diff, report, quiz) |
+| Telemetry | Measures the cost of each node and of the whole traversal |
 
-## Multi-agente no nosso futuro
+## Multi-agent in our future
 
-Esta aula fecha o curso apontando para o que os harnesses de domínio (EPIC E) e o multi-team vão usar:
+This lesson closes the course pointing to what the domain harnesses (EPIC E) and the multi-team will use:
 
-- **App Harness**: um agente implementa, um agente de QA valida com E2E, um agente navega e valida com visão — três nós no mesmo grafo.
-- **Finance Harness**: o nó "processar planilhas" roda de madrugada e entrega para o nó "publicar relatório" — grafo com disparo temporal.
-- **Áreas**: cada área publica artefatos (reports, quizzes) num repositório comum — a "intranet de artefatos" do EPIC F — que alimenta a busca RAG: um grafo que cruza domínios.
+- **App Harness**: one agent implements, a QA agent validates with E2E, an agent navigates and validates with vision — three nodes in the same graph.
+- **Finance Harness**: the "process spreadsheets" node runs overnight and hands off to the "publish report" node — a graph with a time trigger.
+- **Areas**: each area publishes artifacts (reports, quizzes) to a common repository — the "artifact intranet" of EPIC F — which feeds the RAG search: a graph that crosses domains.
 
-E o grafo se retroalimenta: os artefatos de um nó viram contexto (RAG) para o nó seguinte — conhecimento acumulado como ativo, não como conversa perdida.
+And the graph feeds itself: a node's artifacts become context (RAG) for the next node — accumulated knowledge as an asset, not as lost conversation.
 
-## Da teoria ao executável — o hard harness
+## From theory to executable — the hard harness
 
-A Aula 14 descreveu grafos como conceito; as aulas 15-17 o transformam em
-**código executável**. O componente `hard-harness/` deste curso materializa
-exatamente o que esta aula desenhou:
+Lesson 14 described graphs as a concept; lessons 15-17 turn them into
+**executable code**. The `hard-harness/` component of this course materializes
+exactly what this lesson drew:
 
-| Teoria (Aula 14) | Executável (hard-harness) |
+| Theory (Lesson 14) | Executable (hard-harness) |
 |---|---|
-| Nós especializados | `agents/` (planner, coder, reviewer, evidence) |
-| Arestas com contrato | `core/graph.py` (fan_out, join, router com default) |
-| Comunicação por artefatos | `NodeOutput.artifacts` + `ArtifactRef` |
-| Revisão cruzada | `ReviewResult` — quem escreve não revisa |
-| Quem governa o grafo | `core/runner.py` — única autoridade de estado |
-| Loops com critério | retries/limites em `Limits` + gates determinísticos |
-| Evidência | `Evidence` gerada por gates e consolidada no nó evidence |
+| Specialized nodes | `agents/` (planner, coder, reviewer, evidence) |
+| Edges with contract | `core/graph.py` (fan_out, join, router with default) |
+| Communication via artifacts | `NodeOutput.artifacts` + `ArtifactRef` |
+| Cross-review | `ReviewResult` — whoever writes doesn't review |
+| Who governs the graph | `core/runner.py` — sole state authority |
+| Loops with criteria | retries/limits in `Limits` + deterministic gates |
+| Evidence | `Evidence` generated by gates and consolidated in the evidence node |
 
-O grafo da Aula 14 deixou de ser diagrama: virou `examples/basic_workflow` —
-rodável com `PYTHONPATH=. python3 hard-harness/examples/basic_workflow/workflow.py`,
-com o mesmo formato do ADK 2 (funções para previsível, agentes para
-raciocínio, routers explícitos).
+The Lesson 14 graph stopped being a diagram: it became `examples/basic_workflow` —
+runnable with `PYTHONPATH=. python3 hard-harness/examples/basic_workflow/workflow.py`,
+with the same shape as ADK 2 (functions for predictability, agents for
+reasoning, explicit routers).
 
-## Principais aprendizados
+## Key takeaways
 
-1. Loop único concentra custo, erro e viés; o grafo distribui e especializa.
-2. Nós se comunicam por artefatos verificáveis, não por conversa.
-3. Quem escreve não revisa: revisão cruzada quebra o auto-engano.
-4. O harness governa o grafo: itens, gates, evidência, artefatos e telemetria.
-5. O futuro multi-team é um grafo de loops especializados, com contexto compartilhado via RAG.
+1. A single loop concentrates cost, error and bias; the graph distributes and specializes.
+2. Nodes communicate through verifiable artifacts, not conversation.
+3. Whoever writes doesn't review: cross-review breaks self-deception.
+4. The harness governs the graph: items, gates, evidence, artifacts and telemetry.
+5. The multi-team future is a graph of specialized loops, with context shared via RAG.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 14"
+"quiz me on Lesson 14"
 ```
 
-**Continue**: [15 — Do Markdown ao runtime executável](/lectures/lecture-15) ·
-[16 — ADK 2](/lectures/lecture-16) · [17 — Construindo um Hard Harness](/lectures/lecture-17).
+**Continue**: [15 — From Markdown to an executable runtime](/lectures/lecture-15) ·
+[16 — ADK 2](/lectures/lecture-16) · [17 — Building a Hard Harness](/lectures/lecture-17).

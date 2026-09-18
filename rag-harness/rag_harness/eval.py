@@ -1,10 +1,10 @@
-"""Avaliação de precisão@k da recuperação agêntica (D2).
+"""Precision@k evaluation of agentic retrieval (D2).
 
-Executa queries com alvo esperado (substring de caminho) e mede quantas
-acertam no top-k. Decida por evidência (Aula 11): o número que sai daqui é
-a métrica de saúde do RAG de código.
+Runs queries with an expected target (path substring) and measures how many
+hit within top-k. Decide by evidence (Lesson 11): the number produced here
+is the health metric of the code RAG.
 
-Uso:
+Usage:
     python -m rag_harness eval <root> [--queries tests/queries.json] [--top-k 3]
 """
 
@@ -77,12 +77,12 @@ def main() -> None:
 
     queries = load_queries(args.queries)
     summary = run_eval(args.root, queries, args.top_k)
-    print(f"\n== Precisão@{summary['top_k']}: {summary['hits']}/{summary['total']} = {summary['precision_at_k']}")
-    print(f"== Ferramentas usadas: {', '.join(summary['tools_used'])}")
+    print(f"\n== Precision@{summary['top_k']}: {summary['hits']}/{summary['total']} = {summary['precision_at_k']}")
+    print(f"== Tools used: {', '.join(summary['tools_used'])}")
     for r in summary["rows"]:
         mark = "✓" if r["hit"] else "✗"
         print(f"\n[{mark}] {r['query']}")
-        print(f"     esperado: {r['expected']}")
+        print(f"     expected: {r['expected']}")
         print(f"     tools: {', '.join(r['tools'])}")
         print(f"     top: {', '.join(r['top'])}")
     sys.exit(0 if summary["hits"] == summary["total"] else 2)

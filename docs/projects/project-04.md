@@ -1,102 +1,102 @@
 ---
-title: Projeto 04 — Harness de domínio
+title: Project 04 — Domain harness
 ---
 
-# Projeto 04 — Harness de domínio
+# Project 04 — Domain harness
 
-> O mesmo esqueleto do harness, skill packs por área: games, finanças ou comercial. Escolha o seu.
+> The same harness skeleton, skill packs per area: games, finance or sales. Pick yours.
 
-## Objetivo
+## Objective
 
-Construir um **playbook de domínio**: o harness básico (Projeto 02) + o pacote de skills e políticas **do seu domínio**. É a essência do modelo multi-team (EPIC E): o esqueleto não muda; o conhecimento muda.
+Build a **domain playbook**: the basic harness (Project 02) + the skills and policies package **of your domain**. It is the essence of the multi-team model (EPIC E): the skeleton doesn't change; the knowledge changes.
 
-## A receita universal
+## The universal recipe
 
 ```
-harness de domínio = harness básico (Projeto 02)
-                   + skills do domínio (SKILL.md sob demanda)
-                   + verificação do domínio (gates próprios)
-                   + artefatos do domínio (o que se entrega)
+domain harness = basic harness (Project 02)
+               + domain skills (on-demand SKILL.md)
+               + domain verification (own gates)
+               + domain artifacts (what gets delivered)
 ```
 
-## Três domínios para escolher
+## Three domains to choose from
 
-### 🎮 Games (ex.: criação de jogo até a publicação no Roblox)
+### 🎮 Games (e.g.: game creation up to publication on Roblox)
 
-| Peça | Conteúdo |
+| Piece | Content |
 |---|---|
-| Skills | `game-design` (persona, narrativa, storytelling), `asset-pipeline`, `roblox-publish` (Luau, Rojo, validação de plataforma) |
-| Feature list | Personagens, mecânicas, narrativas — cada uma com estado |
-| Verificação | Playteste simulado: gerar variações → simular → medir → iterar; validação de config de monetização antes do publish |
-| Artefato | Design doc HTML da feature (via `feature-report`), playtest report |
+| Skills | `game-design` (persona, narrative, storytelling), `asset-pipeline`, `roblox-publish` (Luau, Rojo, platform validation) |
+| Feature list | Characters, mechanics, narratives — each with state |
+| Verification | Simulated playtest: generate variations → simulate → measure → iterate; monetization config validation before publish |
+| Artifact | HTML design doc of the feature (via `feature-report`), playtest report |
 
-### 💰 Finanças (ex.: análise de planilhas)
+### 💰 Finance (e.g.: spreadsheet analysis)
 
-| Peça | Conteúdo |
+| Piece | Content |
 |---|---|
-| Skills | `spreadsheet-analysis` (pandas/openpyxl), `reconciliation` (esperado vs. real), `report-generation` |
-| Feature list | Relatórios a gerar — fonte, prazo, estado |
-| Verificação | Validação de fórmulas, conferência de totais, guarda contra dados faltantes |
-| Artefato | Relatório HTML publicado (madrugada → café) |
+| Skills | `spreadsheet-analysis` (pandas/openpyxl), `reconciliation` (expected vs. actual), `report-generation` |
+| Feature list | Reports to generate — source, deadline, state |
+| Verification | Formula validation, totals check, guard against missing data |
+| Artifact | HTML report published (overnight → coffee) |
 
-### 📈 Comercial (ex.: apresentações e propostas)
+### 📈 Sales (e.g.: presentations and proposals)
 
-| Peça | Conteúdo |
+| Piece | Content |
 |---|---|
-| Skills | `deck-generation`, `proposal-draft` (briefing + contexto de CRM), `sales-review` |
-| Feature list | Entregas de proposta/deck — cliente, data, aprovação |
-| Verificação | Check contra requisitos do briefing; revisão cruzada antes do envio |
-| Artefato | Deck/proposta versionada + report da feature |
+| Skills | `deck-generation`, `proposal-draft` (briefing + CRM context), `sales-review` |
+| Feature list | Proposal/deck deliverables — client, date, approval |
+| Verification | Check against briefing requirements; cross-review before sending |
+| Artifact | Versioned deck/proposal + feature report |
 
-## Passo a passo
+## Step by step
 
-### 1. Defina o domínio e a feature list
+### 1. Define the domain and the feature list
 
-Escolha UM domínio. Liste 3-5 features reais com estado (Aula 08).
+Pick ONE domain. List 3-5 real features with state (Lesson 08).
 
-### 2. Escreva 2-3 skills do domínio
+### 2. Write 2-3 domain skills
 
-Cada skill é um `SKILL.md` com frontmatter (`name`, `description`) e corpo `Gather → Write → Output` (veja [criar uma skill nova](/skills/how-to-create)). Exemplo mínimo:
+Each skill is a `SKILL.md` with frontmatter (`name`, `description`) and a `Gather → Write → Output` body (see [create a new skill](/skills/how-to-create)). Minimal example:
 
 ```markdown
 ---
 name: spreadsheet-analysis
-description: Analisa planilhas (Excel/CSV) com pandas: valida totais, detecta
-  dados faltantes e gera resumo. Use quando o usuário pedir análise de planilha.
+description: Analyzes spreadsheets (Excel/CSV) with pandas: validates totals, detects
+  missing data and generates a summary. Use when the user asks for spreadsheet analysis.
 ---
 
-# Análise de planilha
+# Spreadsheet analysis
 
 ## Gather
-- Leia o arquivo; liste colunas, tipos e totais.
+- Read the file; list columns, types and totals.
 
 ## Write
-- Valide: totais batem? dados faltantes? outliers?
+- Validate: do the totals add up? missing data? outliers?
 
 ## Output
-- Resumo com esperado vs. real + evidência (linhas de output).
+- Summary with expected vs. actual + evidence (output lines).
 ```
 
-### 3. Defina a verificação do domínio
+### 3. Define the domain verification
 
-O que significa "pronto" **no seu domínio**? (Games: publish validado; Finanças: relatório reconciliado; Comercial: proposta aprovada pelo review.) Escreva no `definition-of-done.md` do domínio.
+What does "done" mean **in your domain**? (Games: validated publish; Finance: reconciled report; Sales: proposal approved by review.) Write it in the domain's `definition-of-done.md`.
 
-### 4. Rode uma feature de ponta a ponta
+### 4. Run a feature end-to-end
 
-Da feature list até o artefato, com evidência registrada — igual ao Projeto 02, agora com as skills do domínio carregando sob demanda.
+From the feature list to the artifact, with recorded evidence — like Project 02, now with the domain skills loading on demand.
 
-## Verificação
+## Verification
 
-- O mesmo esqueleto do Projeto 02, zero alterações de processo.
-- As skills do domínio foram acionadas **por demanda** (descrição combinando com a tarefa), não todas no boot.
-- O artefato do domínio foi produzido e versionado.
+- The same skeleton as Project 02, zero process changes.
+- The domain skills were triggered **on demand** (description matching the task), not all at boot.
+- The domain artifact was produced and versioned.
 
-## Entregável
+## Deliverable
 
-Seu playbook de domínio versionado: esqueleto + skills + verificação + 1 artefato de exemplo.
+Your versioned domain playbook: skeleton + skills + verification + 1 example artifact.
 
 ::: tip Status
-Os playbooks oficiais (Games com Roblox, Finanças com execução noturna, Comercial com CRM) são o **EPIC E** do curso.
+The official playbooks (Games with Roblox, Finance with nightly execution, Sales with CRM) are **EPIC E** of the course.
 :::
 
-**Próximo projeto**: [05 — Area Copilot com RAG](/projects/project-05).
+**Next project**: [05 — Area Copilot with RAG](/projects/project-05).

@@ -1,11 +1,11 @@
-"""Exemplo de teste E2E — fluxo de busca com setup determinístico (rede interceptada).
+"""Example E2E test — search flow with a deterministic setup (intercepted network).
 
-Para rodar:
+To run:
     pytest tests/e2e -q
 
-Triagem de flaky (Aula 10):
+Flaky triage (Lesson 10):
     pytest tests/e2e/test_search.py --trace=retain-on-failure
-    playwright show-trace <artefato>.zip
+    playwright show-trace <artifact>.zip
 """
 
 import pytest
@@ -21,7 +21,7 @@ FIXTURE_RESULTS = [
 
 @pytest.fixture
 def search_page(page: Page) -> SearchPage:
-    # Intercepta a busca: resposta determinística, sem depender da API
+    # Intercepts the search: deterministic response, no dependency on the API
     page.route(
         "**/api/v1/search?*",
         lambda route: route.fulfill(json={"results": FIXTURE_RESULTS}),

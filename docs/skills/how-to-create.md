@@ -1,22 +1,22 @@
-# Criar uma skill nova
+# Create a new skill
 
-O pipeline de uma skill: **ideia → SKILL.md → teste → publicação**.
+The skill pipeline: **idea → SKILL.md → test → publication**.
 
-1. **Ideia** — veja `ideas/BACKLOG.md` do `harness-agent-skills` antes de começar; sua ideia pode já estar proposta.
-2. **SKILL.md** — frontmatter só com `name` e `description`; o corpo em `Gather → Write → Output` (o padrão validado por `feature-report` e `explain`).
-3. **Teste** — carregue a skill num harness real (Claude Code, OpenCode) e execute o caso de uso de ponta a ponta.
-4. **Publicação** — PR no `harness-agent-skills`; depois de aprovada, vira uma pasta na raiz, no mesmo formato das demais.
+1. **Idea** — check `ideas/BACKLOG.md` of `harness-agent-skills` before starting; your idea may already be proposed.
+2. **SKILL.md** — frontmatter with only `name` and `description`; the body in `Gather → Write → Output` (the pattern validated by `feature-report` and `explain`).
+3. **Test** — load the skill into a real harness (Claude Code, OpenCode) and run the use case end-to-end.
+4. **Publication** — PR to `harness-agent-skills`; once approved, it becomes a folder at the root, in the same format as the others.
 
-E o caminho inverso — **instalar** uma skill que veio de fora:
+And the reverse path — **installing** a skill that came from outside:
 
 ```sh
-harness-basic/scripts/gate-skill-scan.sh <dir-ou-url-do-repo>
+harness-basic/scripts/gate-skill-scan.sh <dir-or-url-of-repo>
 ```
 
-Escaneie **antes de baixar** e registre o veredito no `skills-lock.json`.
-Veja [skill-guard](/skills/skill-guard).
+Scan **before downloading** and record the verdict in `skills-lock.json`.
+See [skill-guard](/skills/skill-guard).
 
-::: tip Regra de ouro
-"Build mechanically, don't re-type" — a skill deve montar os artefatos a partir
-do que foi lido/verificado, nunca recriar conteúdo de memória.
+::: tip Golden rule
+"Build mechanically, don't re-type" — the skill must assemble artifacts from
+what was read/verified, never recreate content from memory.
 :::

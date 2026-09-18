@@ -1,39 +1,39 @@
 ---
 name: feature-report
-description: Gera um relatório HTML autocontido e acessível do que uma feature entregou — decisões, trade-offs, verificação e perguntas abertas, com números rastreados a fonte. Use quando o usuário pedir relatório/resumo do que acabou de implementar.
+description: Generates a self-contained, accessible HTML report of what a feature delivered — decisions, trade-offs, verification and open questions, with every number traced to a source. Use when the user asks for a report/summary of what was just implemented.
 ---
 
 # Feature report (v2 — Eleanor)
 
-Relato de resultado, não tutorial: o que foi entregue, as decisões com
-trade-offs causais, a verificação executada e as perguntas abertas. Cada
-número rastreável a diff, teste ou log — nunca estimado em silêncio.
+A result report, not a tutorial: what was delivered, the decisions with
+causal trade-offs, the verification that ran and the open questions. Every
+number traceable to a diff, test or log — never silently estimated.
 
 ## Gather
 
-- A mudança: leia o diff e o código que ele toca.
-- A verificação real: comandos executados e saídas (build, testes, e2e).
-- O contexto do item: o que foi declarado em escopo (scope-control) — o relatório compara entrega vs. escopo.
-- Se existir `reports/<mesmo-slug>.html` anterior, leia e diferencie o que mudou.
+- The change: read the diff and the code it touches.
+- The real verification: executed commands and outputs (build, tests, e2e).
+- The item context: what was declared in scope (scope-control) — the report compares delivery vs. scope.
+- If a previous `reports/<same-slug>.html` exists, read it and diff what changed.
 
 ## Write
 
-Estrutura (cards, sempre nesta ordem):
+Structure (cards, always in this order):
 
-1. **O que foi entregue** — resultado, passado declarativo. Nada de processo ("trabalhamos").
-2. **Decisões e trade-offs** — formato causal: "Escolhido X em vez de Y porque Z, ao custo de W".
-3. **Verificação** — tabela: comando, esperado, real. Número sem fonte vira "não medido".
-4. **Perguntas abertas** — perguntas de verdade, respondíveis, não disfarçadas de TODO.
+1. **What was delivered** — result, declarative past tense. No process ("we worked").
+2. **Decisions and trade-offs** — causal format: "Chose X instead of Y because Z, at the cost of W".
+3. **Verification** — table: command, expected, actual. A number without a source becomes "not measured".
+4. **Open questions** — real, answerable questions, not TODOs in disguise.
 
-## Acessibilidade obrigatória (v2)
+## Mandatory accessibility (v2)
 
-- Contrastes AA: textos secundários/muted nas cores de papel correspondentes.
-- Estrutura semântica: um `h1` por página, `section` com `aria-label`.
-- Tabelas com `th`; números em `tabular-nums`.
-- Nenhuma informação transmitida só por cor (verdicto tem ícone/texto além da cor).
+- AA contrast: secondary/muted texts on the corresponding role colors.
+- Semantic structure: one `h1` per page, `section` with `aria-label`.
+- Tables with `th`; numbers in `tabular-nums`.
+- No information conveyed by color alone (verdict has icon/text besides color).
 
 ## Output
 
-- Renderize **inteiro** pelos assets v2: `../assets/system.css` (bloco `<style>`) e `../assets/skeleton.html` (estrutura + scripts copiados por inteiro — os scripts têm literais `${...}` que colidem com template engines; nunca reescrever).
-- Todo elemento com `data-i18n` ganha `data-i18n-pt` e `data-i18n-en` (toggle EN/PT no toolbar já funciona).
-- Salve em `reports/YYYY-MM-DD-<slug>.html` e abra.
+- Render **whole** through the v2 assets: `../assets/system.css` (`<style>` block) and `../assets/skeleton.html` (structure + scripts copied in full — the scripts have `${...}` literals that collide with template engines; never rewrite them).
+- Every element with `data-i18n` gets `data-i18n-pt` and `data-i18n-en` (the EN/PT toggle in the toolbar already works).
+- Save to `reports/YYYY-MM-DD-<slug>.html` and open it.

@@ -1,9 +1,9 @@
-"""Hard Harness — orquestração executável framework-agnóstica.
+"""Hard Harness — framework-agnostic executable orchestration.
 
-Módulos:
-  core/     grafo, runner, schemas, gates, events (o núcleo)
-  stores/   persistência (FileStateStore; AgEnFKStore adapter)
-  adapters/ adk2 (inspiração opcional), rag (provedor de contexto)
-  agents/   especialistas: planner, coder, reviewer, evidence
-  llm/      providers: OpenRouter (padrão), Ollama (opcional), Stub (offline)
+Modules:
+  core/     graph, runner, schemas, gates, events (the core)
+  stores/   persistence (FileStateStore; AgEnFKStore adapter)
+  adapters/ adk2 (optional inspiration), rag (context provider)
+  agents/   specialists: planner, coder, reviewer, evidence
+  llm/      providers: OpenRouter (default), Ollama (optional), Stub (offline)
 """

@@ -1,28 +1,28 @@
 # Session Handoff
 
-> Bilhete para a próxima sessão (Aula 05). Seções obrigatórias no cabeçalho.
-> Quem lê isto deve conseguir retomar SEM reler a conversa anterior.
+> Note for the next session (Lesson 05). Mandatory sections in the header.
+> Whoever reads this must be able to resume WITHOUT re-reading the previous conversation.
 
-## Data do último trabalho
+## Date of last work
 YYYY-MM-DD
 
-## Sessão/agente anterior
-(nome da ferramenta/agente)
+## Previous session/agent
+(tool/agent name)
 
-## O que está VERIFICADO
-- [ ] feature-001: implementacao pronta, `npm test` passou (3 testes, sem reducao)
+## What is VERIFIED
+- [ ] feature-001: implementation done, `npm test` passed (3 tests, no reduction)
 - [ ] feature-001: build OK
 
-## O que está QUEBRADO / PENDENTE
-- [ ] feature-001: falta revisao do diff antes do PR
-- [ ] feature-002: nao iniciada
+## What is BROKEN / PENDING
+- [ ] feature-001: diff review still needed before the PR
+- [ ] feature-002: not started
 
-## Próxima ação (a melhor única)
-1. Revisar o diff de feature-001 (`git diff main...HEAD`) e abrir o PR.
+## Next action (the single best one)
+1. Review the feature-001 diff (`git diff main...HEAD`) and open the PR.
 
-## Como verificar a retomada
-- `git status` limpo? (esperado: sim)
-- `npm test` verde? (esperado: sim — re-executar antes de confiar)
+## How to verify resumption
+- `git status` clean? (expected: yes)
+- `npm test` green? (expected: yes — re-run before trusting)
 
-## Riscos e decisões pendentes
-- Nenhum (ou registre: decisao X depende de resposta do time Y)
+## Risks and pending decisions
+- None (or record: decision X depends on a response from team Y)

@@ -1,82 +1,82 @@
 ---
-title: Aula 02 — O que é um harness, de fato
+title: Lesson 02 — What a harness really is
 ---
 
-# Aula 02 — O que é um harness, de fato
+# Lesson 02 — What a harness really is
 
-> Definição precisa, componentes e a diferença entre harness, prompt e skill.
+> Precise definition, components, and the difference between harness, prompt and skill.
 
-## Definição
+## Definition
 
-Um **harness** é tudo o que envolve o modelo e o transforma em um agente que trabalha. Formalmente:
+A **harness** is everything that surrounds the model and turns it into an agent that works. Formally:
 
-> **Harness** = o ambiente de trabalho do agente: as ferramentas que ele pode chamar, o conhecimento que ele carrega, as regras que ele obedece, os mecanismos que verificam o que ele faz e o estado que persiste entre as execuções.
+> **Harness** = the agent's work environment: the tools it can call, the knowledge it carries, the rules it obeys, the mechanisms that verify what it does and the state that persists between executions.
 
-A fórmula deste curso:
+The formula of this course:
 
 ```
-agente = modelo + harness
+agent = model + harness
 ```
 
-O modelo é substituível (Claude, GPT, Gemini, DeepSeek, Llama...). O harness é o que dá identidade, previsibilidade e confiabilidade ao trabalho.
+The model is replaceable (Claude, GPT, Gemini, DeepSeek, Llama...). The harness is what gives identity, predictability and reliability to the work.
 
-## Os componentes de um harness
+## The components of a harness
 
-| Componente | O que é | Exemplo no nosso ecossistema |
+| Component | What it is | Example in our ecosystem |
 |---|---|---|
-| **Ferramentas** | Comandos, APIs e ações que o agente pode executar | Bash, gh, git, Playwright, npx |
-| **Conhecimento** | Instruções e contexto carregados antes do trabalho | AGENTS.md, CLAUDE.md, docs/ |
-| **Skills** | Pacotes de instrução ativados por demanda (`SKILL.md`) | `feature-report`, `feature-quiz`, `qa-playwright-e2e` |
-| **Regras/Gates** | Mecanismos que restringem o comportamento | Gatekeeper, pre-commit hooks, policies |
-| **Verificação** | Como o agente prova que terminou | Testes, `validate-harness.sh`, evidence |
-| **Estado** | O que persiste entre sessões | `feature_list.json`, `claude-progress.md`, `session-handoff.md` |
+| **Tools** | Commands, APIs and actions the agent can execute | Bash, gh, git, Playwright, npx |
+| **Knowledge** | Instructions and context loaded before the work | AGENTS.md, CLAUDE.md, docs/ |
+| **Skills** | Instruction packages activated on demand (`SKILL.md`) | `feature-report`, `feature-quiz`, `qa-playwright-e2e` |
+| **Rules/Gates** | Mechanisms that constrain behavior | Gatekeeper, pre-commit hooks, policies |
+| **Verification** | How the agent proves it finished | Tests, `validate-harness.sh`, evidence |
+| **State** | What persists across sessions | `feature_list.json`, `claude-progress.md`, `session-handoff.md` |
 
 ## Harness ≠ prompt
 
-Um prompt é uma instrução que existe no momento da conversa. Um harness é um **sistema persistente**: ele existe no repositório, é versionado, passa por code review e continua funcionando mesmo quando o modelo muda.
+A prompt is an instruction that exists at the moment of the conversation. A harness is a **persistent system**: it lives in the repository, is versioned, goes through code review and keeps working even when the model changes.
 
-Exemplo concreto: a skill `feature-quiz` é um harness-component. Ela não é "o prompt do quiz" — é um `SKILL.md` versionado em [harness-agent-skills](https://github.com/svslwm/harness-agent-skills) que qualquer agente pode carregar quando a tarefa combina com a descrição. Troque o modelo e a skill continua lá, idêntica.
+Concrete example: the `feature-quiz` skill is a harness component. It is not "the quiz prompt" — it is a `SKILL.md` versioned in [harness-agent-skills](https://github.com/svslwm/harness-agent-skills) that any agent can load when the task matches the description. Swap the model and the skill is still there, identical.
 
-## Harness não é um produto; é uma camada
+## A harness is not a product; it is a layer
 
-O `webmotors-harness-factory` é explícito sobre isso no `AGENTS.md`:
+The `webmotors-harness-factory` is explicit about this in its `AGENTS.md`:
 
-> "Uma **Harness Factory** reutilizável: o sistema operacional que define *como* o trabalho de engenharia agêntica é executado. **NÃO é um repositório de produto.**"
+> "A reusable **Harness Factory**: the operating system that defines *how* agentic engineering work is executed. **It is NOT a product repository.**"
 
-A verdade do produto mora no repositório de produto; o harness mora numa camada separada que **governa o processo**. Essa separação (harness/product isolation) é o que permite o mesmo harness servir a vários projetos — e é a base do modelo multi-team que veremos nas aulas de domínio.
+The product truth lives in the product repository; the harness lives in a separate layer that **governs the process**. That separation (harness/product isolation) is what allows the same harness to serve multiple projects — and it is the foundation of the multi-team model we will see in the domain lessons.
 
-## O harness como sistema de controle
+## The harness as a control system
 
-Um harness funciona como um circuito de controle:
+A harness works like a control loop:
 
 ```
-AGENTE ──age──▶ MUNDO (arquivos, testes, git)
+AGENT ──acts──▶ WORLD (files, tests, git)
   ▲                  │
-  └────◀─verifica────┘
-         (gates, testes, evidência)
+  └────◀─verifies────┘
+         (gates, tests, evidence)
 ```
 
-Sem o laço de verificação, o agente é uma caixa que só emite texto. Com o laço, ele é um trabalhador que age, observa o resultado e corrige — o que a Aula 13 formaliza como *loop engineering*.
+Without the verification loop, the agent is a box that only emits text. With the loop, it is a worker that acts, observes the result and corrects — what Lesson 13 formalizes as *loop engineering*.
 
-## Na Webmotors
+## At Webmotors
 
-- **`webmotors-harness-factory`** — o esqueleto de processo: hooks, policies, scripts.
-- **`harness-agent-skills`** — o catálogo de skills: artefatos + QA + perf.
-- **`agenfk`** — o framework de gestão: itens, flows, gatekeeper, telemetria e Kanban.
-- **`harness-plannig`** — **este curso**, que é um harness rodando sobre os outros três (dogfooding).
+- **`webmotors-harness-factory`** — the process skeleton: hooks, policies, scripts.
+- **`harness-agent-skills`** — the skill catalog: artifacts + QA + perf.
+- **`agenfk`** — the management framework: items, flows, gatekeeper, telemetry and Kanban.
+- **`harness-plannig`** — **this course**, which is a harness running on top of the other three (dogfooding).
 
-## Principais aprendizados
+## Key takeaways
 
-1. Agente = modelo + harness; o modelo é trocável, o harness é o ativo.
-2. Prompt é volátil; harness é persistente, versionado e revisável.
-3. Componentes: ferramentas, conhecimento, skills, gates, verificação, estado.
-4. Harness governa processo; produto mora no repo de produto.
-5. O laço agir→verificar é o coração do sistema.
+1. Agent = model + harness; the model is swappable, the harness is the asset.
+2. A prompt is volatile; a harness is persistent, versioned and reviewable.
+3. Components: tools, knowledge, skills, gates, verification, state.
+4. The harness governs process; the product lives in the product repo.
+5. The act→verify loop is the heart of the system.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 02"
+"quiz me on Lesson 02"
 ```
 
-**Próxima aula**: [03 — O repositório como sistema de registro](/lectures/lecture-03).
+**Next lesson**: [03 — The repository as system of record](/lectures/lecture-03).

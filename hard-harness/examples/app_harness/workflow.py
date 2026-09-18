@@ -1,10 +1,10 @@
-"""Exemplo de integração C — App Harness com fan-out de QA.
+"""Integration C example — App Harness with a QA fan-out.
 
-O mesmo núcleo do hard-harness orquestra as QUATRO verificações do App
-Harness em paralelo (testes unitários, E2E, acessibilidade, navegação
-exploratória) e o join consolida antes do router decidir.
+The same hard-harness core orchestrates the FOUR App Harness checks in
+parallel (unit tests, E2E, accessibility, exploratory navigation) and the
+join consolidates before the router decides.
 
-Rodar:
+Run:
     cd hard-harness
     PYTHONPATH=. python3 examples/app_harness/workflow.py
 """
@@ -23,8 +23,8 @@ def start(ninput: NodeInput) -> NodeOutput:
 
 
 def navigation(ninput: NodeInput) -> NodeOutput:
-    """Navegação exploratória simulada (C2) — veredito por critério."""
-    return NodeOutput(node_id="navigation", ok=True, payload={"verdict": "ACEITO", "screenshots": 4})
+    """Simulated exploratory navigation (C2) — verdict per criterion."""
+    return NodeOutput(node_id="navigation", ok=True, payload={"verdict": "ACCEPTED", "screenshots": 4})
 
 
 def join_qa(ninput: NodeInput) -> NodeOutput:
@@ -88,4 +88,4 @@ if __name__ == "__main__":
     print(f"== App Harness: status {result['status']}")
     for check, value in result["checks"].items():
         print(f"   {check}: {value}")
-    print(f"== eventos: {result['events']}")
+    print(f"== events: {result['events']}")

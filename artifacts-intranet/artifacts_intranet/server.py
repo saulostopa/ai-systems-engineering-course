@@ -1,8 +1,8 @@
-"""Servidor da intranet — stdlib http.server.
+"""Intranet server — stdlib http.server.
 
-Rotas:
+Routes:
     GET /            → UI (index.html, Eleanor)
-    GET /search?q=…  → JSON: resultados do RAG híbrido com fonte citada
+    GET /search?q=…  → JSON: hybrid RAG results with cited sources
     GET /static/…    → assets (system.css)
 """
 
@@ -79,7 +79,7 @@ class Handler(BaseHTTPRequestHandler):
 def main() -> None:
     ap = argparse.ArgumentParser(prog="artifacts_intranet")
     ap.add_argument("--port", type=int, default=8765)
-    ap.add_argument("--reindex", action="store_true", help="reindexa antes de servir")
+    ap.add_argument("--reindex", action="store_true", help="reindex before serving")
     args = ap.parse_args()
 
     Handler.embedder = make_embedder()
@@ -92,7 +92,7 @@ def main() -> None:
     Handler.controller = AgentController(Handler.index, Handler.embedder)
 
     print(f"embedder: {type(Handler.embedder).__name__}")
-    print(f"índice: {len(Handler.index.chunks)} chunks")
+    print(f"index: {len(Handler.index.chunks)} chunks")
     print(f"intranet: http://localhost:{args.port}")
     ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
 

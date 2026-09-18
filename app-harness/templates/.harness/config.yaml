@@ -1,9 +1,9 @@
-# Config do app harness — gates E2E
-# O e2e-gate.sh lê esta seção para saber o que é frontend e onde vive a suíte E2E.
+# App harness config — E2E gates
+# e2e-gate.sh reads this section to know what is frontend and where the E2E suite lives.
 
 qa:
-  frontend_paths: "src|app"          # pastas de frontend (regex separada por |)
+  frontend_paths: "src|app"          # frontend folders (regex separated by |)
   frontend_extensions: "tsx vue jsx ts js"
-  e2e_test_path: "tests/e2e"         # onde vive a suíte E2E
+  e2e_test_path: "tests/e2e"         # where the E2E suite lives
 
-# Exemplo: para um repo Webmotors com src/ e tests/e2e/, esta config já funciona.
+# Example: for a Webmotors repo with src/ and tests/e2e/, this config already works.

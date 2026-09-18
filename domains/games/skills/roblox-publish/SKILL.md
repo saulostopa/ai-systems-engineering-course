@@ -1,30 +1,30 @@
 ---
 name: roblox-publish
-description: Prepara e valida a publicação de uma feature de jogo no Roblox — build Luau/Rojo, configuração de monetização e checklist de plataforma. Use quando o usuário pedir para publicar, subir build ou validar publicação no Roblox.
+description: Prepares and validates the publication of a game feature on Roblox — Luau/Rojo build, monetization setup and platform checklist. Use when the user asks to publish, upload a build or validate a publication on Roblox.
 ---
 
-# Publicação Roblox validada
+# Validated Roblox publication
 
-Publicar não é "subir e torcer": é passar pela validação de plataforma com
-checklist verificável (Aula 10: E2E muda o resultado — aqui o "E2E" é o
-publish pipeline).
+Publishing is not "upload and hope": it means going through platform validation
+with a verifiable checklist (Lesson 10: E2E changes the outcome — here the
+"E2E" is the publish pipeline).
 
 ## Gather
 
-- A feature e seu estado em `feature_list.json`.
-- O design doc (skills/game-design) — se não existir, não publique: a feature não tem especificação.
-- Configs: `default.project.json` (Rojo), monetização (Developer Product / Game Pass IDs), permissões.
+- The feature and its state in `feature_list.json`.
+- The design doc (skills/game-design) — if it does not exist, do not publish: the feature has no specification.
+- Configs: `default.project.json` (Rojo), monetization (Developer Product / Game Pass IDs), permissions.
 
-## Write / Validate — o checklist mecânico
+## Write / Validate — the mechanical checklist
 
-1. **Build Luau** — o projeto compila sem erros (Rojo build / `rojo build`); exit 0 obrigatório.
-2. **Assets** — todas as meshes/texturas referenciadas existem; nenhum asset quebrado (IDs válidos).
-3. **Monetização** — cada Developer Product/Game Pass referenciado existe na página da experiência; preços preenchidos; nada apontando para produto inexistente.
-4. **Segurança** — nada de dados sensíveis no código; scripts com permissões mínimas.
-5. **Playteste simulado** — scripts/playtest-simulate.sh passou (a feature não sobe sem playteste).
+1. **Luau build** — the project compiles without errors (Rojo build / `rojo build`); exit 0 mandatory.
+2. **Assets** — all referenced meshes/textures exist; no broken asset (valid IDs).
+3. **Monetization** — each referenced Developer Product/Game Pass exists on the experience page; prices filled in; nothing pointing to a nonexistent product.
+4. **Security** — no sensitive data in the code; scripts with least privilege.
+5. **Simulated playtest** — scripts/playtest-simulate.sh passed (the feature does not ship without a playtest).
 
 ## Output
 
-- `relatorios/YYYY-MM-DD-<slug>-publish.md`: checklist com STATUS por item (PASS/FAIL + evidência — saída do comando).
-- Qualquer FAIL bloqueia a publicação — registrar no log do harness (log-event.sh) e na feature.
-- Só então: publicar e registrar a versão publicada na feature (`passing`).
+- `relatorios/YYYY-MM-DD-<slug>-publish.md`: checklist with STATUS per item (PASS/FAIL + evidence — command output).
+- Any FAIL blocks the publication — record it in the harness log (log-event.sh) and in the feature.
+- Only then: publish and record the published version in the feature (`passing`).

@@ -1,8 +1,8 @@
-"""Hard Harness — núcleo de orquestração executável.
+"""Hard Harness — executable orchestration core.
 
-Contratos tipados do workflow. Dataclasses da stdlib: sem dependências.
-Regra de ouro (ADK 2, L2b): trabalho previsível = função determinística;
-raciocínio = agente; regra clara = router explícito.
+Typed workflow contracts. stdlib dataclasses: no dependencies.
+Golden rule (ADK 2, L2b): predictable work = deterministic function;
+reasoning = agent; clear rule = explicit router.
 """
 
 from __future__ import annotations
@@ -33,20 +33,20 @@ class WorkflowStatus(str, Enum):
 
 
 class NodeKind(str, Enum):
-    DETERMINISTIC = "deterministic"  # função pura — 0 LLM
-    AGENT = "agent"                  # raciocínio — 1+ LLM
+    DETERMINISTIC = "deterministic"  # pure function — 0 LLM
+    AGENT = "agent"                  # reasoning — 1+ LLM
 
 
 @dataclass
 class WorkflowState:
-    """Estado do workflow — SOMENTE o runner transiciona. Agentes recebem
-    este objeto como visão e NUNCA o alteram (contrato verificado por teste)."""
+    """Workflow state — ONLY the runner transitions it. Agents receive
+    this object as a view and NEVER change it (contract verified by test)."""
 
     workflow_id: str
     status: WorkflowStatus = WorkflowStatus.PENDING
     current_node: str = ""
-    data: dict[str, Any] = field(default_factory=dict)  # payload persistente entre nós
-    retries: dict[str, int] = field(default_factory=dict)  # node_id -> tentativas
+    data: dict[str, Any] = field(default_factory=dict)  # payload persisted between nodes
+    retries: dict[str, int] = field(default_factory=dict)  # node_id -> attempts
     llm_calls: int = 0
     depth: int = 0
     error: str = ""
@@ -82,23 +82,23 @@ class WorkflowState:
 
 @dataclass(frozen=True)
 class NodeInput:
-    """Entrada de um nó — visão imutável do estado + payload específico."""
+    """Node input — immutable view of the state + node-specific payload."""
 
     node_id: str
     state: WorkflowState
     payload: dict[str, Any] = field(default_factory=dict)
-    context: list[dict[str, Any]] = field(default_factory=list)  # contexto tipado (RAG)
+    context: list[dict[str, Any]] = field(default_factory=list)  # typed context (RAG)
 
 
 @dataclass
 class NodeOutput:
-    """Saída de um nó — PROPOSTA. Nunca altera o estado por si só.
+    """Node output — a PROPOSAL. Never changes the state on its own.
 
-    - ok: o nó concluiu com sucesso.
-    - payload: dados produzidos (anexados ao estado pelo runner, se ok).
-    - artifacts: referências a artefatos gerados.
-    - proposed_next: sugestão de próximo nó — o runner DECIDE após gates.
-    - review/evidence/gate: resultados tipados opcionais.
+    - ok: the node completed successfully.
+    - payload: produced data (attached to the state by the runner, if ok).
+    - artifacts: references to generated artifacts.
+    - proposed_next: suggested next node — the runner DECIDES after gates.
+    - review/evidence/gate: optional typed results.
     """
 
     node_id: str
@@ -127,7 +127,7 @@ class NodeOutput:
 
 @dataclass(frozen=True)
 class ArtifactRef:
-    """Referência a um artefato produzido pelo workflow."""
+    """Reference to an artifact produced by the workflow."""
 
     path: str
     kind: str  # report | quiz | diagram | patch | screenshot | log
@@ -150,7 +150,7 @@ class ArtifactRef:
 
 @dataclass
 class Evidence:
-    """Evidência: comando, esperado vs. real, status — a moeda do harness (Aula 09)."""
+    """Evidence: command, expected vs. actual, status — the harness currency (Lesson 09)."""
 
     kind: str  # build | test | e2e | lint | security | manual | agent
     command: str
@@ -174,7 +174,7 @@ class Evidence:
 
 @dataclass
 class GateResult:
-    """Resultado de um gate determinístico — falhas explícitas e auditáveis."""
+    """Result of a deterministic gate — explicit and auditable failures."""
 
     node_id: str
     passed: bool
@@ -192,7 +192,7 @@ class GateResult:
 
 @dataclass
 class ReviewResult:
-    """Veredito de revisão — proposto pelo agente, aplicado pelo runner."""
+    """Review verdict — proposed by the agent, applied by the runner."""
 
     verdict: str  # approved | changes_requested | rejected
     findings: list[dict[str, str]] = field(default_factory=list)  # {severity, location, issue}

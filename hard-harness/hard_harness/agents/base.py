@@ -1,14 +1,14 @@
-"""Agentes especializados — raciocínio, nunca autoridade.
+"""Specialized agents — reasoning, never authority.
 
-Contrato: run(NodeInput) -> NodeOutput.
-  - Recebem visão do estado (NodeInput.state) — nunca a mutam.
-  - Produzem PROPOSTAS (payload, artifacts, proposed_next, review, evidence).
-  - NUNCA transicionam status.
+Contract: run(NodeInput) -> NodeOutput.
+  - They receive a view of the state (NodeInput.state) — they never mutate it.
+  - They produce PROPOSALS (payload, artifacts, proposed_next, review, evidence).
+  - They NEVER transition status.
 
-Provider de LLM injetável (llm/providers.py): OpenRouter por padrão (env
-OPENROUTER_API_KEY), Ollama opcional (OLLAMA_API_URL), Stub offline.
-O custo (usage do provider) viaja no payload como `llm_cost` — o runner
-aplica o orçamento (Limits.llm_budget).
+Injectable LLM provider (llm/providers.py): OpenRouter by default (env
+OPENROUTER_API_KEY), optional Ollama (OLLAMA_API_URL), offline Stub.
+The cost (provider usage) travels in the payload as `llm_cost` — the runner
+applies the budget (Limits.llm_budget).
 """
 
 from __future__ import annotations
@@ -20,19 +20,19 @@ from hard_harness.llm.providers import LLMProvider, StubProvider, make_provider
 
 
 class BaseAgent:
-    """Base comum: recebe provider injetado; expõe run(NodeInput)."""
+    """Common base: receives an injected provider; exposes run(NodeInput)."""
 
     name = "agent"
 
     def __init__(self, provider: LLMProvider | None = None) -> None:
         self.provider = provider if provider is not None else make_provider()
-        self.system = "Você é um especialista de harness engineering da Webmotors. Responda em português, direto e verificável."
+        self.system = "You are a Webmotors harness engineering specialist. Be direct and verifiable."
 
     def _prompt(self, ninput: NodeInput, instructions: str) -> str:
-        return f"{instructions}\n\nCONTEXTO:\n{ninput.payload}\n"
+        return f"{instructions}\n\nCONTEXT:\n{ninput.payload}\n"
 
     def _cost_payload(self) -> dict[str, Any]:
-        """Anexa o custo do provider (usage) ao payload — o runner decide o orçamento."""
+        """Attaches the provider cost (usage) to the payload — the runner decides the budget."""
         usage = getattr(self.provider, "last_usage", None)
         tokens = usage.total if usage else 0
         return {"llm_cost": float(tokens) / 1000.0 if tokens else 1.0, "llm_tokens": tokens}
@@ -42,13 +42,13 @@ class BaseAgent:
 
 
 class PlannerAgent(BaseAgent):
-    """Planeja o trabalho: proposta de plano, sem efeitos no mundo."""
+    """Plans the work: plan proposal, no side effects on the world."""
 
     name = "planner"
 
     def run(self, ninput: NodeInput) -> NodeOutput:
         raw = self.provider.complete(
-            self._prompt(ninput, "Proponha um plano de execução em passos curtos. Comece cada passo com '- '."),
+            self._prompt(ninput, "Propose an execution plan in short steps. Start each step with '- '."),
             system=self.system,
         )
         steps = [line.lstrip("- ").strip() for line in raw.splitlines() if line.strip().startswith("-")]
@@ -58,13 +58,13 @@ class PlannerAgent(BaseAgent):
 
 
 class CoderAgent(BaseAgent):
-    """Gera ou altera código: produz um PATCH como artefato (proposta)."""
+    """Generates or changes code: produces a PATCH as an artifact (proposal)."""
 
     name = "coder"
 
     def run(self, ninput: NodeInput) -> NodeOutput:
         raw = self.provider.complete(
-            self._prompt(ninput, "Proponha o diff/patch da implementação em um bloco ```diff ... ```."),
+            self._prompt(ninput, "Propose the implementation diff/patch in a ```diff ... ``` block."),
             system=self.system,
         )
         patch_path = ninput.payload.get("patch_path", "/tmp/hard-harness-proposal.patch")
@@ -73,14 +73,14 @@ class CoderAgent(BaseAgent):
                 fh.write(raw)
             artifacts = [{"path": patch_path, "kind": "patch"}]
         except OSError as exc:
-            return NodeOutput(node_id=self.name, ok=False, error=f"não foi possível gravar patch: {exc}")
+            return NodeOutput(node_id=self.name, ok=False, error=f"could not write patch: {exc}")
         payload = {"patch": raw[:2000], "patch_path": patch_path}
         payload.update(self._cost_payload())
         return NodeOutput(node_id=self.name, ok=True, payload=payload, artifacts=artifacts, proposed_next="fanout")
 
 
 class ReviewerAgent(BaseAgent):
-    """Raciocínio de revisão: produz ReviewResult como PROPOSTA."""
+    """Review reasoning: produces ReviewResult as a PROPOSAL."""
 
     name = "reviewer"
 
@@ -88,7 +88,7 @@ class ReviewerAgent(BaseAgent):
         raw = self.provider.complete(
             self._prompt(
                 ninput,
-                "Revise o trabalho. Responda na última linha com VERDICT: approved | changes_requested | rejected",
+                "Review the work. Reply on the last line with VERDICT: approved | changes_requested | rejected",
             ),
             system=self.system,
         )
@@ -111,7 +111,7 @@ class ReviewerAgent(BaseAgent):
 
 
 class EvidenceAgent(BaseAgent):
-    """Síntese de evidências: consolida os resultados dos gates em relatório."""
+    """Evidence synthesis: consolidates gate results into a report."""
 
     name = "evidence"
 
@@ -123,7 +123,7 @@ class EvidenceAgent(BaseAgent):
             "passed": passed,
         }
         raw = self.provider.complete(
-            self._prompt(ninput, "Escreva 3 linhas: o que foi entregue, o que foi verificado e o que ficou em aberto."),
+            self._prompt(ninput, "Write 3 lines: what was delivered, what was verified and what remains open."),
             system=self.system,
         )
         summary["synthesis"] = raw.strip()[:600]

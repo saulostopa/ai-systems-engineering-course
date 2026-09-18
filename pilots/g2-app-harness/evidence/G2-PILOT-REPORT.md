@@ -1,57 +1,60 @@
-# Piloto G2 — app harness em app real
+# Pilot G2 — app harness in a real app
 
-> **App piloto**: busca de veículos (HTML/JS puro, sem framework)
-> **Harness**: `app-harness` (C1: gate E2E) + protocolo de navegação agêntica (C2)
-> **Data**: 2026-09-12 · **Status**: CAMADA QA + NAVEGAÇÃO VALIDADAS
+> **Pilot app**: vehicle search (plain HTML/JS, no framework)
+> **Harness**: `app-harness` (C1: E2E gate) + agentic navigation protocol (C2)
+> **Date**: 2026-09-12 · **Status**: QA LAYER + NAVIGATION VALIDATED
 
-## Setup do piloto
+## Pilot setup
 
-| Etapa | Resultado |
+| Step | Result |
 |---|---|
-| App criado (HTML/JS, `role=list`, `role=region`, empty state) | OK |
-| Gate E2E instalado (`e2e-gate.sh` + `.harness/config.yaml`: `frontend_paths: src`) | OK |
-| Testes E2E: `tests/e2e/test_search.py` (2 casos: resultados + empty state) | OK |
+| App created (HTML/JS, `role=list`, `role=region`, empty state) | OK |
+| E2E gate installed (`e2e-gate.sh` + `.harness/config.yaml`: `frontend_paths: src`) | OK |
+| E2E tests: `tests/e2e/test_search.py` (2 cases: results + empty state) | OK |
 
-## Camada QA — comportamento do gate (evidência real)
+## QA layer — gate behavior (real evidence)
 
-| Cenário | Staged | Resultado |
+| Scenario | Staged | Result |
 |---|---|---|
-| **1. Frontend sem teste E2E** | só `src/index.html` | ✅ **BLOQUEADO**: "mudança de frontend sem teste E2E (Aula 10). Caminho esperado: tests/e2e/" |
-| **2. Frontend + teste E2E** | `src/index.html` + `tests/e2e/test_search.py` | ✅ **LIBERADO**: "E2E-GATE: ok" |
+| **1. Frontend without E2E test** | only `src/index.html` | ✅ **BLOCKED**: "frontend change without E2E test (Lesson 10). Expected path: tests/e2e/" |
+| **2. Frontend + E2E test** | `src/index.html` + `tests/e2e/test_search.py` | ✅ **ALLOWED**: "E2E-GATE: ok" |
 
-O gate funciona exatamente como projetado: a mudança de tela **não passa sem
-o teste correspondente** — o E2E é contrato de commit, não intenção.
+The gate works exactly as designed: a screen change **does not pass without
+the corresponding test** — E2E is a commit contract, not an intention.
 
-## Camada agêntica — navegação com visão (protocolo C2 executado)
+## Agentic layer — vision-based navigation (protocol C2 executed)
 
-> App servido em `http://localhost:3100` (a 3000 estava ocupada pelo dev
-> server do catálogo Webmotors — achado de ambiente).
+> App served at `http://localhost:3100` (3000 was taken by the Webmotors
+> catalog dev server — environment finding).
 
-| Passo do protocolo | Evidência |
+| Protocol step | Evidence |
 |---|---|
-| 1. Subir o app | `python3 -m http.server 3100` → **HTTP 200** |
-| 2. Navegar como usuário (fluxo de busca) | `GET /?q=civic` → **HTTP 200**; página contém `role=list` (resultados) |
-| 3. Estados de borda | `role=region` com "Nenhum veículo" presente (empty state) |
-| 4. Veredito por critério | Tabela abaixo |
+| 1. Start the app | `python3 -m http.server 3100` → **HTTP 200** |
+| 2. Navigate as a user (search flow) | `GET /?q=civic` → **HTTP 200**; page contains `role=list` (results) |
+| 3. Edge states | `role=region` with "No vehicles" message present (empty state) |
+| 4. Verdict per criterion | Table below |
 
-| Critério | Veredito | Evidência |
+| Criterion | Verdict | Evidence |
 |---|---|---|
-| App sobe e responde | **ACEITO** | HTTP 200 (curl) |
-| Fluxo de busca acessível | **ACEITO** | `role=search` + `role=list` no DOM |
-| Empty state presente | **ACEITO** | texto "Nenhum veículo" + `role=region` |
-| Navegação sem visão (limitação) | **PARCIAL** | neste piloto o passo 4 foi executado sem modelo de visão — screenshots reais exigem o agente com visão (habilite na demo com Claude/GPT-4o) |
+| App starts and responds | **ACCEPTED** | HTTP 200 (curl) |
+| Accessible search flow | **ACCEPTED** | `role=search` + `role=list` in the DOM |
+| Empty state present | **ACCEPTED** | "No vehicles" text + `role=region` |
+| Vision-based navigation (limitation) | **PARTIAL** | in this pilot step 4 ran without a vision model — real screenshots require an agent with vision (enable in the demo with Claude/GPT-4o) |
 
-## Achados
+## Findings
 
-1. **Porta 3000 ocupada pelo dev server do catálogo** — o app harness deve
-   parametrizar a porta (`PORT`/config) e verificar antes de subir.
-2. **Screenshots exigem agente com visão** — o protocolo C2 está documentado e
-   validado estruturalmente; a validação visual real (screenshots + veredito
-   ACEITO/REJEITADO por critério) é a parte a demonstrar ao vivo na demo final (G4).
+1. **Port 3000 taken by the catalog dev server** — the app harness should
+   parameterize the port (`PORT`/config) and check availability before
+   starting.
+2. **Screenshots require an agent with vision** — protocol C2 is documented
+   and structurally validated; the real visual validation (screenshots +
+   ACCEPTED/REJECTED verdict per criterion) is the part to demonstrate live in
+   the final demo (G4).
 
-## Conclusão do piloto
+## Pilot conclusion
 
-O app harness provou as duas camadas: **o gate E2E bloqueia de verdade** o
-frontend sem teste (contrato mecânico), e **a navegação agêntica tem um
-protocolo executável** com veredito por critério. A parte visual fica para a
-demo com agente de visão — a mecânica já está pronta e validada.
+The app harness proved both layers: **the E2E gate genuinely blocks** frontend
+changes without tests (mechanical contract), and **the agentic navigation has
+an executable protocol** with a verdict per criterion. The visual part is left
+for the demo with a vision agent — the mechanics are already ready and
+validated.

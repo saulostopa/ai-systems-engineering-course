@@ -3,10 +3,10 @@
   "path": "/home/svslwm/wm/harness-plannig/area-copilot/tests/fixtures/area_context/planilhas/metas_2026.csv",
   "kind": "sheet",
   "name": "metas_2026.csv L2-5",
-  "text": "regiao, mes, meta_vendas, veiculos_vendidos\nlinha 2: regiao:sudeste | mes:junho | meta_vendas:1000000 | veiculos_vendidos:340\nlinha 3: regiao:sudeste | mes:julho | meta_vendas:1200000 | veiculos_vendidos:412\nlinha 4: regiao:nordeste | mes:junho | meta_vendas:600000 | veiculos_vendidos:215\nlinha 5: regiao:nordeste | mes:julho | meta_vendas:720000 | veiculos_vendidos:251",
+  "text": "regiao, mes, meta_vendas, veiculos_vendidos\nrow 2: regiao:sudeste | mes:junho | meta_vendas:1000000 | veiculos_vendidos:340\nrow 3: regiao:sudeste | mes:julho | meta_vendas:1200000 | veiculos_vendidos:412\nrow 4: regiao:nordeste | mes:junho | meta_vendas:600000 | veiculos_vendidos:215\nrow 5: regiao:nordeste | mes:julho | meta_vendas:720000 | veiculos_vendidos:251",
   "start_line": 2,
   "end_line": 5,
-  "hash": "4949299b2172f3f8a0308208d2a35f38b22ac45991c2320aa32a6dacf2197525"
+  "hash": "7ef1873077bf7fabce2425d86867aaef2292306a5a94b7afbf17df51a3281c96"
  },
  {
   "path": "/home/svslwm/wm/harness-plannig/area-copilot/tests/fixtures/area_context/documentos/precificacao.md",

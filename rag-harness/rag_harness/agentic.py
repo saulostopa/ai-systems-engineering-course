@@ -1,9 +1,9 @@
-"""Controlador agêntico de recuperação (rag-harness.md: Agent Controller).
+"""Agentic retrieval controller (rag-harness.md: Agent Controller).
 
-O agente decide QUAL ferramenta usar (semântica / léxica / glob / regex),
-executa, avalia se o resultado é suficiente e repete — em vez de despejar
-tudo no prompt. Estratégia de custo: barato primeiro (glob/regex/léxico),
-semântica por último. Gancho opcional para decisão via LLM.
+The agent decides WHICH tool to use (semantic / lexical / glob / regex),
+executes it, evaluates whether the result is sufficient, and repeats —
+instead of dumping everything into the prompt. Cost strategy: cheap first
+(glob/regex/lexical), semantic last. Optional hook for LLM-based decisions.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ class AgentController:
         self.max_iters = max_iters
         self.used_tools: list[str] = []
 
-    # ── Ferramentas ──────────────────────────────────────────────
+    # ── Tools ────────────────────────────────────────────────────
 
     def tool_semantic_search(self, query: str, top_k: int = 3) -> list[Chunk]:
         self.used_tools.append("semantic_search")
@@ -48,8 +48,8 @@ class AgentController:
 
     @staticmethod
     def _exact_symbol_patterns(query: str) -> list[str]:
-        """Extrai padrões de símbolo exato: quoted ('foo'), CamelCase, snake_case
-        com ponto (models.Veiculo), nomes de método (registerItem)."""
+        """Extracts exact symbol patterns: quoted ('foo'), CamelCase,
+        snake_case with dots (models.Veiculo), method names (registerItem)."""
         patterns: list[str] = []
         for m in re.findall(r'"([a-zA-Z_][\w.]*)"', query):
             patterns.append(re.escape(m))
@@ -59,10 +59,10 @@ class AgentController:
             patterns.append(re.escape(m))
         return patterns[:3]
 
-    # ── Heurística de suficiência ────────────────────────────────
+    # ── Sufficiency heuristic ────────────────────────────────────
 
     def _sufficient(self, query: str, chunks: list[Chunk]) -> bool:
-        """O top resultado contém pelo menos um termo chave da consulta?"""
+        """Does the top result contain at least one key term of the query?"""
         key = [t for t in re.findall(r"[a-z0-9_]{4,}", query.lower())]
         if not key:
             return True
@@ -72,20 +72,20 @@ class AgentController:
                 return True
         return False
 
-    # ── Loop agêntico ────────────────────────────────────────────
+    # ── Agentic loop ─────────────────────────────────────────────
 
     def retrieve(self, query: str, root: str) -> list[Chunk]:
-        """Barato primeiro; escala se insuficiente (máx. max_iters)."""
+        """Cheap first; escalates if insufficient (max max_iters)."""
         self.used_tools = []
         gathered: list[Chunk] = []
 
-        # Iter 1: léxico (exato) — nomes de símbolos são o alvo mais comum
+        # Iter 1: lexical (exact) — symbol names are the most common target
         hits = self.tool_full_text_search(query, 3)
         gathered.extend(hits)
         if self._sufficient(query, hits):
             return gathered[:5]
 
-        # Iter 2: glob por nome de arquivo (símbolo provável em arquivo homônimo)
+        # Iter 2: glob by file name (likely symbol lives in a homonymous file)
         words = re.findall(r"[a-z0-9_]{4,}", query.lower())
         if words:
             globs = [f"**/*{words[0]}*" for words in [words[:1]]]
@@ -95,8 +95,8 @@ class AgentController:
                 if self._sufficient(query, gathered):
                     return gathered[:5]
 
-        # Iter 2.5: regex para símbolos exatos (quoted ou CamelCase/snake_case
-        # com ponto, ex.: 'registerItem', 'models.Veiculo', "exato")
+        # Iter 2.5: regex for exact symbols (quoted or dotted
+        # CamelCase/snake_case, e.g. 'registerItem', 'models.Veiculo', "exact")
         exact = AgentController._exact_symbol_patterns(query)
         for pat in exact:
             rx = self.tool_regex_search(pat, 5)
@@ -104,18 +104,19 @@ class AgentController:
             if self._sufficient(query, gathered):
                 return gathered[:5]
 
-        # Iter 3: semântica (conceito) — a mais cara, por último
+        # Iter 3: semantic (concept) — the most expensive, last
         sem = self.tool_semantic_search(query, 5)
         gathered.extend(sem)
         return gathered[:5]
 
-    # ── Decisão por LLM (opcional) ───────────────────────────────
+    # ── LLM decision (optional) ──────────────────────────────────
 
     def decide_with_llm(self, query: str, context: list[Chunk]) -> str:
-        """Ponto de extensão: chame um LLM para escolher a próxima ferramenta.
+        """Extension point: call an LLM to choose the next tool.
 
-        Retorna o nome da ferramenta ('semantic_search', 'regex_search', ...)
-        ou 'done'. Sem LLM conectado, a heurística da Aula 11 assume.
+        Returns the tool name ('semantic_search', 'regex_search', ...)
+        or 'done'. Without a connected LLM, the Lesson 11 heuristic takes
+        over.
         """
         return "done"
 

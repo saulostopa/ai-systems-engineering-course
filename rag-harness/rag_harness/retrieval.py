@@ -1,6 +1,6 @@
-"""Recuperação híbrida: léxica (BM25-ish) + semântica (vetores), fundidas
-por Reciprocal Rank Fusion (RRF). rag-harness.md: 'lexical matches (nomes de
-símbolos exatos) e semantic matches (similaridade conceitual) numa lista só'.
+"""Hybrid retrieval: lexical (BM25-ish) + semantic (vectors), merged by
+Reciprocal Rank Fusion (RRF). rag-harness.md: 'lexical matches (exact symbol
+names) and semantic matches (conceptual similarity) in a single list'.
 """
 
 from __future__ import annotations
@@ -16,8 +16,8 @@ from .indexer import Index, semantic_search
 
 
 def tokenize(text: str) -> list[str]:
-    """Tokeniza com split de camelCase (hooksPath -> hooks, path) e
-    normalização de acentos (fricção -> friccao)."""
+    """Tokenizes with camelCase splitting (hooksPath -> hooks, path) and
+    accent normalization (decompose + strip combining marks)."""
     text = unicodedata.normalize("NFD", text)
     text = "".join(ch for ch in text if not unicodedata.combining(ch))
     text = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", text)
@@ -25,13 +25,13 @@ def tokenize(text: str) -> list[str]:
 
 
 def _path_tokens(chunk: Chunk) -> list[str]:
-    """Tokens do nome de arquivo (sem extensão) — boost de identificação."""
+    """Tokens of the file name (without extension) — identification boost."""
     base = os.path.basename(chunk.path)
     return tokenize(base.replace("_", " ").replace("-", " ").replace(".", " "))
 
 
 def _prefix_match(t: str, doc_terms: Counter[str]) -> bool:
-    """Prefixo mútuo (min 5 chars): instalador↔install, definicao↔definition."""
+    """Mutual prefix (min 5 chars): e.g. instalador<->install, definicao<->definition."""
     for dt in doc_terms:
         if (len(t) >= 5 and dt.startswith(t[:5])) or (len(dt) >= 5 and t.startswith(dt[:5])):
             return True
@@ -60,11 +60,11 @@ def lexical_search(index: Index, query: str, top_k: int = 5, idf: dict[str, floa
             if t in terms:
                 score += idf.get(t, 1.0) * (1 + math.log(1 + terms[t]))
             elif path_terms[t] > 0:
-                score += idf.get(t, 1.0) * 2.0  # nome de arquivo vale 2x
+                score += idf.get(t, 1.0) * 2.0  # file name counts 2x
             elif _prefix_match(t, path_terms):
-                score += idf.get(t, 1.0) * 1.5  # prefixo de nome de arquivo
+                score += idf.get(t, 1.0) * 1.5  # file-name prefix
             elif _prefix_match(t, terms):
-                score += idf.get(t, 1.0) * 1.0  # prefixo no conteúdo (pt-BR ↔ en)
+                score += idf.get(t, 1.0) * 1.0  # prefix in content (pt-BR <-> en)
         if score > 0:
             scored.append((c, score))
     scored.sort(key=lambda pair: pair[1], reverse=True)
@@ -74,7 +74,7 @@ def lexical_search(index: Index, query: str, top_k: int = 5, idf: dict[str, floa
 def rrf_merge(
     *ranked_lists: list[tuple[Chunk, float]], k: int = 60, top_k: int = 5
 ) -> list[tuple[Chunk, float]]:
-    """Reciprocal Rank Fusion: soma 1/(k+rank) por lista."""
+    """Reciprocal Rank Fusion: sums 1/(k+rank) per list."""
     scores: dict[str, float] = {}
     chunks_by_hash: dict[str, Chunk] = {}
     for ranked in ranked_lists:

@@ -1,23 +1,23 @@
-# Plano original
+# Original plan
 
-O documento que deu origem ao curso: `plan-harness-foundation-course.md`, na
-raiz deste repositório.
+The document that gave rise to the course: `plan-harness-foundation-course.md`, at the
+root of this repository.
 
-## Resumo
+## Summary
 
-- **Formato**: curso de harness engineering no estilo do
+- **Format**: a harness engineering course in the style of
   [Learn Harness Engineering](https://walkinglabs.github.io/learn-harness-engineering/en/),
-  com a identidade visual do design system Eleanor.
-- **Harnesses**: básico (download), grande (multi-time), de App (QA + navegação
-  agêntica), Cursor + RAG (código e negócio) e de domínio (games, finanças, comercial).
-- **Skills de artefato + quiz**: a "peça de ouro" — relatórios, quizzes,
-  flowcharts e animações que ensinam o que a IA fez, preservando a capacidade
-  crítica e analítica de cada pessoa.
-- **Intranet de artefatos**: página central com o aprendizado do que cada
-  pessoa está implantando.
-- **Pilotos**: harnesses funcionais demonstrados em projetos reais.
+  with the visual identity of the Eleanor design system.
+- **Harnesses**: basic (download), enterprise (multi-team), App (QA + agentic
+  navigation), Cursor + RAG (code and business) and domain (games, finance, sales).
+- **Artifact skills + quiz**: the "golden piece" — reports, quizzes,
+  flowcharts and animations that teach what the AI did, preserving each person's
+  critical and analytical capability.
+- **Artifact intranet**: central page with the learning of what each
+  person is implementing.
+- **Pilots**: functional harnesses demonstrated in real projects.
 
-## Estrutura do projeto
+## Project structure
 
-O curso é organizado em módulos, aulas, projetos e pilotos executáveis dentro
-do próprio repositório.
+The course is organized into modules, lessons, projects and pilots executable within
+the repository itself.

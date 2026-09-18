@@ -1,28 +1,28 @@
 ---
-title: Aula 16 — ADK 2 e os três padrões de orquestração
+title: Lesson 16 — ADK 2 and the three orchestration patterns
 ---
 
-# Aula 16 — ADK 2 e os três padrões de orquestração
+# Lesson 16 — ADK 2 and the three orchestration patterns
 
-> Referência conceitual obrigatória:
+> Required conceptual reference:
 > [ADK 2 Orchestration codelab](https://codelabs.developers.google.com/adk2/instructions).
-> Três padrões, um eixo: **quem decide o próximo passo** — o grafo que você
-> desenhou, o LLM ou o seu código em runtime.
+> Three patterns, one axis: **who decides the next step** — the graph you
+> drew, the LLM or your code at runtime.
 
-## O eixo de decisão
+## The decision axis
 
-| Padrão | Quem decide o próximo passo | Quando usar |
+| Pattern | Who decides the next step | When to use |
 |---|---|---|
-| **1 · Graph** | o grafo que você desenhou | você consegue desenhar o fluxo antes da entrada chegar |
-| **2 · Collaborative** | o LLM (coordena especialistas) | o time é conhecido, mas a requisição escolhe o subconjunto |
-| **3 · Dynamic** | seu código, em runtime | a *forma* do trabalho depende da entrada |
+| **1 · Graph** | the graph you drew | you can draw the flow before the input arrives |
+| **2 · Collaborative** | the LLM (coordinates experts) | the team is known, but the request picks the subset |
+| **3 · Dynamic** | your code, at runtime | the *shape* of the work depends on the input |
 
-Uma frase do codelab para guardar: *"predictable work stays as functions;
+A sentence from the codelab to keep: *"predictable work stays as functions;
 clear rules become explicit routing; reasoning uses the model."*
 
 ## 1 · Graph workflows
 
-Quando o fluxo é conhecível a priori, desenhe o grafo:
+When the flow is knowable a priori, draw the graph:
 
 ```
 START ─► fetch_weather ─┐
@@ -30,78 +30,78 @@ START ─► analyze_course ┼─► JoinNode ─► strategy_agent
 START ─► pull_fitness ──┘
 ```
 
-- **funções e agentes são peers** — o trabalho previsível custa 0 LLM;
-- **fan-out paralelo** — três arestas saindo de START já são paralelismo;
-- **JoinNode** — aguarda TODAS as fontes e agrega por nome;
-- **router determinístico** — um `if`, não o modelo:
-  `route = "HOT" if temp >= 70 else "COLD" ...` com **DEFAULT_ROUTE obrigatório**;
-- agentes só onde há raciocínio (estratégia, não roteamento).
+- **functions and agents are peers** — predictable work costs 0 LLM;
+- **parallel fan-out** — three edges leaving START are already parallelism;
+- **JoinNode** — waits for ALL sources and aggregates by name;
+- **deterministic router** — an `if`, not the model:
+  `route = "HOT" if temp >= 70 else "COLD" ...` with **DEFAULT_ROUTE required**;
+- agents only where there is reasoning (strategy, not routing).
 
-O custo: o codelab mostra a versão "um agente gigante" fazendo 4 chamadas e
-inventando números — o grafo faz **1 chamada** com os dados vindo de código.
+The cost: the codelab shows the "one giant agent" version making 4 calls and
+inventing numbers — the graph makes **1 call** with the data coming from code.
 
 ## 2 · Collaborative agents
 
-Quando o time é fixo mas o pedido escolhe os membros:
+When the team is fixed but the request picks the members:
 
-- **`chat`** (default de subagent) — transfere a conversa inteira para um
-  especialista; nunca volta automaticamente;
-- **`single_turn`** — cada especialista vira uma *ferramenta*; o coordenador
-  chama o subconjunto **em paralelo**, cada um devolve resultado **tipado**,
-  e o coordenador sintetiza;
-- **`task`** — conversa com *linha de chegada tipada*: pergunta até coletar
-  os campos, pausa, e retorna via `finish_task` com objeto validado.
+- **`chat`** (subagent default) — transfers the whole conversation to an
+  expert; never automatically returns;
+- **`single_turn`** — each expert becomes a *tool*; the coordinator
+  calls the subset **in parallel**, each returns a **typed** result,
+  and the coordinator synthesizes;
+- **`task`** — conversation with a *typed finish line*: asks until it collects
+  the fields, pauses, and returns via `finish_task` with a validated object.
 
-A escolha do modo em uma pergunta: *"o usuário precisa falar com ele — até
-quando?"* → chat (indefinidamente) · task (até os campos) · single_turn (nunca).
+Choosing the mode in one question: *"does the user need to talk to it — until
+when?"* → chat (indefinitely) · task (until the fields) · single_turn (never).
 
 ## 3 · Dynamic workflows
 
-Quando a forma do trabalho nasce da entrada:
+When the shape of the work is born from the input:
 
-- **largura em runtime** — `parallel_worker=True` fana um worker sobre N itens
-  decididos pelo LLM;
-- **recursão escrita por você** — o worker chama a si mesmo via `ctx.run_node`;
-- **limites em código** — `if finding.needs_deeper and depth < MAX_DEPTH` é
-  SEU código, não configuração. O codelab é explícito: a recursão é sua, o
-  freio é seu.
+- **runtime width** — `parallel_worker=True` fans a worker over N items
+  decided by the LLM;
+- **recursion written by you** — the worker calls itself via `ctx.run_node`;
+- **limits in code** — `if finding.needs_deeper and depth < MAX_DEPTH` is
+  YOUR code, not configuration. The codelab is explicit: the recursion is yours, the
+  brake is yours.
 
-⚠️ O teto cresce rápido: `MAX_DEPTH=3` leva ~30 chamadas a ~93.
+⚠️ The ceiling grows fast: `MAX_DEPTH=3` takes ~30 calls to ~93.
 
-## Aplicação aos harnesses deste curso
+## Application to this course's harnesses
 
-| Harness | Padrão dominante | Onde |
+| Harness | Dominant pattern | Where |
 |---|---|---|
-| Básico (B1) | **Graph** | pipeline plan → code → test → review → close |
-| Enterprise (B2) | **Graph + Collaborative** | workflow engine + especialistas por área |
-| App (C) | **Graph** | fan-out de testes/E2E/a11y/navegação + join |
-| RAG/Area Copilot (D) | **Graph (com nó de contexto)** | RAG é *provedor de contexto*, nunca orquestrador |
-| Domínios (E) | **Graph (mesmo núcleo)** | Finance/Games/Commercial fornecem skills e schemas |
+| Basic (B1) | **Graph** | pipeline plan → code → test → review → close |
+| Enterprise (B2) | **Graph + Collaborative** | workflow engine + per-area experts |
+| App (C) | **Graph** | fan-out of tests/E2E/a11y/navigation + join |
+| RAG/Area Copilot (D) | **Graph (with context node)** | RAG is *context provider*, never orchestrator |
+| Domains (E) | **Graph (same core)** | Finance/Games/Commercial provide skills and schemas |
 
-## Como escolher (árvore do codelab)
-
-```
-SequentialAgent/ParallelAgent/LoopAgent resolvem?  → use-os, pare
-└─ Não — preciso de router, join ou nós não-agentes
-   ├─ Consigo desenhar antes da entrada?  → Graph
-   └─ Não
-      ├─ Time conhecido, pedido escolhe?  → Collaborative
-      └─ Forma depende da entrada?        → Dynamic
-```
-
-## Principais aprendizados
-
-1. Três padrões, um eixo: quem decide o próximo passo.
-2. Função para previsível; router para regra clara; agente para raciocínio.
-3. DEFAULT obrigatório em routers — rota desconhecida nunca morre em silêncio.
-4. Dynamic = código; logo, os limites são seus, em código.
-5. O `hard-harness` implementa o padrão Graph como núcleo (Aula 17) e deixa
-   Collaborative/Dynamic como evolução — o ADK é inspiração, não dependência.
-
-## Verifique seu aprendizado
+## How to choose (the codelab tree)
 
 ```
-"quiz me on a Aula 16"
+Do SequentialAgent/ParallelAgent/LoopAgent solve it?  → use them, stop
+└─ No — I need a router, join or non-agent nodes
+   ├─ Can I draw it before the input?  → Graph
+   └─ No
+      ├─ Known team, request picks?  → Collaborative
+      └─ Shape depends on the input? → Dynamic
 ```
 
-**Próxima aula**: [17 — Construindo um Hard Harness](/lectures/lecture-17).
+## Key takeaways
+
+1. Three patterns, one axis: who decides the next step.
+2. Function for predictable; router for clear rule; agent for reasoning.
+3. DEFAULT required in routers — an unknown route never dies silently.
+4. Dynamic = code; therefore, the limits are yours, in code.
+5. The `hard-harness` implements the Graph pattern as its core (Lesson 17) and leaves
+   Collaborative/Dynamic as evolution — ADK is inspiration, not a dependency.
+
+## Check your learning
+
+```
+"quiz me on Lesson 16"
+```
+
+**Next lesson**: [17 — Building a Hard Harness](/lectures/lecture-17).

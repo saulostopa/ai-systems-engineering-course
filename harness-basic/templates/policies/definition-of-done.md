@@ -1,19 +1,19 @@
 # Definition of Done
 
-> Aula 09. "Pronto" é um estado verificável, não uma palavra.
+> Lesson 09. "Done" is a verifiable state, not a word.
 
-Uma feature está pronta quando:
+A feature is done when:
 
-1. **Build passa** — comando executado e saída anexada (exit 0).
-2. **Testes passam, sem redução** — a suíte completa roda verde; nenhum teste
-   foi deletado, renomeado, pulado ou enfraquecido em relação ao início.
-3. **Diff no escopo** — `git diff` contém apenas o declarado em
+1. **Build passes** — command executed and output attached (exit 0).
+2. **Tests pass, with no reduction** — the full suite runs green; no test was
+   deleted, renamed, skipped or weakened compared to the start.
+3. **Diff in scope** — `git diff` contains only what was declared in
    `policies/scope-control.md`.
-4. **Evidência registrada** — comando + resultado esperado vs. real, anexados
-   ao item/report da feature.
-5. **Estado atualizado** — `feature_list.json` reflete o estado real (`passing`).
+4. **Evidence recorded** — command + expected vs. actual result, attached
+   to the feature item/report.
+5. **State updated** — `feature_list.json` reflects the real state (`passing`).
 
-## O que NÃO é "pronto"
-- "Parece que funciona" (sem build/testes executados).
-- "Testei" (sem comandos e resultados).
-- Suíte verde com menos testes que o início — isso é regressão, não passe.
+## What is NOT "done"
+- "It seems to work" (without build/tests executed).
+- "I tested it" (without commands and results).
+- A green suite with fewer tests than at the start — that is regression, not a pass.

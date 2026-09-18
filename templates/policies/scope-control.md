@@ -1,19 +1,19 @@
-# Escopo de trabalho — declare antes de editar
+# Work scope — declare before editing
 
-> Aula 07. O escopo declarado é o contrato entre o agente e o gate: o "pronto"
-> deixa de ser opinião e vira comparação com o que foi declarado.
+> Lesson 07. The declared scope is the contract between the agent and the gate:
+> "done" stops being an opinion and becomes a comparison with what was declared.
 
-## O que vou mudar
-- [Uma frase: a feature e a intenção]
+## What I will change
+- [One sentence: the feature and the intention]
 
-## Por quê
-- [A razão de negócio/técnica]
+## Why
+- [The business/technical reason]
 
-## Arquivos esperados
-- [Lista de arquivos que a mudança deve tocar]
+## Expected files
+- [List of files the change should touch]
 
-## O que está EXPLICITAMENTE fora do escopo
-- [Lista o que NÃO será tocado, mesmo que "aproveite para"]
+## What is EXPLICITLY out of scope
+- [List what will NOT be touched, even if it is a "while I'm at it"]
 
-## Como o sucesso será verificado
-- [Build? Testes específicos? Critério observável]
+## How success will be verified
+- [Build? Specific tests? Observable criterion]

@@ -1,14 +1,14 @@
-"""Stores — persistência do workflow (sem banco na primeira versão).
+"""Stores — workflow persistence (no database in the first version).
 
-Interface mínima (StateStore):
+Minimum interface (StateStore):
   read_state() -> WorkflowState | None
   write_state(state) -> None
   append_event(event) -> None
   list_events() -> list[Event]
 
-Implementações:
+Implementations:
   - FileStateStore  (.harness/state.json + events.jsonl + artifacts/ + locks/)
-  - AgEnFKStore     (adapter opcional: espelha avanço/evidências no AgEnFK)
+  - AgEnFKStore     (optional adapter: mirrors progress/evidence in AgEnFK)
 """
 
 from __future__ import annotations

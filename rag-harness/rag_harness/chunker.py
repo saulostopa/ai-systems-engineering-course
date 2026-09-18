@@ -1,8 +1,8 @@
-"""Chunking AST-aware para código Python (stdlib `ast`).
+"""AST-aware chunking for Python code (stdlib `ast`).
 
-Princípio do rag-harness.md: o chunk é sempre uma unidade completa (função,
-classe, método) — nunca um corte arbitrário no meio do corpo. Para arquivos
-não-Python, fallback por linhas com sobreposição.
+rag-harness.md principle: a chunk is always a complete unit (function,
+class, method) — never an arbitrary cut in the middle of the body. For
+non-Python files, falls back to overlapping line windows.
 """
 
 from __future__ import annotations
@@ -77,7 +77,7 @@ def chunk_file(path: str) -> list[Chunk]:
         try:
             return _chunk_python(source, path)
         except SyntaxError:
-            pass  # fallback por linhas
+            pass  # fall back to line chunks
     return _chunk_lines(source, path)
 
 

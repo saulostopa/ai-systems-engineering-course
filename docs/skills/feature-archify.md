@@ -2,46 +2,46 @@
 title: feature-archify
 ---
 
-# feature-archify — diagramas pós-conclusão
+# feature-archify — post-completion diagrams
 
-Skill wrapper que integra o **Archify** ([tt-a1i/archify](https://github.com/tt-a1i/archify), MIT, 62k stars) ao fluxo de artefatos do curso: quando um trabalho é concluído, além do `feature-report` e do `feature-quiz`, o harness gera o **diagrama verificável** que ensina como o que foi construído funciona.
+Skill wrapper that integrates **Archify** ([tt-a1i/archify](https://github.com/tt-a1i/archify), MIT, 62k stars) into the course's artifact flow: when work is completed, in addition to the `feature-report` and the `feature-quiz`, the harness generates the **verifiable diagram** that teaches how what was built works.
 
-## Entregue
+## Delivered
 
-| Peça | O que é |
+| Piece | What it is |
 |---|---|
-| `skills-artifacts/feature-archify/SKILL.md` | Skill wrapper no padrão do curso (Gather/Write/Output) — escolha do tipo, contrato de qualidade e ciclo validate→deliver |
-| `.agents/skills/archify/` | A skill Archify completa (v2.17, MIT) — pacote funcional: schemas, renderers, binário Node |
-| `pilots/archify-demo/harness-basic-pipeline.json` | Fonte reproduzível do diagrama demo |
-| `pilots/archify-demo/harness-basic-pipeline.html` | **Diagrama entregue**: 9/9 artifact checks, composition showcase **PASS** — o pipeline do harness básico com gates |
+| `skills-artifacts/feature-archify/SKILL.md` | Skill wrapper in the course pattern (Gather/Write/Output) — type choice, quality contract and the validate→deliver cycle |
+| `.agents/skills/archify/` | The complete Archify skill (v2.17, MIT) — functional package: schemas, renderers, Node binary |
+| `pilots/archify-demo/harness-basic-pipeline.json` | Reproducible source of the demo diagram |
+| `pilots/archify-demo/harness-basic-pipeline.html` | **Delivered diagram**: 9/9 artifact checks, composition showcase **PASS** — the basic harness pipeline with gates |
 
-## O diagrama demo (abrir no navegador)
+## The demo diagram (open in your browser)
 
-`pilots/archify-demo/harness-basic-pipeline.html` — workflow do harness básico:
-pessoa/agente → init → feature_list → implementação → **gatekeeper** (com o
-retorno "sem feature — declare") → build/testes → validate-harness →
-commit+push. Com 2 views (`#view=happy-path` e `#view=gates`) e 3 cards,
-incluindo o que o leitor deve aprender e o achado do piloto G1.
+`pilots/archify-demo/harness-basic-pipeline.html` — the basic harness workflow:
+person/agent → init → feature_list → implementation → **gatekeeper** (with the
+"no feature — declare one" return) → build/tests → validate-harness →
+commit+push. With 2 views (`#view=happy-path` and `#view=gates`) and 3 cards,
+including what the reader should learn and the G1 pilot finding.
 
-## Por que é "verificável"
+## Why it is "verifiable"
 
-O Archify não renderiza por opinião: o JSON tipado passa por **validators
-atômicos** (schema, layout, rotas, clearance) e só um artefato que passa
-`composition: showcase` é entregue — cada falha vem com diagnóstico e a
-correção suportada. Nesta integração, o validator pegou erros reais de
-topologia e roteamento em 8 iterações até o pass — exatamente a disciplina
-que o curso ensina (evidência antes de "done", aplicada ao próprio diagrama).
+Archify doesn't render by opinion: the typed JSON goes through **atomic
+validators** (schema, layout, routes, clearance) and only an artifact that passes
+`composition: showcase` is delivered — every failure comes with a diagnosis and
+supported correction. In this integration, the validator caught real
+topology and routing errors in 8 iterations until the pass — exactly the discipline
+the course teaches (evidence before "done", applied to the diagram itself).
 
-## Instalar em outro projeto
+## Install in another project
 
 ```sh
-npx skills add tt-a1i/archify -g          # ou --agent opencode --copy
+npx skills add tt-a1i/archify -g          # or --agent opencode --copy
 ```
 
-## Uso
+## Usage
 
 ```
-"gera o diagrama do fluxo dessa feature que acabamos de entregar"
+"generate the flow diagram of the feature we just delivered"
 ```
 
-**Relacionado**: [feature-report](/skills/feature-report) · [feature-quiz](/skills/feature-quiz) · [Criar uma skill nova](/skills/how-to-create)
+**Related**: [feature-report](/skills/feature-report) · [feature-quiz](/skills/feature-quiz) · [Create a new skill](/skills/how-to-create)

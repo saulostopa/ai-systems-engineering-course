@@ -1,12 +1,12 @@
-"""Runner — ÚNICA autoridade de transição de estado.
+"""Runner — the ONLY authority for state transitions.
 
-Princípios (requisitos do curso):
-  1. Agentes produzem propostas (NodeOutput.proposed_next); o runner DECIDE.
-  2. Agente nunca altera status — tentativa vira Event de erro (auditável).
-  3. Transições passam por gates; dados inválidos bloqueiam.
-  4. Toda transição vira Event e checkpoint no store.
-  5. Limites: MAX_DEPTH, MAX_CHILDREN, MAX_RETRIES, MAX_LLM_CALLS, timeout,
-     orçamento de LLM opcional — aplicados EM CÓDIGO (ADK 2, L4b).
+Principles (course requirements):
+  1. Agents produce proposals (NodeOutput.proposed_next); the runner DECIDES.
+  2. An agent never changes status — an attempt becomes an error Event (auditable).
+  3. Transitions pass through gates; invalid data is blocked.
+  4. Every transition becomes an Event and a store checkpoint.
+  5. Limits: MAX_DEPTH, MAX_CHILDREN, MAX_RETRIES, MAX_LLM_CALLS, timeout,
+     optional LLM budget — applied IN CODE (ADK 2, L4b).
 """
 
 from __future__ import annotations
@@ -23,23 +23,23 @@ from .schemas import NodeInput, NodeOutput, NodeKind, WorkflowState, WorkflowSta
 
 @dataclass
 class Limits:
-    """Limites obrigatórios — aplicados pelo runner, não pelos agentes."""
+    """Mandatory limits — applied by the runner, not by the agents."""
 
     max_depth: int = 8
     max_children: int = 16
     max_retries: int = 3
     max_llm_calls: int = 40
     run_timeout_s: float = 1800.0
-    llm_budget: float = 0.0  # 0 = sem orçamento; >0 = teto em unidades de custo
+    llm_budget: float = 0.0  # 0 = no budget; >0 = ceiling in cost units
 
 
 class Runner:
-    """Executa o grafo. O único objeto que chama state transitions."""
+    """Executes the graph. The only object that calls state transitions."""
 
     def __init__(
         self,
         graph: WorkflowGraph,
-        store=None,            # StateStore (None = sem persistência)
+        store=None,            # StateStore (None = no persistence)
         bus: EventBus | None = None,
         limits: Limits | None = None,
         node_dispatch: dict[str, Callable[[NodeInput], NodeOutput]] | None = None,
@@ -48,22 +48,22 @@ class Runner:
         self.store = store
         self.bus = bus or EventBus()
         self.limits = limits or Limits()
-        # dispatch extra (ex.: gates injetados) por id de nó
+        # extra dispatch (e.g.: injected gates) by node id
         self.node_dispatch = node_dispatch or {}
         self._started_at = 0.0
         self._llm_cost = 0.0
 
-    # ── API pública ───────────────────────────────────────────────
+    # ── Public API ───────────────────────────────────────────────
 
     def run(self, initial: dict[str, Any] | None = None, state: WorkflowState | None = None) -> WorkflowState:
-        """Executa do início (ou retoma de um estado salvo)."""
+        """Runs from the start (or resumes from a saved state)."""
         self._started_at = time.monotonic()
         if state is None:
             state = WorkflowState(workflow_id=self._new_workflow_id(), data=initial or {})
-            self._transition(state, WorkflowStatus.RUNNING, "init", "workflow iniciado")
+            self._transition(state, WorkflowStatus.RUNNING, "init", "workflow started")
             node_id = self.graph.start
         else:
-            node_id = state.current_node  # retomada
+            node_id = state.current_node  # resume
         self._checkpoint(state)
         try:
             return self._advance_from(state, node_id, depth=0)
@@ -72,28 +72,28 @@ class Runner:
             self._transition(state, WorkflowStatus.FAILED, "runner", f"timeout: {exc}")
             self._checkpoint(state)
             return state
-        except Exception as exc:  # falha inesperada: explícita e auditável
+        except Exception as exc:  # unexpected failure: explicit and auditable
             state.error = f"{type(exc).__name__}: {exc}"
             self._transition(state, WorkflowStatus.FAILED, "runner", state.error)
             self._checkpoint(state)
             return state
 
-    # ── Núcleo: avanço de estado (uso interno) ────────────────────
+    # ── Core: state advancement (internal use) ───────────────────
 
     def _advance_from(self, state: WorkflowState, node_id: str, depth: int) -> WorkflowState:
         if depth > self.limits.max_depth:
-            raise RuntimeError(f"MAX_DEPTH excedido ({self.limits.max_depth})")
+            raise RuntimeError(f"MAX_DEPTH exceeded ({self.limits.max_depth})")
         if self._elapsed() > self.limits.run_timeout_s:
-            raise TimeoutError(f"run_timeout_s excedido ({self.limits.run_timeout_s})")
+            raise TimeoutError(f"run_timeout_s exceeded ({self.limits.run_timeout_s})")
 
         node = self.graph.nodes[node_id]
         state.current_node = node_id
         state.depth = max(state.depth, depth)
-        self._transition(state, WorkflowStatus.RUNNING, node_id, f"entrando em {node_id}")
+        self._transition(state, WorkflowStatus.RUNNING, node_id, f"entering {node_id}")
 
         output = self._execute_node(node, state, depth)
 
-        # ── Autoridade de transição: proposta do agente ≠ transição ──
+        # ── Transition authority: agent proposal ≠ transition ──
         if not output.ok:
             return self._handle_failure(state, node, output, depth)
 
@@ -102,18 +102,18 @@ class Runner:
         self._apply_llm_cost(output, node)
         self._check_llm_limits(state, node)
 
-        # Gates anexados à saída (ex.: validação de plano) bloqueiam a transição
+        # Gates attached to the output (e.g.: plan validation) block the transition
         if output.gate and not output.gate.passed:
-            self.bus.emit(Event("gate", node_id, f"gate falhou: {output.gate.failures}", {"failures": output.gate.failures}))
+            self.bus.emit(Event("gate", node_id, f"gate failed: {output.gate.failures}", {"failures": output.gate.failures}))
             return self._handle_failure(state, node, output, depth)
 
         for ev in output.evidence:
-            self.bus.emit(Event("evidence", node_id, f"evidência {ev.kind} {'PASS' if ev.passed else 'FAIL'}", {"evidence": ev.to_dict()}))
+            self.bus.emit(Event("evidence", node_id, f"evidence {ev.kind} {'PASS' if ev.passed else 'FAIL'}", {"evidence": ev.to_dict()}))
 
         self._checkpoint(state)
 
-        # ── Fan-out nativo: nó com N sucessores dispara filhos em paralelo ──
-        # (exceção: nós com router explícito — o router decide a rota única)
+        # ── Native fan-out: a node with N successors dispatches children in parallel ──
+        # (exception: nodes with an explicit router — the router decides the single route)
         successors = self.graph.edges.get(node_id, [])
         if len(successors) > 1 and node_id not in self.graph.routers:
             children = [self.graph.nodes[s] for s in successors if s in self.graph.nodes]
@@ -121,14 +121,14 @@ class Runner:
             state.data[f"fanout_{node_id}"] = aggregated
             join_id = self._join_after(node_id, successors)
             if join_id is None:
-                raise RuntimeError(f"fan-out de {node_id} sem JoinNode — transição não pode ser silenciosa")
-            self._transition(state, WorkflowStatus.RUNNING, join_id, f"join após fan-out de {node_id}")
+                raise RuntimeError(f"fan-out from {node_id} without JoinNode — transition cannot be silent")
+            self._transition(state, WorkflowStatus.RUNNING, join_id, f"join after fan-out from {node_id}")
             self._checkpoint(state)
             return self._advance_from(state, join_id, depth + 1)
 
         next_node = self._next_node(state, node_id, output)
         if next_node is None:
-            self._transition(state, WorkflowStatus.CLOSED, node_id, "workflow encerrado (fim do grafo)")
+            self._transition(state, WorkflowStatus.CLOSED, node_id, "workflow closed (end of graph)")
             self._checkpoint(state)
             return state
         return self._advance_from(state, next_node, depth + 1)
@@ -160,15 +160,15 @@ class Runner:
         thread.start()
         thread.join(timeout_s)
         if thread.is_alive():
-            return NodeOutput(node_id=ninput.node_id, ok=False, error=f"timeout do nó ({timeout_s}s)")
+            return NodeOutput(node_id=ninput.node_id, ok=False, error=f"node timeout ({timeout_s}s)")
         if result.get("error"):
             return NodeOutput(node_id=ninput.node_id, ok=False, error=result["error"])
         return result["output"]
 
-    # ── Falhas, retries e roteamento ──────────────────────────────
+    # ── Failures, retries and routing ──────────────────────────────
 
     def _join_after(self, node_id: str, successors: list[str]) -> str | None:
-        """Encontra o JoinNode cujas fontes são os sucessores do fan-out."""
+        """Finds the JoinNode whose sources are the fan-out successors."""
         wanted = set(successors)
         for join_id, sources in self.graph.joins.items():
             if set(sources) == wanted:
@@ -178,22 +178,22 @@ class Runner:
     def _handle_failure(self, state: WorkflowState, node: Node, output: NodeOutput, depth: int) -> WorkflowState:
         state.retries[node.id] = state.retries.get(node.id, 0) + 1
         attempts = state.retries[node.id]
-        self.bus.emit(Event("error", node.id, output.error or "falha do nó", {"attempts": attempts}))
+        self.bus.emit(Event("error", node.id, output.error or "node failure", {"attempts": attempts}))
         if attempts <= self.limits.max_retries:
             self._transition(state, WorkflowStatus.RUNNING, node.id, f"retry {attempts}/{self.limits.max_retries}")
             self._checkpoint(state)
             return self._advance_from(state, node.id, depth + 1)
-        state.error = f"MAX_RETRIES excedido em {node.id} ({self.limits.max_retries})"
+        state.error = f"MAX_RETRIES exceeded at {node.id} ({self.limits.max_retries})"
         self._transition(state, WorkflowStatus.FAILED, node.id, state.error)
         self._checkpoint(state)
         return state
 
     def _next_node(self, state: WorkflowState, node_id: str, output: NodeOutput) -> str | None:
-        """Roteamento pós-nó:
-        1. router explícito (default obrigatório);
-        2. proposta de agente (runner decide — pode recusar);
-        3. arestas sequenciais;
-        4. None = fim."""
+        """Post-node routing:
+        1. explicit router (mandatory default);
+        2. agent proposal (the runner decides — it may refuse);
+        3. sequential edges;
+        4. None = end."""
         if node_id in self.graph.routers:
             fn, routes, default = self.graph.routers[node_id]
             route = fn(state.data)
@@ -203,21 +203,21 @@ class Runner:
         if output.proposed_next:
             dst = output.proposed_next
             if dst not in self.graph.nodes:
-                self.bus.emit(Event("agent_proposal", node_id, f"proposta inválida ignorada: {dst}", {"proposed": dst}))
+                self.bus.emit(Event("agent_proposal", node_id, f"invalid proposal ignored: {dst}", {"proposed": dst}))
             elif dst not in self.graph.edges.get(node_id, []):
-                self.bus.emit(Event("agent_proposal", node_id, f"proposta fora das arestas ignorada: {dst}", {"proposed": dst}))
+                self.bus.emit(Event("agent_proposal", node_id, f"proposal outside the edges ignored: {dst}", {"proposed": dst}))
             else:
-                self.bus.emit(Event("agent_proposal", node_id, f"proposta aceita: {dst}", {"proposed": dst}))
+                self.bus.emit(Event("agent_proposal", node_id, f"proposal accepted: {dst}", {"proposed": dst}))
                 return dst
         succ = self.graph.edges.get(node_id, [])
         if len(succ) == 1:
             return succ[0]
-        return None  # fan-out é tratado pelo nó de dispatch; join pelo próximo nó
+        return None  # fan-out is handled by the dispatch node; join by the next node
 
-    # ── Limites ──────────────────────────────────────────────────
+    # ── Limits ──────────────────────────────────────────────────
 
     def _apply_llm_cost(self, output: NodeOutput, node: Node) -> None:
-        """Custo real do LLM (usage do provider) entra no orçamento do runner."""
+        """The real LLM cost (provider usage) enters the runner's budget."""
         if node.kind is NodeKind.AGENT:
             cost = output.payload.get("llm_cost", 1.0)
             try:
@@ -227,17 +227,17 @@ class Runner:
 
     def _check_llm_limits(self, state: WorkflowState, node: Node) -> None:
         if state.llm_calls > self.limits.max_llm_calls:
-            raise RuntimeError(f"MAX_LLM_CALLS excedido ({self.limits.max_llm_calls})")
+            raise RuntimeError(f"MAX_LLM_CALLS exceeded ({self.limits.max_llm_calls})")
         if self.limits.llm_budget > 0 and self._llm_cost > self.limits.llm_budget:
-            raise RuntimeError(f"llm_budget excedido ({self.limits.llm_budget})")
+            raise RuntimeError(f"llm_budget exceeded ({self.limits.llm_budget})")
 
     def _elapsed(self) -> float:
         return time.monotonic() - self._started_at
 
-    # ── Transições e persistência (só aqui!) ─────────────────────
+    # ── Transitions and persistence (only here!) ─────────────────
 
     def _transition(self, state: WorkflowState, status: WorkflowStatus, node_id: str, message: str) -> None:
-        """A ÚNICA função que muda o status. Nenhum agente/nó pode chamá-la."""
+        """The ONLY function that changes the status. No agent/node can call it."""
         state.status = status
         state.current_node = node_id
         state.updated_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
@@ -254,22 +254,22 @@ class Runner:
         return f"wf_{uuid.uuid4().hex[:12]}"
 
 
-# ── Helper de fan-out paralelo (nós determinísticos) ───────────────
+# ── Parallel fan-out helper (deterministic nodes) ────────────────────
 
 def run_fanout(runner: Runner, state: WorkflowState, parent_id: str, children: list[Node]) -> dict[str, dict[str, Any]]:
-    """Executa N nós em paralelo e agrega payloads por id (JoinNode).
+    """Runs N nodes in parallel and aggregates payloads by id (JoinNode).
 
-    - MAX_CHILDREN é aplicado aqui (largura máxima).
-    - Cada filho é executado como sub-etapa; falha vira payload {'error': ...}
-      para o join decidir — nunca morte silenciosa.
+    - MAX_CHILDREN is applied here (maximum width).
+    - Each child runs as a sub-step; a failure becomes an {'error': ...} payload
+      for the join to decide — never silent death.
     """
     if len(children) > runner.limits.max_children:
-        raise RuntimeError(f"MAX_CHILDREN excedido ({len(children)} > {runner.limits.max_children})")
+        raise RuntimeError(f"MAX_CHILDREN exceeded ({len(children)} > {runner.limits.max_children})")
     results: dict[str, dict[str, Any]] = {}
     with ThreadPoolExecutor(max_workers=max(1, len(children))) as pool:
         futures = {pool.submit(runner._execute_node, n, state, 0): n for n in children}
         for fut, node in futures.items():
             output = fut.result()
-            runner.bus.emit(Event("transition", parent_id, f"fan-out: {node.id} {'ok' if output.ok else 'FALHOU'}", {"child": node.id}))
+            runner.bus.emit(Event("transition", parent_id, f"fan-out: {node.id} {'ok' if output.ok else 'FAILED'}", {"child": node.id}))
             results[node.id] = output.payload if output.ok else {"error": output.error}
     return results

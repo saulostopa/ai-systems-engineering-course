@@ -1,76 +1,76 @@
 ---
-title: Aula 06 — Inicialização como fase própria
+title: Lesson 06 — Initialization as its own phase
 ---
 
-# Aula 06 — Inicialização como fase própria
+# Lesson 06 — Initialization as its own phase
 
-> Antes de trabalhar, o agente precisa entender onde está. Isso é uma fase — e merece um protocolo.
+> Before working, the agent needs to understand where it is. That is a phase — and it deserves a protocol.
 
-## O erro clássico
+## The classic mistake
 
-O agente abre o repo e começa a editar. A impressão de produtividade é enganosa: sem entender o terreno, ele:
+The agent opens the repo and starts editing. The impression of productivity is misleading: without understanding the terrain, it:
 
-- edita o arquivo errado (há 3 repos parecidos?);
-- segue padrões que não existem no projeto;
-- quebra contratos (hooks, lint, format);
-- repete trabalho que outra sessão já fez.
+- edits the wrong file (are there 3 similar repos?);
+- follows patterns that don't exist in the project;
+- breaks contracts (hooks, lint, format);
+- repeats work another session already did.
 
-**Boot não é tempo perdido — é a fase que evita o retrabalho.**
+**Boot is not wasted time — it is the phase that prevents rework.**
 
-## A inicialização como protocolo
+## Initialization as a protocol
 
-O `webmotors-harness-factory` define o boot com `./init.sh`:
+The `webmotors-harness-factory` defines the boot with `./init.sh`:
 
-> "`init.sh` verifica o diretório de trabalho, valida as ferramentas, roda a validação de baseline e imprime os próximos comandos recomendados. **Nunca inicia processos longos por padrão.**"
+> "`init.sh` checks the working directory, validates the tools, runs the baseline validation and prints the recommended next commands. **Never starts long-running processes by default.**"
 
-A sequência de inicialização saudável:
+The healthy initialization sequence:
 
-1. **Onde estou?** — confirmar o repo correto (o factory checa o working directory).
-2. **O que existe?** — ler AGENTS.md/roteador, feature_list, docs de arquitetura.
-3. **O ambiente funciona?** — tooling presente (node, python, gh), hooks instalados (`git config core.hooksPath`), baseline validado.
-4. **Onde paramos?** — session-handoff, progress, status do git.
-5. **O que fazer agora?** — escolher UMA feature em `in_progress` (nunca duas).
+1. **Where am I?** — confirm the correct repo (the factory checks the working directory).
+2. **What exists?** — read AGENTS.md/router, feature_list, architecture docs.
+3. **Does the environment work?** — tooling present (node, python, gh), hooks installed (`git config core.hooksPath`), baseline validated.
+4. **Where did we stop?** — session-handoff, progress, git status.
+5. **What to do now?** — pick ONE feature in `in_progress` (never two).
 
-## Por que "uma de cada vez" faz parte do boot
+## Why "one at a time" is part of the boot
 
-O factory é explícito:
+The factory is explicit:
 
-> "Apenas uma feature pode estar `in_progress` por vez, a menos que uma exceção seja documentada. Escolha a feature `not_started` de maior prioridade."
+> "Only one feature can be `in_progress` at a time, unless an exception is documented. Pick the highest-priority `not_started` feature."
 
-Isso não é burocracia: é a proteção contra o agente que espalha trabalho por dez frentes e não termina nenhuma (o sintoma da Aula 07).
+This is not bureaucracy: it is the protection against the agent that spreads work across ten fronts and finishes none (the symptom of Lesson 07).
 
-## A inicialização no AgEnFK
+## Initialization in AgEnFK
 
-No AgEnFK, o boot tem cara de fase do workflow: `/agenfk-plan` lê o item, confirma o projeto, lê escopo e arquitetura, **decompõe tudo antes de qualquer trabalho** e só então libera a execução. O `current-project` resolve o `.agenfk/project.json` do diretório — o equivalente mecânico do "onde estou?".
+In AgEnFK, the boot looks like a workflow phase: `/agenfk-plan` reads the item, confirms the project, reads scope and architecture, **decomposes everything before any work** and only then releases execution. The `current-project` resolves the `.agenfk/project.json` of the directory — the mechanical equivalent of "where am I?".
 
-E o gatekeeper estende o boot para o meio da sessão: a cada edição, ele verifica se o arquivo está dentro de um projeto gerenciado e se há item ativo. **O agente não consegue trabalhar "sem saber onde está"** — o harness lembra por ele.
+And the gatekeeper extends the boot into the middle of the session: on every edit, it checks whether the file is inside a managed project and whether there is an active item. **The agent cannot work "without knowing where it is"** — the harness remembers for it.
 
-## Na Webmotors — o caso do nosso scoping
+## At Webmotors — the case of our scoping
 
-Quando escopamos o AgEnFK para este curso, o "boot" foi literalmente refeito: removemos regras globais, instalamos as regras **no projeto** e verificamos que, dentro do `harness-plannig`, o `current-project` resolve e o workflow ativa — e fora dele, nada. A inicialização correta é o que garante que cada agente, em cada repo, comece com o harness certo.
+When we scoped AgEnFK for this course, the "boot" was literally redone: we removed global rules, installed the rules **in the project** and verified that, inside `harness-plannig`, the `current-project` resolves and the workflow activates — and outside it, nothing. Correct initialization is what guarantees that every agent, in every repo, starts with the right harness.
 
-## Checklist de boot (copie para seu projeto)
+## Boot checklist (copy to your project)
 
 ```sh
-./init.sh            # ou o equivalente do seu harness
-rtk git status       # árvore limpa? handoff pendente?
-rtk git log --oneline -5  # o que foi feito recentemente?
-# leia: AGENTS.md, session-handoff.md, feature_list.json
-# escolha UMA feature in_progress (ou promova a de maior prioridade)
-# declare o escopo ANTES de editar (policies/scope-control.md)
+./init.sh            # or the equivalent of your harness
+rtk git status       # clean tree? pending handoff?
+rtk git log --oneline -5  # what was done recently?
+# read: AGENTS.md, session-handoff.md, feature_list.json
+# pick ONE in_progress feature (or promote the highest priority one)
+# declare the scope BEFORE editing (policies/scope-control.md)
 ```
 
-## Principais aprendizados
+## Key takeaways
 
-1. Boot é fase própria, não perda de tempo: evita retrabalho e quebra de contrato.
-2. Onde estou → o que existe → ambiente OK → onde paramos → o que fazer.
-3. Uma feature in_progress por vez é proteção contra dispersão.
-4. O harness deve tornar o "não saber onde está" impossível (gatekeeper, project.json).
+1. Boot is its own phase, not wasted time: it prevents rework and broken contracts.
+2. Where am I → what exists → environment OK → where did we stop → what to do.
+3. One in_progress feature at a time is protection against dispersion.
+4. The harness must make "not knowing where you are" impossible (gatekeeper, project.json).
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 06"
+"quiz me on Lesson 06"
 ```
 
-**Próxima aula**: [07 — Excesso de autonomia e entrega incompleta](/lectures/lecture-07).
+**Next lesson**: [07 — Excessive autonomy and incomplete delivery](/lectures/lecture-07).

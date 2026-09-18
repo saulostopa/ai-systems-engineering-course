@@ -1,10 +1,10 @@
-"""FileStateStore — persistência inicial SEM banco.
+"""FileStateStore — initial persistence WITHOUT a database.
 
 .harness/
-├── state.json       # snapshot do WorkflowState (escrita atômica: tmp+rename)
-├── events.jsonl     # trilha de auditoria (append-only)
-├── artifacts/       # artefatos produzidos pelos nós
-└── locks/           # locks de arquivo (O_EXCL) para exclusão mútua
+├── state.json       # WorkflowState snapshot (atomic write: tmp+rename)
+├── events.jsonl     # audit trail (append-only)
+├── artifacts/       # artifacts produced by the nodes
+└── locks/           # file locks (O_EXCL) for mutual exclusion
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ class FileStateStore(StateStore):
         os.makedirs(self.artifacts_dir, exist_ok=True)
         os.makedirs(self.locks_dir, exist_ok=True)
 
-    # ── Estado ───────────────────────────────────────────────────
+    # ── State ───────────────────────────────────────────────────
 
     def read_state(self) -> WorkflowState | None:
         if not os.path.exists(self.state_path):
@@ -42,9 +42,9 @@ class FileStateStore(StateStore):
         tmp = self.state_path + ".tmp"
         with open(tmp, "w", encoding="utf-8") as fh:
             json.dump(state.snapshot(), fh, ensure_ascii=False, indent=2)
-        os.replace(tmp, self.state_path)  # atômico
+        os.replace(tmp, self.state_path)  # atomic
 
-    # ── Eventos ──────────────────────────────────────────────────
+    # ── Events ──────────────────────────────────────────────────
 
     def append_event(self, event: Event) -> None:
         os.makedirs(self.harness_dir, exist_ok=True)
@@ -62,7 +62,7 @@ class FileStateStore(StateStore):
                     events.append(Event(**json.loads(line)))
         return events
 
-    # ── Artefatos ────────────────────────────────────────────────
+    # ── Artifacts ───────────────────────────────────────────────
 
     def save_artifact(self, name: str, content: str | bytes) -> str:
         path = os.path.join(self.artifacts_dir, name)
@@ -72,10 +72,10 @@ class FileStateStore(StateStore):
             fh.write(content)
         return path
 
-    # ── Locks (exclusão mútua simples) ───────────────────────────
+    # ── Locks (simple mutual exclusion) ─────────────────────────
 
     def acquire_lock(self, name: str) -> bool:
-        """Lock não-bloqueante via O_EXCL. Retorna True se adquirido."""
+        """Non-blocking lock via O_EXCL. Returns True if acquired."""
         path = os.path.join(self.locks_dir, name + ".lock")
         try:
             fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
