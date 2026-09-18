@@ -1,28 +1,29 @@
-# Intranet de artefatos — pacote
+# Artifacts intranet — package
 
 ```
 artifacts-intranet/
 ├── artifacts_intranet/
-│   ├── __init__.py        # path setup (motor rag_harness)
-│   ├── indexer.py         # varre dirs de artefatos, indexa (HTML/MD/TXT) no rag_harness
-│   └── server.py          # servidor stdlib: / (UI) e /search?q= (JSON)
-├── index.html             # UI Eleanor (system.css v2 reutilizado)
-├── tests/test_intranet.py # 3 testes
+│   ├── __init__.py        # path setup (rag_harness engine)
+│   ├── indexer.py         # scans artifact dirs, indexes (HTML/MD/TXT) into rag_harness
+│   └── server.py          # stdlib server: / (UI) and /search?q= (JSON)
+├── index.html             # Eleanor UI (system.css v2 reused)
+├── tests/test_intranet.py # 3 tests
 └── README.md
 ```
 
-## Uso
+## Usage
 
 ```sh
-python3 -m artifacts_intranet index   # indexa os dirs configurados (repo)
+python3 -m artifacts_intranet index   # indexes the configured dirs (repo)
 python3 -m artifacts_intranet serve   # http://localhost:8765
-# UI: busca com RAG híbrido (léxico + semântico + RRF)
-# API: GET /search?q=gatekeeper bloqueia
+# UI: hybrid RAG search (lexical + semantic + RRF)
+# API: GET /search?q=gatekeeper blocks
 ```
 
-## Idéia (Story F2)
+## Idea (Story F2)
 
-Os artefatos (reports, quizzes, flowcharts, relatórios de área) viram o
-**corpus de conhecimento da empresa** (Aula 03: repo como sistema de registro;
-Aula 11: observabilidade). A intranet é a porta de entrada: busca RAG sobre
-tudo que o harness gerou — com fonte citada, como tudo neste projeto.
+The artifacts (reports, quizzes, flowcharts, area reports) become the
+**company knowledge corpus** (Lesson 03: repo as system of record;
+Lesson 11: observability). The intranet is the entry point: RAG search over
+everything the harness generated — with cited sources, like everything in
+this project.

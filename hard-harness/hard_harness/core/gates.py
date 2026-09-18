@@ -1,10 +1,10 @@
-"""Gates determinísticos — verificação executável (Aula 09/10).
+"""Deterministic gates — executable verification (Lesson 09/10).
 
-Um gate é uma função pura que produz GateResult com falhas EXPLÍCITAS
-({check, expected, actual}) e evidências anexadas. Nunca bloqueia em
-silêncio: toda decisão vira Event de gate.
+A gate is a pure function that produces a GateResult with EXPLICIT failures
+({check, expected, actual}) and attached evidence. It never blocks in
+silence: every decision becomes a gate Event.
 
-Gates reais executam comandos; testes injetam funções falsas.
+Real gates run commands; tests inject fake functions.
 """
 
 from __future__ import annotations
@@ -18,10 +18,10 @@ GateFn = Callable[[dict[str, object]], GateResult]
 
 
 def gate_node_output(node_id: str, gate_fn: GateFn) -> Callable[[object], "NodeOutput"]:
-    """Transforma um gate num NÓ do grafo: GateResult vira NodeOutput.
+    """Turns a gate into a graph NODE: GateResult becomes NodeOutput.
 
-    Contrato do runner: nós devolvem NodeOutput; o gate viaja anexado
-    (output.gate) e o runner bloqueia a transição quando não passa.
+    Runner contract: nodes return NodeOutput; the gate travels attached
+    (output.gate) and the runner blocks the transition when it fails.
     """
 
     def node(ninput) -> "NodeOutput":
@@ -33,25 +33,25 @@ def gate_node_output(node_id: str, gate_fn: GateFn) -> Callable[[object], "NodeO
             ok=gr.passed,
             gate=gr,
             payload={"gate": gr.to_dict()},
-            error="gate falhou" if not gr.passed else "",
+            error="gate failed" if not gr.passed else "",
         )
 
     return node
 
 
 def run_command(command: str, timeout_s: int = 120) -> tuple[int, str]:
-    """Executa um comando e retorna (exit_code, output). Falha vira evidência."""
+    """Runs a command and returns (exit_code, output). Failure becomes evidence."""
     try:
         proc = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=timeout_s)
         return proc.returncode, (proc.stdout or "")[-4000:]
     except subprocess.TimeoutExpired:
-        return 124, f"timeout após {timeout_s}s"
+        return 124, f"timeout after {timeout_s}s"
     except OSError as exc:
         return 127, str(exc)
 
 
 def gate_from_command(node_id: str, command: str, kind: str, timeout_s: int = 120) -> GateFn:
-    """Cria um gate que roda um comando real e exige exit 0."""
+    """Creates a gate that runs a real command and requires exit 0."""
 
     def gate(payload: dict[str, object]) -> GateResult:
         code, out = run_command(command, timeout_s)
@@ -69,7 +69,7 @@ def gate_from_command(node_id: str, command: str, kind: str, timeout_s: int = 12
 
 
 def combined_gate(node_id: str, gates: list[GateFn]) -> GateFn:
-    """Joins vários gates num só: TODOS precisam passar; falhas agregadas."""
+    """Joins multiple gates into one: ALL must pass; failures are aggregated."""
 
     def gate(payload: dict[str, object]) -> GateResult:
         failures: list[dict[str, str]] = []
@@ -84,14 +84,14 @@ def combined_gate(node_id: str, gates: list[GateFn]) -> GateFn:
 
 
 def gate_scope_valid(payload: dict[str, object]) -> GateResult:
-    """Gate de escopo (Aula 07): a mudança declara o quê, o porquê e o fora-de-escopo."""
+    """Scope gate (Lesson 07): the change declares the what, the why and the out-of-scope."""
     failures: list[dict[str, str]] = []
     for key in ("what", "why"):
         value = (payload.get(key) or "").strip()
         if not value:
-            failures.append({"check": f"scope.{key}", "expected": "preenchido", "actual": "vazio"})
+            failures.append({"check": f"scope.{key}", "expected": "filled", "actual": "empty"})
     if "out_of_scope" not in payload:
-        failures.append({"check": "scope.out_of_scope", "expected": "declarado", "actual": "ausente"})
+        failures.append({"check": "scope.out_of_scope", "expected": "declared", "actual": "missing"})
     ev = Evidence(
         kind="manual",
         command="gate_scope_valid(payload)",

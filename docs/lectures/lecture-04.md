@@ -1,70 +1,70 @@
 ---
-title: Aula 04 — Por que um único arquivo de instruções falha
+title: Lesson 04 — Why a single instructions file fails
 ---
 
-# Aula 04 — Por que um único arquivo de instruções falha
+# Lesson 04 — Why a single instructions file fails
 
-> O instinto natural é empilhar tudo num AGENTS.md gigante. É o pior instinto que existe.
+> The natural instinct is to pile everything into one giant AGENTS.md. It is the worst instinct there is.
 
-## A tentação do arquivo único
+## The temptation of the single file
 
-É sedutor: um único arquivo que diz **tudo** — contexto, regras, comandos, políticas, exemplos, lembretes. Um "manual completo". O problema é que esse arquivo falha em cinco frentes ao mesmo tempo:
+It is seductive: a single file that says **everything** — context, rules, commands, policies, examples, reminders. A "complete manual". The problem is that this file fails on five fronts at once:
 
-1. **Custo de contexto**: cada token do arquivo é pago em todo carregamento. Um arquivo de 5 mil linhas rouba contexto do trabalho real.
-2. **Contradição**: instruções longas se contradizem, e o agente segue a última ou a mais específica — imprevisível.
-3. **Obsolescência**: ninguém revisa um arquivo gigante; ele apodrece em silêncio.
-4. **Irrelevância**: 90% das instruções não se aplicam à tarefa atual, mas o agente não sabe filtrar.
-5. **Diluição**: o que é crítico (gate, verificação) se perde entre o que é decorativo.
+1. **Context cost**: every token in the file is paid for on every load. A 5,000-line file steals context from the real work.
+2. **Contradiction**: long instructions contradict each other, and the agent follows the last one or the most specific one — unpredictable.
+3. **Obsolescence**: nobody reviews a giant file; it rots in silence.
+4. **Irrelevance**: 90% of the instructions do not apply to the current task, but the agent can't filter.
+5. **Dilution**: what is critical (gate, verification) gets lost among what is decorative.
 
-## O padrão que funciona: roteamento
+## The pattern that works: routing
 
-Em vez de um manual único, um **roteador** curto aponta para documentos específicos, carregados sob demanda:
+Instead of a single manual, a short **router** points to specific documents, loaded on demand:
 
 ```
-AGENTS.md (roteador — curto, estável)
-├── O que este repo é
-├── O que ler primeiro (links)
-├── Como escolher uma tarefa (feature_list.json)
-├── Como verificar (policies/definition-of-done.md)
-└── Onde a documentação vive (tabela de rotas)
+AGENTS.md (router — short, stable)
+├── What this repo is
+├── What to read first (links)
+├── How to pick a task (feature_list.json)
+├── How to verify (policies/definition-of-done.md)
+└── Where the documentation lives (route table)
 ```
 
-O agente carrega o roteador, e então **busca** a página certa quando precisa — exatamente como uma pessoa usa um README, não como quem decora uma bíblia.
+The agent loads the router, and then **fetches** the right page when it needs it — exactly like a person using a README, not like someone memorizing a bible.
 
-## Evidência do nosso ecossistema
+## Evidence from our ecosystem
 
-O `webmotors-harness-factory/AGENTS.md` é um roteador exemplar: 9 seções curtas, com uma tabela "Where deeper documentation lives" apontando para `docs/architecture/`, `docs/operations/`, `skills/<nome>/SKILL.md`, `policies/*.md`. Nada de conteúdo copiado — só rotas.
+The `webmotors-harness-factory/AGENTS.md` is an exemplary router: 9 short sections, with a "Where deeper documentation lives" table pointing to `docs/architecture/`, `docs/operations/`, `skills/<name>/SKILL.md`, `policies/*.md`. No copied content — just routes.
 
-O `harness-agent-skills` segue o mesmo padrão no nível de skills: cada skill é um `SKILL.md` curto com frontmatter (`name` + `description`), e o corpo em `Gather → Write → Output`. A descrição é o gatilho de carregamento: a skill só é lida **quando a tarefa combina** — sob demanda, não no boot.
+`harness-agent-skills` follows the same pattern at the skill level: each skill is a short `SKILL.md` with frontmatter (`name` + `description`), and the body in `Gather → Write → Output`. The description is the loading trigger: the skill is only read **when the task matches** — on demand, not at boot.
 
-E o próprio AgEnFK distribui regras por plataforma (`clauderules/`, `codexrules/`, `cursorrules/`, `geminirules/`) em vez de um único arquivo universal — cada harness recebe o formato que entende.
+And AgEnFK itself distributes rules per platform (`clauderules/`, `codexrules/`, `cursorrules/`, `geminirules/`) instead of a single universal file — each harness gets the format it understands.
 
-## Regra prática: o arquivo de 10%
+## Practical rule: the 10% file
 
-Um arquivo de instruções bem formado deveria ser cortável em ~10% sem perder nenhuma regra crítica. Se você precisa ler 300 linhas para saber como verificar o trabalho, o roteiro está errado.
+A well-formed instructions file should be cuttable to ~10% without losing any critical rule. If you need to read 300 lines to know how to verify the work, the roadmap is wrong.
 
-| Sintoma | Diagnóstico |
+| Symptom | Diagnosis |
 |---|---|
-| AGENTS.md com mais de ~150 linhas | Provável roteador inchado; extrair para docs/ |
-| Instruções duplicadas em 2+ lugares | Contração e divergência chegando |
-| "Lembrar de..." no final do arquivo | Instrução que será esquecida; virar policy ou skill |
-| Tabela de conteúdo manual | Sina de que o arquivo já é um livro; quebrar |
+| AGENTS.md over ~150 lines | Likely a bloated router; extract to docs/ |
+| Instructions duplicated in 2+ places | Contradiction and divergence coming |
+| "Remember to..." at the end of the file | An instruction that will be forgotten; turn it into a policy or skill |
+| Manual table of contents | Sign that the file is already a book; break it up |
 
-## Na Webmotors — o curso como exemplo
+## At Webmotors — the course as an example
 
-Este curso é um harness de conhecimento, e segue o mesmo princípio: a home e as páginas de seção são **roteadores** (links para aulas, projetos, biblioteca); cada aula é um documento pequeno com escopo único; cada skill é um pacote carregado sob demanda. Quando a biblioteca de templates (A4) for entregue, os templates prontos seguirão o mesmo formato — roteador curto + docs rotadas.
+This course is a knowledge harness, and it follows the same principle: the home page and the section pages are **routers** (links to lessons, projects, library); each lesson is a small document with a single scope; each skill is a package loaded on demand. When the template library (A4) is delivered, the ready-made templates will follow the same format — short router + routed docs.
 
-## Principais aprendizados
+## Key takeaways
 
-1. Arquivo único gigante = custo, contradição, obsolescência, irrelevância, diluição.
-2. Roteador curto + documentos sob demanda é o padrão que escala.
-3. Skills com `description` de gatilho são o mecanismo de carregamento sob demanda.
-4. Se você não consegue cortar 90% do arquivo sem perder regra crítica, o roteamento está errado.
+1. Giant single file = cost, contradiction, obsolescence, irrelevance, dilution.
+2. Short router + on-demand documents is the pattern that scales.
+3. Skills with a triggering `description` are the on-demand loading mechanism.
+4. If you can't cut 90% of the file without losing a critical rule, the routing is wrong.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 04"
+"quiz me on Lesson 04"
 ```
 
-**Próxima aula**: [05 — Continuidade em tarefas longas](/lectures/lecture-05).
+**Next lesson**: [05 — Continuity in long-running tasks](/lectures/lecture-05).

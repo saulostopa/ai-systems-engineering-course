@@ -1,14 +1,14 @@
-# Definition of Done — domínio Games
+# Definition of Done — Games domain
 
-Uma feature de jogo está pronta quando:
+A game feature is done when:
 
-1. **Design doc existe** — `design-docs/YYYY-MM-DD-<slug>.md` com persona, storytelling, mecânica, economia (se houver) e critérios de verificação.
-2. **Playteste simulado passou** — `scripts/playtest-simulate.sh <doc>` termina com `PLAYTESTE ACEITO` (0 falhas).
-3. **Build valida** — Rojo/Luau compila (exit 0), assets íntegros.
-4. **Publicação validada** (quando aplicável) — checklist da skill `roblox-publish` 100% PASS com evidência.
-5. **Evidência registrada** — comandos + saídas anexadas; feature em `passing`.
+1. **Design doc exists** — `design-docs/YYYY-MM-DD-<slug>.md` with persona, storytelling, mechanics, economy (if any) and verification criteria.
+2. **Simulated playtest passed** — `scripts/playtest-simulate.sh <doc>` ends with `PLAYTEST ACCEPTED` (0 failures).
+3. **Build validates** — Rojo/Luau compiles (exit 0), assets intact.
+4. **Publish validated** (when applicable) — `roblox-publish` skill checklist 100% PASS with evidence.
+5. **Evidence recorded** — commands + outputs attached; feature in `passing`.
 
-## O que NÃO é "pronto" no domínio
-- Design doc sem persona ou sem critérios de aceite.
-- Feature publicada sem playteste simulado.
-- "Achei que a plataforma aceita" — sem o checklist executado.
+## What is NOT "done" in this domain
+- Design doc without persona or acceptance criteria.
+- Feature published without a simulated playtest.
+- "I assumed the platform accepts it" — without the checklist executed.

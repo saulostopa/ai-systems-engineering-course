@@ -1,8 +1,8 @@
-"""Embeddings pluggáveis — hash de n-gramas (fallback local) ou Ollama.
+"""Pluggable embeddings — n-gram hashing (local fallback) or Ollama.
 
-Sem depender de modelo externo para a POC: o fallback gera embeddings
-determinísticos por n-gramas (funciona offline). Se `OLLAMA_API_URL` estiver
-definida, usa o Ollama (ex.: nomic-embed-text) quando alcançável.
+No external model needed for the POC: the fallback generates deterministic
+n-gram embeddings (works offline). If `OLLAMA_API_URL` is set, uses Ollama
+(e.g. nomic-embed-text) when reachable.
 """
 
 from __future__ import annotations
@@ -18,11 +18,11 @@ OLLAMA_MODEL = os.environ.get("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 
 
 class NGramEmbedder:
-    """Embedding local determinístico: hash de n-gramas em um vetor DIM.
+    """Deterministic local embedding: n-gram hash into a DIM-sized vector.
 
-    Não é semântico de verdade — serve para validar a *arquitetura*
-    (pipeline, cache, RRF) sem modelo externo. Troque por Ollama/API para
-    semântica real.
+    Not truly semantic — meant to validate the *architecture* (pipeline,
+    cache, RRF) without an external model. Swap for Ollama/API to get real
+    semantics.
     """
 
     def __init__(self, dim: int = DIM) -> None:
@@ -60,7 +60,7 @@ class OllamaEmbedder:
 
     def embed(self, text: str) -> list[float]:
         if not self._available():
-            raise RuntimeError("Ollama indisponível")
+            raise RuntimeError("Ollama unavailable")
         payload = json.dumps({"model": self.model, "prompt": text}).encode("utf-8")
         req = urllib.request.Request(
             f"{self.api_url}/api/embeddings", data=payload, headers={"Content-Type": "application/json"}
@@ -82,7 +82,7 @@ def make_embedder() -> NGramEmbedder | OllamaEmbedder:
 
 def cosine(a: list[float], b: list[float]) -> float:
     if len(a) != len(b):
-        raise ValueError(f"dimensões diferentes: {len(a)} vs {len(b)}")
+        raise ValueError(f"dimension mismatch: {len(a)} vs {len(b)}")
     dot = sum(x * y for x, y in zip(a, b))
     na = sum(x * x for x in a) ** 0.5
     nb = sum(y * y for y in b) ** 0.5

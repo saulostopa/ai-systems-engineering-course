@@ -1,7 +1,8 @@
-"""Avaliação do Area Copilot — precisão com fonte citada.
+"""Area Copilot evaluation — precision with a cited source.
 
-A métrica não é só "achou o arquivo": é "a fonte citada existe e contém o
-número/palavra-chave esperado". Número sem fonte é proibido (Aula 09).
+The metric is not just "found the file": it is "the cited source exists and
+contains the expected number/keyword". A number without a source is
+forbidden (Lesson 09).
 """
 
 from __future__ import annotations
@@ -32,11 +33,11 @@ def run_area_eval(root: str, queries_path: str, embedder=None) -> dict:
         hits += 1 if ok else 0
         mark = "✓" if ok else "✗"
         print(f"\n[{mark}] {q['question']}")
-        print(f"     esperado conter: {q['expected_fragment']}")
+        print(f"     expected to contain: {q['expected_fragment']}")
         for c in results[:3]:
             print(f"     FONTE: {c.path} (L{c.start_line}-{c.end_line})")
     total = len(queries)
-    print(f"\n== Precisão: {hits}/{total} = {round(hits / max(1, total), 3)}")
+    print(f"\n== Precision: {hits}/{total} = {round(hits / max(1, total), 3)}")
     return {"hits": hits, "total": total}
 
 

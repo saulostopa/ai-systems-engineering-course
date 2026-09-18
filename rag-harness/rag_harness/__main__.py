@@ -1,10 +1,10 @@
-"""CLI da POC — indexação e recuperação agêntica.
+"""POC CLI — agentic indexing and retrieval.
 
-Uso:
+Usage:
     python -m rag_harness index <dir> [--verbose]
-    python -m rag_harness query <dir> "<consulta>" [--top-k N]
-    python -m rag_harness agent <dir> "<consulta>"
-    python -m rag_harness hybrid <dir> "<consulta>"
+    python -m rag_harness query <dir> "<query>" [--top-k N]
+    python -m rag_harness agent <dir> "<query>"
+    python -m rag_harness hybrid <dir> "<query>"
 """
 
 from __future__ import annotations
@@ -59,24 +59,24 @@ def main() -> None:
         from .eval import run_eval
 
         summary = run_eval(args.root, load_queries(args.queries), args.top_k, embedder)
-        print(f"\n== Precisão@{summary['top_k']}: {summary['hits']}/{summary['total']} = {summary['precision_at_k']}")
-        print(f"== Ferramentas usadas: {', '.join(summary['tools_used'])}")
+        print(f"\n== Precision@{summary['top_k']}: {summary['hits']}/{summary['total']} = {summary['precision_at_k']}")
+        print(f"== Tools used: {', '.join(summary['tools_used'])}")
         for r in summary["rows"]:
             mark = "✓" if r["hit"] else "✗"
             print(f"\n[{mark}] {r['query']}")
-            print(f"     esperado: {r['expected']}")
+            print(f"     expected: {r['expected']}")
             print(f"     tools: {', '.join(r['tools'])}")
             print(f"     top: {', '.join(r['top'])}")
         return
 
     if args.cmd == "index":
         index = index_dir(args.root, embedder, verbose=args.verbose)
-        print(f"OK: {len(index.chunks)} chunks em {_index_dir_for(args.root)}")
+        print(f"OK: {len(index.chunks)} chunks in {_index_dir_for(args.root)}")
         return
 
     idx_dir = _index_dir_for(args.root)
     if not os.path.exists(idx_dir):
-        print(f"ERRO: índice não existe em {idx_dir} — rode 'index' primeiro", file=sys.stderr)
+        print(f"ERROR: index does not exist in {idx_dir} — run 'index' first", file=sys.stderr)
         sys.exit(1)
     index = load_index(idx_dir)
 
@@ -91,7 +91,7 @@ def main() -> None:
     elif args.cmd == "agent":
         ctrl = AgentController(index, embedder)
         results = ctrl.retrieve(args.text, args.root)
-        print(f"\n== agent (ferramentas usadas: {', '.join(ctrl.used_tools)}) ==")
+        print(f"\n== agent (tools used: {', '.join(ctrl.used_tools)}) ==")
         print(pretty(results))
 
 

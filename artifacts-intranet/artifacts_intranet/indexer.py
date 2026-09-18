@@ -1,8 +1,8 @@
-"""Indexador da intranet — varre os diretórios de artefatos e indexa no
-motor rag_harness (chunking + cache por hash + RRF).
+"""Intranet indexer — scans the artifact directories and indexes them with
+the rag_harness engine (chunking + hash cache + RRF).
 
-HTML é convertido em texto (tags removidas) antes do chunking por linhas;
-Markdown é chunkado por seções (reuso do chunker de negócio).
+HTML is converted to text (tags removed) before line-based chunking;
+Markdown is chunked by sections (reusing the business chunker).
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ def chunk_artifact_file(path: str) -> list[Chunk]:
         if not seg:
             break
         body = "".join(seg)
-        if len(body.strip()) < 40:  # pedaço sem conteúdo real
+        if len(body.strip()) < 40:  # piece without real content
             continue
         chunks.append(
             Chunk(
@@ -57,7 +57,7 @@ def chunk_artifact_file(path: str) -> list[Chunk]:
 
 
 def discover_artifact_dirs(repo_root: str) -> list[str]:
-    """Diretórios de artefatos conhecidos do ecossistema."""
+    """Known artifact directories of the ecosystem."""
     candidates = [
         "skills-artifacts/reports",
         "skills-artifacts/quizzes",
@@ -107,7 +107,7 @@ def index_artifacts(repo_root: str, embedder=None, verbose: bool = False) -> Ind
             ensure_ascii=False,
         )
     if verbose:
-        print(f"[intranet] {len(chunks)} chunks de {len(seen)} artefatos ({len(dirs)} dirs)")
+        print(f"[intranet] {len(chunks)} chunks from {len(seen)} artifacts ({len(dirs)} dirs)")
     return index
 
 

@@ -1,6 +1,6 @@
-"""Providers de LLM — OpenRouter (padrão), Ollama (opcional), Stub (offline).
+"""LLM providers — OpenRouter (default), Ollama (optional), Stub (offline).
 
-Uso nos agentes:
+Usage in agents:
     provider = make_provider()          # env: OPENROUTER_API_KEY | OLLAMA_API_URL
     text = provider.complete(prompt, system="...")
 """

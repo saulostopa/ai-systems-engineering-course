@@ -1,6 +1,6 @@
-# Referência
+# Reference
 
-Materiais de origem e o mapa do ecossistema.
+Source materials and the ecosystem map.
 
-- [Plano original](/reference/plan) — o documento que deu origem ao curso.
-- [Repositórios do ecossistema](/reference/repositories) — onde cada peça vive.
+- [Original plan](/reference/plan) — the document that gave rise to the course.
+- [Ecosystem repositories](/reference/repositories) — where each piece lives.

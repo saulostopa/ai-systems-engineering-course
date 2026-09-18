@@ -1,85 +1,85 @@
 ---
-title: Projeto 02 — Harness básico instalável
+title: Project 02 — Installable basic harness
 ---
 
-# Projeto 02 — Harness básico instalável
+# Project 02 — Installable basic harness
 
-> Empacote o harness mínimo do Projeto 01 em algo que qualquer projeto pequeno baixa e roda em 5 minutos.
+> Package the minimal harness from Project 01 into something any small project downloads and runs in 5 minutes.
 
-## Objetivo
+## Objective
 
-Construir o **pacote de harness básico**: um conjunto de arquivos que você copia para qualquer repo pequeno e que entrega AGENTS.md (roteador), feature list, progress/handoff, políticas essenciais e um `init.sh` de inicialização.
+Build the **basic harness package**: a set of files you copy into any small repo that delivers AGENTS.md (router), feature list, progress/handoff, essential policies and an `init.sh` initialization script.
 
-Isto é literalmente a Story **B1** do nosso plano — e este projeto te ensina a construí-lo antes de o curso entregar o oficial.
+This is literally Story **B1** of our plan — and this project teaches you to build it before the course delivers the official one.
 
-## Estrutura do pacote
+## Package structure
 
 ```
 harness-basico/
-├── init.sh                    # valida ambiente, imprime próximos passos
-├── AGENTS.md                  # roteador curto (Aula 04)
-├── feature_list.json          # fonte de verdade de escopo (Aula 08)
-├── claude-progress.md         # diário de sessão (Aula 05)
-├── session-handoff.md         # bilhete para a próxima sessão (Aula 05)
+├── init.sh                    # validates environment, prints next steps
+├── AGENTS.md                  # short router (Lesson 04)
+├── feature_list.json          # scope source of truth (Lesson 08)
+├── claude-progress.md         # session diary (Lesson 05)
+├── session-handoff.md         # note for the next session (Lesson 05)
 ├── policies/
-│   ├── scope-control.md       # escopo antes de editar (Aula 07)
-│   ├── definition-of-done.md  # "pronto" verificável (Aula 09)
-│   └── evidence-required.md   # evidência antes de "done" (Aula 09)
-└── skills/                    # (opcional) pacote do harness-agent-skills
+│   ├── scope-control.md       # scope before editing (Lesson 07)
+│   ├── definition-of-done.md  # verifiable "done" (Lesson 09)
+│   └── evidence-required.md   # evidence before "done" (Lesson 09)
+└── skills/                    # (optional) harness-agent-skills package
 ```
 
-## Passo a passo
+## Step by step
 
-### 1. Escreva o `init.sh`
+### 1. Write the `init.sh`
 
-O `init.sh` do `webmotors-harness-factory` é o modelo:
+The `webmotors-harness-factory`'s `init.sh` is the model:
 
 ```bash
 #!/bin/bash
-# init.sh — inicializa o harness básico num projeto
+# init.sh — initializes the basic harness in a project
 set -e
-echo "Verificando diretório..."
-[ -f "AGENTS.md" ] || echo "⚠️  AGENTS.md ausente — copie o pacote para a raiz"
+echo "Checking directory..."
+[ -f "AGENTS.md" ] || echo "⚠️  AGENTS.md missing — copy the package to the root"
 node --version && npm --version
-echo "Próximos passos:"
-echo "  1. Leia AGENTS.md"
-echo "  2. Escolha UMA feature em feature_list.json"
-echo "  3. Rode os testes do projeto"
+echo "Next steps:"
+echo "  1. Read AGENTS.md"
+echo "  2. Pick ONE feature in feature_list.json"
+echo "  3. Run the project tests"
 ```
 
-### 2. Escreva as políticas (2-5 linhas cada)
+### 2. Write the policies (2-5 lines each)
 
 `definition-of-done.md`:
 
 ```markdown
 # Definition of Done
-Uma feature está pronta quando:
-1. O build passa (saída anexada).
-2. Os testes passam, sem redução na suíte.
-3. O diff contém só o escopo declarado.
-4. A evidência está registrada (comando + resultado).
+A feature is done when:
+1. The build passes (output attached).
+2. The tests pass, with no reduction in the suite.
+3. The diff contains only the declared scope.
+4. The evidence is recorded (command + result).
 ```
 
-### 3. Adicione os arquivos de estado
+### 3. Add the state files
 
-Use os modelos da [Biblioteca](/resources/templates): `feature_list.json` com 3-5 features de exemplo, `claude-progress.md` e `session-handoff.md` com os cabeçalhos obrigatórios (Aula 05).
+Use the [Library](/resources/templates) templates: `feature_list.json` with 3-5 example features, `claude-progress.md` and `session-handoff.md` with the required headers (Lesson 05).
 
-### 4. Instale num repo real
+### 4. Install in a real repo
 
-Copie o pacote para um projeto pequeno seu, rode `./init.sh`, execute uma feature de ponta a ponta e registre a evidência.
+Copy the package to one of your small projects, run `./init.sh`, execute a feature end-to-end and record the evidence.
 
-## Verificação
+## Verification
 
-- `./init.sh` roda sem erro e imprime os próximos passos.
-- Um agente novo, sem contexto, consegue: ler o AGENTS.md → escolher a feature → implementar → provar (build+teste) → atualizar os estados.
-- O handoff escrito por uma sessão permite a outra retomar sem perguntar nada.
+- `./init.sh` runs without errors and prints the next steps.
+- A fresh agent, with no context, can: read the AGENTS.md → pick the feature → implement → prove (build+test) → update the states.
+- The handoff written by one session lets another resume without asking anything.
 
-## Entregável
+## Deliverable
 
-Seu pacote versionado num repo (ou numa pasta `templates/` do seu harness) + a evidência da primeira feature executada com ele.
+Your package versioned in a repo (or in a `templates/` folder of your harness) + the evidence of the first feature executed with it.
 
 ::: tip Status
-O pacote oficial, com scripts de hooks e validação completos, é a Story **B1** do curso (EPIC B). Este projeto te dá a base para revisar o oficial com olhar crítico.
+The official package, with complete hook scripts and validation, is Story **B1** of the course (EPIC B). This project gives you the foundation to review the official one with a critical eye.
 :::
 
-**Próximo projeto**: [03 — Harness de App com QA](/projects/project-03).
+**Next project**: [03 — App Harness with QA](/projects/project-03).

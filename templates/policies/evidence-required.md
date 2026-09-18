@@ -1,27 +1,27 @@
-# Evidência exigida
+# Required evidence
 
-> Aula 09 e 11. Evidência é o que transforma "declarar vitória" em "provar a
-> vitória". Nunca afirme "done" sem prova.
+> Lessons 09 and 11. Evidence is what turns "claiming victory" into "proving
+> victory". Never state "done" without proof.
 
-## O que conta como evidência
+## What counts as evidence
 
-| Afirmação | Evidência mínima |
+| Claim | Minimum evidence |
 |---|---|
-| "Está construído" | `build` executado, exit 0, saída anexada |
-| "Está testado" | Nomes dos testes + contagem + saída verde |
-| "Está no escopo" | `git diff` mostrando só o declarado |
-| "Está integrado" | E2E/gates/hooks executados e passando |
-| "Está publicado" | URL/artefato gerado e verificado |
+| "It is built" | `build` executed, exit 0, output attached |
+| "It is tested" | Test names + count + green output |
+| "It is in scope" | `git diff` showing only what was declared |
+| "It is integrated" | E2E/gates/hooks executed and passing |
+| "It is published" | URL/artifact generated and verified |
 
-## Formato da evidência
+## Evidence format
 
 ```
-COMANDO: <comando executado>
-ESPERADO: <o que deveria acontecer>
-REAL: <o que aconteceu>
+COMMAND: <executed command>
+EXPECTED: <what should have happened>
+ACTUAL: <what happened>
 STATUS: PASSED | FAILED
 ```
 
-## Regra de ouro
-- Git é a verdade: re-execute e confira — nunca confie em narração.
-- Uma suíte verde com menos testes que o início é regressão, não passe.
+## Golden rule
+- Git is the truth: re-run and check — never trust narration.
+- A green suite with fewer tests than at the start is regression, not a pass.

@@ -1,9 +1,9 @@
-# Intranet de artefatos — busca RAG sobre o que o harness gerou.
+# Artifacts intranet — RAG search over what the harness generated.
 
 import os
 import sys
 
-# Motor RAG: irmãos de diretório (rag-harness e area-copilot)
+# RAG engine: sibling directories (rag-harness and area-copilot)
 _REPO = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
 for pkg in ("rag-harness", "area-copilot"):
     p = os.path.join(_REPO, pkg)

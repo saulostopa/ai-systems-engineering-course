@@ -1,8 +1,8 @@
-"""Eventos do workflow — trilha de auditoria.
+"""Workflow events — audit trail.
 
-Toda transição, gate, erro e proposta de agente vira um Event. Eventos são
-persistidos (events.jsonl) e propagados a listeners. Nenhuma transição
-acontece em silêncio (requisito do curso).
+Every transition, gate, error and agent proposal becomes an Event. Events are
+persisted (events.jsonl) and propagated to listeners. No transition happens in
+silence (course requirement).
 """
 
 from __future__ import annotations
@@ -38,4 +38,4 @@ class EventBus:
             try:
                 listener(event)
             except Exception:
-                pass  # listener de auditoria nunca derruba o workflow
+                pass  # an audit listener never brings down the workflow

@@ -1,73 +1,73 @@
 ---
-title: Aula 05 — Continuidade em tarefas longas
+title: Lesson 05 — Continuity in long-running tasks
 ---
 
-# Aula 05 — Continuidade em tarefas longas
+# Lesson 05 — Continuity in long-running tasks
 
-> Tarefas de engenharia duram dias. Sessões de agente duram minutos. O harness é a ponte.
+> Engineering tasks last days. Agent sessions last minutes. The harness is the bridge.
 
-## O problema fundamental
+## The fundamental problem
 
-Um agente tem uma janela de contexto limitada e uma sessão finita. Uma feature de verdade — do escopo ao deploy — atravessa:
+An agent has a limited context window and a finite session. A real feature — from scope to deploy — spans:
 
-- várias sessões do mesmo agente;
-- vários agentes (planejamento, código, review, teste);
-- vários dias corridos (com a mente do agente "desligada" entre eles).
+- multiple sessions of the same agent;
+- multiple agents (planning, coding, review, testing);
+- multiple calendar days (with the agent's "mind" off in between).
 
-Sem estado persistente, cada sessão recomeça do zero: o agente relê tudo, re-decide o que já foi decidido, e o trabalho oscila.
+Without persistent state, each session starts from scratch: the agent re-reads everything, re-decides what was already decided, and the work oscillates.
 
-## Estado entre sessões: o trio do harness
+## State between sessions: the harness trio
 
-O `webmotors-harness-factory` resolve com três arquivos complementares:
+The `webmotors-harness-factory` solves this with three complementary files:
 
 ```
-feature_list.json      → o QUE existe e em que estado (fonte de verdade de escopo)
-claude-progress.md     → o que aconteceu NESTA sessão (trabalho recente, falhas, próxima ação)
-session-handoff.md     → o que fica PARA a próxima sessão (verificado, quebrado, próximo passo)
+feature_list.json      → WHAT exists and in what state (scope source of truth)
+claude-progress.md     → what happened in THIS session (recent work, failures, next action)
+session-handoff.md     → what stays FOR the next session (verified, broken, next step)
 ```
 
-A divisão de papéis é o que importa:
+The division of roles is what matters:
 
-- **feature_list** é o *mapa* — muda pouco, é a verdade do escopo.
-- **progress** é o *diário* — muda a cada sessão, documenta o caminho.
-- **handoff** é o *bilhete* — o resumo que permite à próxima sessão (agente ou humano) retomar sem reler tudo.
+- **feature_list** is the *map* — changes little, it is the truth of the scope.
+- **progress** is the *diary* — changes every session, documents the path.
+- **handoff** is the *note* — the summary that lets the next session (agent or human) resume without re-reading everything.
 
-## A retomada como protocolo
+## Resumption as a protocol
 
-Uma boa retomada segue um protocolo fixo — e o harness o transforma em hábito:
+A good resumption follows a fixed protocol — and the harness turns it into a habit:
 
-1. **Leia o handoff** antes de tocar em qualquer arquivo.
-2. **Re-verifique** o que o handoff afirma (git status, testes) — nunca confie na narração.
-3. **Atualize o progress** com o trabalho real da sessão atual.
-4. **Atualize o handoff** antes de encerrar: o que ficou verificado, o que quebrou, qual a próxima ação.
-5. **Atualize o feature_list** com o estado real das features.
+1. **Read the handoff** before touching any file.
+2. **Re-verify** what the handoff claims (git status, tests) — never trust narration.
+3. **Update the progress** with the real work of the current session.
+4. **Update the handoff** before closing: what remained verified, what broke, what the next action is.
+5. **Update the feature_list** with the real state of the features.
 
-## Na Webmotors — o AgEnFK como continuidade
+## At Webmotors — AgEnFK as continuity
 
-O AgEnFK formaliza esse protocolo em cima do repo: cada story tem status, comentários com evidência e trilha de teste. Quando o agente retoma a story A2, ele não pergunta "onde paramos?" — ele lê a story, os comentários e o estado, e continua.
+AgEnFK formalizes this protocol on top of the repo: each story has status, comments with evidence and a test trail. When the agent resumes story A2, it doesn't ask "where did we stop?" — it reads the story, the comments and the state, and continues.
 
-Na prática desta semana: a story A1 foi concluída numa sessão; a evidência (build OK, test PASSED) ficou registrada; quando retomamos, o estado estava íntegro sem nenhuma conversa anterior na memória. **A continuidade não veio da memória do agente — veio do harness.**
+In practice this week: story A1 was completed in one session; the evidence (build OK, test PASSED) was recorded; when we resumed, the state was intact with no previous conversation in memory. **Continuity did not come from the agent's memory — it came from the harness.**
 
-## O que NÃO funciona
+## What does NOT work
 
-| Estratégia | Por que falha |
+| Strategy | Why it fails |
 |---|---|
-| "Manter a conversa aberta" | Janela de contexto esgota; sessão cai; memória morre |
-| Re-descrever o contexto em cada prompt | Custo, erro humano, divergência |
-| Confiar que o agente "se lembra" | Não há memória entre sessões — só o que está no repo |
-| Handoff na cabeça (não escrito) | Esquecimento e ruído garantidos |
+| "Keep the conversation open" | Context window runs out; session drops; memory dies |
+| Re-describing the context in every prompt | Cost, human error, divergence |
+| Trusting that the agent "remembers" | There is no memory between sessions — only what is in the repo |
+| Handoff in the head (not written) | Forgetting and noise guaranteed |
 
-## Principais aprendizados
+## Key takeaways
 
-1. Tarefa longa ≠ sessão longa: o trabalho dura mais que qualquer janela de contexto.
-2. Mapa (feature_list) + diário (progress) + bilhete (handoff) cobrem o ciclo de vida.
-3. Retomar é um protocolo, não um palpite: ler, re-verificar, atualizar.
-4. Continuidade é propriedade do harness, não do modelo.
+1. Long task ≠ long session: the work outlasts any context window.
+2. Map (feature_list) + diary (progress) + note (handoff) cover the lifecycle.
+3. Resuming is a protocol, not a guess: read, re-verify, update.
+4. Continuity is a property of the harness, not of the model.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 05"
+"quiz me on Lesson 05"
 ```
 
-**Próxima aula**: [06 — Inicialização como fase própria](/lectures/lecture-06).
+**Next lesson**: [06 — Initialization as its own phase](/lectures/lecture-06).

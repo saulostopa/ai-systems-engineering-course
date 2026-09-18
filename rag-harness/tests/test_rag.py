@@ -1,6 +1,6 @@
-"""Testes da POC — pytest ou asserts puros (`python tests/test_rag.py`).
+"""POC tests — pytest or plain asserts (`python tests/test_rag.py`).
 
-Roda com:  pytest tests/ -q   (ou)   python tests/test_rag.py
+Run with:  pytest tests/ -q   (or)   python tests/test_rag.py
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ def test_chunk_python_extrai_funcoes_e_classes():
     assert ("function", "calcular_fipe") in kinds
     assert ("class", "Veiculo") in kinds
     assert ("function", "gerar_relatorio_financeiro") in kinds
-    # Nenhum chunk cortado no meio de uma função
+    # No chunk cut in the middle of a function
     for c in chunks:
         if c.kind == "function":
             assert c.text.strip().startswith("def")
@@ -63,8 +63,8 @@ def test_ngram_embedder_deterministico_e_normalizado():
 def test_rrf_merges_rankings():
     x = Chunk("f.py", "function", "x", "texto a", 1, 1)
     y = Chunk("f.py", "function", "y", "texto b", 1, 1)
-    # y rank 1+2 => 1/61 + 1/62; x rank 2+1 => 1/62 + 1/61 (empate teórico)
-    # para desempatar, use rankings diferentes: y na frente nas duas listas
+    # y rank 1+2 => 1/61 + 1/62; x rank 2+1 => 1/62 + 1/61 (theoretical tie)
+    # to break the tie, use different rankings: y first in both lists
     a = [(y, 9.0), (x, 1.0)]
     b = [(y, 8.0), (x, 2.0)]
     merged = rrf_merge(a, b, top_k=2)
@@ -79,7 +79,7 @@ def test_indexacao_e_recuperacao_hibrida():
         index = index_dir(tmp, emb)
         assert len(index.chunks) >= 4
         top = hybrid_search(index, emb, "como calcular a fipe", top_k=2)
-        assert top, "nenhum resultado híbrido"
+        assert top, "no hybrid results"
         assert "calcular_fipe" in top[0][0].text or "fipe" in top[0][0].text.lower()
 
 
@@ -102,13 +102,13 @@ def test_lexical_normaliza_acentos_e_splits_camelcase():
         emb = NGramEmbedder()
         index = index_dir(tmp, emb)
         top = lexical_search(index, "como registrar friccao e o hookspath", top_k=1)
-        assert top and "log-event" in top[0][0].path, f"esperava log-event.sh, veio {top[:1]}"
+        assert top and "log-event" in top[0][0].path, f"expected log-event.sh, got {top[:1]}"
 
 
 def test_lexical_boost_por_nome_de_arquivo():
     with tempfile.TemporaryDirectory() as tmp:
-        # Fixture realista: o conteúdo do install.sh NÃO repete o termo raro
-        # "instalador" — só o nome do arquivo carrega essa identificação.
+        # Realistic fixture: the install.sh content does NOT repeat the rare
+        # term "instalador" — only the file name carries that identification.
         with open(os.path.join(tmp, "install.sh"), "w", encoding="utf-8") as fh:
             fh.write("Instalando harness básico em: ativa core.hooksPath\n")
         with open(os.path.join(tmp, "AGENTS.md"), "w", encoding="utf-8") as fh:
@@ -116,7 +116,7 @@ def test_lexical_boost_por_nome_de_arquivo():
         emb = NGramEmbedder()
         index = index_dir(tmp, emb)
         top = lexical_search(index, "instalador que ativa hooksPath", top_k=1)
-        assert top and "install.sh" in top[0][0].path, f"esperava install.sh, veio {top[:1]}"
+        assert top and "install.sh" in top[0][0].path, f"expected install.sh, got {top[:1]}"
 
 
 if __name__ == "__main__":

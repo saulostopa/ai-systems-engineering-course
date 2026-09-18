@@ -1,52 +1,52 @@
-# Piloto G1 — harness básico em repo real
+# Pilot G1 — basic harness in a real repo
 
-> **Repo piloto**: `pricing-cli` (calculadora de preço FIPE simplificada, Python)
-> **Harness**: `harness-basic` (B1) instalado via `install.sh`
-> **Data**: 2026-09-12 · **Status**: FEATURE ENTREGUE COM EVIDÊNCIA
+> **Pilot repo**: `pricing-cli` (simplified FIPE price calculator, Python)
+> **Harness**: `harness-basic` (B1) installed via `install.sh`
+> **Date**: 2026-09-12 · **Status**: FEATURE DELIVERED WITH EVIDENCE
 
-## Setup do piloto
+## Pilot setup
 
-| Etapa | Comando | Resultado |
+| Step | Command | Result |
 |---|---|---|
-| Repo criado | `git init + pricing.py + 2 testes` | baseline com 2 testes verdes |
-| Harness instalado | `install.sh <repo>` | templates + scripts + hooks; `core.hooksPath=.githooks` |
-| Feature declarada | `feature_list.json f1: in_progress` | commit liberado (gatekeeper: OK, 1 feature) |
-| Implementação | `pricing.py` + 2 testes novos | **4 testes verdes** (2→4, sem redução) |
-| Validação | `./scripts/validate-harness.sh` | **HARNESS OK — 0 falhas, 0 avisos** |
-| Conclusão | `f1: passing` | evidência registrada |
+| Repo created | `git init + pricing.py + 2 tests` | baseline with 2 green tests |
+| Harness installed | `install.sh <repo>` | templates + scripts + hooks; `core.hooksPath=.githooks` |
+| Feature declared | `feature_list.json f1: in_progress` | commit allowed (gatekeeper: OK, 1 feature) |
+| Implementation | `pricing.py` + 2 new tests | **4 green tests** (2→4, no reduction) |
+| Validation | `./scripts/validate-harness.sh` | **HARNESS OK — 0 failures, 0 warnings** |
+| Conclusion | `f1: passing` | evidence recorded |
 
-## Comportamento dos gates (evidência real)
+## Gate behavior (real evidence)
 
-| Cenário | Resultado observado |
+| Scenario | Observed result |
 |---|---|
-| Commit com 1 feature `in_progress` | ✅ liberado |
-| Commit com 0 features | ✅ **BLOQUEADO** ("nenhuma feature in_progress — declare a feature") |
-| Mudança de frontend sem E2E | (n/a — repo Python; gate E2E é do app harness, G2) |
-| Update da própria `feature_list.json` com 0 in_progress | ✅ **BLOQUEADO** — achado real (ver abaixo) |
-| `validate-harness.sh` antes do push | ✅ HARNESS OK |
+| Commit with 1 feature `in_progress` | ✅ allowed |
+| Commit with 0 features | ✅ **BLOCKED** ("no feature in_progress — declare a feature") |
+| Frontend change without E2E | (n/a — Python repo; E2E gate belongs to the app harness, G2) |
+| Updating `feature_list.json` itself with 0 in_progress | ✅ **BLOCKED** — real finding (see below) |
+| `validate-harness.sh` before push | ✅ HARNESS OK |
 
-## Métricas (baseline vs. harness)
+## Metrics (baseline vs. harness)
 
-| Métrica | Valor |
+| Metric | Value |
 |---|---|
-| Testes antes | 2 |
-| Testes depois | 4 (+2 para a feature, nenhum enfraquecido) |
-| Commits da feature | 3 (declara → implementa → passing) |
-| Bloqueios do gatekeeper | 2 (ambos corretos; 1 com achado) |
-| Evidência registrada | build/teste (unittest OK), validate-harness OK |
+| Tests before | 2 |
+| Tests after | 4 (+2 for the feature, none weakened) |
+| Feature commits | 3 (declare → implement → passing) |
+| Gatekeeper blocks | 2 (both correct; 1 with finding) |
+| Evidence recorded | build/test (unittest OK), validate-harness OK |
 
-## Achado real (vira melhoria do harness)
+## Real finding (becomes a harness improvement)
 
-**O gatekeeper bloqueia até a atualização da `feature_list.json`** quando
-nenhuma feature está `in_progress` — o que impede a própria transição para
-`passing`. Mitigação atual: bypass consciente (`.harness/skip-gatekeeper`,
-5 min). Melhoria recomendada para o harness: o gatekeeper deveria **permitir
-commits que tocam apenas `feature_list.json`/`policies/`** (mudança de estado
-não é mudança de código) — item para a evolução do B1.
+**The gatekeeper blocks until `feature_list.json` is updated** when no feature
+is `in_progress` — which prevents the very transition to `passing`. Current
+mitigation: conscious bypass (`.harness/skip-gatekeeper`, 5 min). Recommended
+harness improvement: the gatekeeper should **allow commits that touch only
+`feature_list.json`/`policies/`** (state change is not code change) — item for
+the B1 evolution.
 
-## Conclusão do piloto
+## Pilot conclusion
 
-O harness básico entregou exatamente o que o curso ensina: **uma feature de
-ponta a ponta com evidência, gates mecânicos reais e um achado de melhoria
-concreto** — a prova de que o harness funciona e de que ele próprio é um
-produto em evolução (Aula 11: observabilidade alimenta melhoria).
+The basic harness delivered exactly what the course teaches: **an end-to-end
+feature with evidence, real mechanical gates, and one concrete improvement
+finding** — proof that the harness works and that it is itself a product in
+evolution (Lesson 11: observability feeds improvement).

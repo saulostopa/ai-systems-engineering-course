@@ -1,6 +1,6 @@
-"""Testes da intranet — pytest ou asserts puros.
+"""Intranet tests — pytest or plain asserts.
 
-Uso: python3 tests/test_intranet.py   (a partir de artifacts-intranet/)
+Usage: python3 tests/test_intranet.py   (from artifacts-intranet/)
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ def test_chunk_artifact_html():
     if not os.path.exists(FIXTURE):
         return
     chunks = chunk_artifact_file(FIXTURE)
-    assert chunks, "nenhum chunk"
+    assert chunks, "no chunks"
     assert all(c.kind == "artifact" for c in chunks)
 
 
@@ -34,7 +34,7 @@ def test_index_artifacts_gera_indice():
     repo = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
     index = index_artifacts(repo)
     assert len(index.chunks) > 0
-    # Dedup por hash é intencional: texto idêntico (boilerplate) = 1 embedding
+    # Hash dedup is intentional: identical text (boilerplate) = 1 embedding
     assert len(index.vectors) > 0
     assert len(index.vectors) <= len(index.chunks)
 

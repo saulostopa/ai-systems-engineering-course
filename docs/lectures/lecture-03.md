@@ -1,82 +1,82 @@
 ---
-title: Aula 03 — O repositório como sistema de registro
+title: Lesson 03 — The repository as system of record
 ---
 
-# Aula 03 — O repositório como sistema de registro
+# Lesson 03 — The repository as system of record
 
-> A verdade do trabalho agêntico mora no repositório, não na conversa.
+> The truth of agentic work lives in the repository, not in the conversation.
 
-## O problema: conversas são voláteis
+## The problem: conversations are volatile
 
-Quando um agente trabalha com você, a conversa contém decisões, planos e "combinados". Mas a conversa:
+When an agent works with you, the conversation contains decisions, plans and "agreements". But the conversation:
 
-- **some** quando a sessão termina;
-- **não é auditável** — ninguém revisa o que foi dito;
-- **não é compartilhável** — outro agente ou outra pessoa não vê o contexto;
-- **não tem autoridade** — nada impede o agente de divergir do combinado.
+- **disappears** when the session ends;
+- **is not auditable** — nobody reviews what was said;
+- **is not shareable** — another agent or person can't see the context;
+- **has no authority** — nothing prevents the agent from diverging from what was agreed.
 
-Se o estado do trabalho vive só na conversa, o trabalho não tem estado.
+If the state of the work lives only in the conversation, the work has no state.
 
-## O princípio
+## The principle
 
-> Todo conhecimento, decisão e estado de trabalho que importa deve viver no repositório, como arquivos versionados.
+> Every piece of knowledge, decision and work state that matters must live in the repository, as versioned files.
 
-Isso vale para:
+This applies to:
 
-- **O que fazer** → `feature_list.json`, itens do framework de gestão
-- **Como fazer** → AGENTS.md, policies, skills
-- **O que já foi feito** → commits, relatórios, `claude-progress.md`
-- **Onde parou** → `session-handoff.md`
-- **O que foi decidido** → comentários, ADRs, docs
+- **What to do** → `feature_list.json`, management framework items
+- **How to do it** → AGENTS.md, policies, skills
+- **What was done** → commits, reports, `claude-progress.md`
+- **Where it stopped** → `session-handoff.md`
+- **What was decided** → comments, ADRs, docs
 
-Quando a verdade mora no repo, o agente (e qualquer agente futuro, de qualquer ferramenta) pode reconstruir o contexto completo com uma simples leitura — e o trabalho fica **revisável em PR**, como qualquer código.
+When the truth lives in the repo, the agent (and any future agent, from any tool) can rebuild the full context with a simple read — and the work becomes **reviewable in PR**, like any code.
 
-## O sistema de registro no nosso ecossistema
+## The system of record in our ecosystem
 
-O `webmotors-harness-factory` define a hierarquia de arquivos de estado:
+The `webmotors-harness-factory` defines the hierarchy of state files:
 
-| Arquivo | Papel | Quem lê |
+| File | Role | Who reads it |
 |---|---|---|
-| `feature_list.json` | Estado de cada feature (not_started, in_progress, blocked, passing) | O agente decide o que fazer |
-| `claude-progress.md` | Trabalho recente, atual, falhas, próxima ação | O agente retoma a sessão |
-| `session-handoff.md` | O que está verificado, o que está quebrado, próximo passo | O próximo agente/pessoa |
-| `AGENTS.md` | O roteiro permanente: o que ler, como verificar, como terminar | Todo agente que entra no repo |
+| `feature_list.json` | State of each feature (not_started, in_progress, blocked, passing) | The agent decides what to do |
+| `claude-progress.md` | Recent work, current work, failures, next action | The agent resumes the session |
+| `session-handoff.md` | What is verified, what is broken, next step | The next agent/person |
+| `AGENTS.md` | The permanent roadmap: what to read, how to verify, how to finish | Every agent that enters the repo |
 
-Repare no requisito do factory:
+Note the factory's requirement:
 
-> "Git é a verdade: verifique hand-offs com `git status`/`git diff` e re-executando testes você mesmo; nunca confie em narração."
+> "Git is the truth: verify hand-offs with `git status`/`git diff` and by re-running tests yourself; never trust narration."
 
-Isso é o sistema de registro funcionando: **narração não é evidência**; o repo é.
+That is the system of record at work: **narration is not evidence**; the repo is.
 
-## Na Webmotors — o caso A1
+## At Webmotors — the A1 case
 
-Na primeira story deste projeto (A1 — setup do curso), o agente scaffoldou o VitePress e tentou marcar a story como DONE. O gatekeeper **recusou**: não existe transição direta para DONE — só via `validate_progress` com evidência. O que desbloqueou não foi a palavra "pronto" na conversa, foi:
+In the first story of this project (A1 — course setup), the agent scaffolded VitePress and tried to mark the story as DONE. The gatekeeper **refused**: there is no direct transition to DONE — only via `validate_progress` with evidence. What unlocked it was not the word "done" in the conversation, it was:
 
-1. o build do site rodando e passando;
-2. o test result registrado (`log-test PASSED`);
-3. a evidência documentada no comentário da story.
+1. the site build running and passing;
+2. the test result recorded (`log-test PASSED`);
+3. the evidence documented in the story comment.
 
-Tudo isso virou **registro permanente** no banco do AgEnFK e no histórico do repo. A conversa teria sido esquecida; o registro não.
+All of this became **permanent record** in the AgEnFK database and in the repo history. The conversation would have been forgotten; the record was not.
 
-## Por que o repo e não o banco?
+## Why the repo and not the database?
 
-O AgEnFK usa um banco SQLite para itens, mas o princípio continua: os arquivos de estado do harness vivem **no repo de cada projeto**, e o AgEnFK existe para gerenciar o fluxo em cima deles. A regra prática:
+AgEnFK uses a SQLite database for items, but the principle holds: the harness state files live **in each project's repo**, and AgEnFK exists to manage the flow on top of them. The practical rule:
 
-- **Processo e fluxo** → framework de gestão (itens, gates, telemetria)
-- **Contexto e conhecimento** → arquivos no repo (docs, skills, policies)
-- **Evidência** → output de comandos, builds, testes, relatórios gerados
+- **Process and flow** → management framework (items, gates, telemetry)
+- **Context and knowledge** → files in the repo (docs, skills, policies)
+- **Evidence** → command output, builds, tests, generated reports
 
-## Principais aprendizados
+## Key takeaways
 
-1. Conversa é volátil; repo é permanente, auditável e compartilhável.
-2. Estado do trabalho (o quê, como, quanto, onde parou) mora em arquivos versionados.
-3. Narração não é evidência: verifique no repo, não na conversa.
-4. Um harness multi-ferramenta só funciona se a verdade estiver fora de cada ferramenta.
+1. The conversation is volatile; the repo is permanent, auditable and shareable.
+2. Work state (what, how, how much, where it stopped) lives in versioned files.
+3. Narration is not evidence: verify in the repo, not in the conversation.
+4. A multi-tool harness only works if the truth lives outside each tool.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 03"
+"quiz me on Lesson 03"
 ```
 
-**Próxima aula**: [04 — Por que um único arquivo de instruções falha](/lectures/lecture-04).
+**Next lesson**: [04 — Why a single instructions file fails](/lectures/lecture-04).

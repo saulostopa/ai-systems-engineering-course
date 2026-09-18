@@ -1,2 +1,2 @@
-# evidence-required — ver o template oficial em templates/policies/evidence-required.md (Story A4)
-> Regra deste domínio: o "pronto" é o que está em policies/definition-of-done.md.
+# evidence-required — see the official template at templates/policies/evidence-required.md (Story A4)
+> Rule of this domain: "done" is what is in policies/definition-of-done.md.

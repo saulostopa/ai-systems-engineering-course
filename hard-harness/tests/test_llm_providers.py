@@ -1,13 +1,13 @@
-"""Testes dos providers de LLM — sem rede real (servidor HTTP local).
+"""LLM provider tests — no real network (local HTTP server).
 
-Uso: python3 tests/test_llm_providers.py   (a partir de hard-harness/)
+Usage: python3 tests/test_llm_providers.py   (from hard-harness/)
 
-Cobre:
-  - OpenRouterProvider: chamada HTTP correta + parsing + usage
-  - OllamaProvider: mesmo contrato (endpoint /v1/chat/completions)
-  - make_provider: seleção por ambiente (OpenRouter -> Ollama -> Stub)
-  - agente parseia VERDICT com provider real
-  - custo (llm_cost) viaja no payload
+Covers:
+  - OpenRouterProvider: correct HTTP call + parsing + usage
+  - OllamaProvider: same contract (/v1/chat/completions endpoint)
+  - make_provider: environment-based selection (OpenRouter -> Ollama -> Stub)
+  - agent parses VERDICT with a real provider
+  - cost (llm_cost) travels in the payload
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ RESPONSE_BODY = {
 
 
 class FakeLLMServer(BaseHTTPRequestHandler):
-    """Servidor fake estilo OpenAI — captura a requisição e devolve RESPONSE_BODY."""
+    """Fake OpenAI-style server — captures the request and returns RESPONSE_BODY."""
 
     captured: dict[str, Any] = {}
     requests: int = 0
@@ -91,7 +91,7 @@ def test_openrouter_sem_api_key_falha_explicito():
     os.environ.pop("OPENROUTER_API_KEY", None)
     try:
         OpenRouterProvider(api_key="")
-        assert False, "sem chave deve falhar com LLMError"
+        assert False, "missing key must fail with LLMError"
     except LLMError as exc:
         assert "OPENROUTER_API_KEY" in str(exc)
 
@@ -109,8 +109,8 @@ def test_openrouter_erro_http_vira_llmerror():
     try:
         provider = OpenRouterProvider(api_key="x", base_url=base)
         try:
-            provider.complete("oi")
-            assert False, "401 deveria levantar LLMError"
+            provider.complete("hi")
+            assert False, "401 should raise LLMError"
         except LLMError as exc:
             assert "HTTP 401" in str(exc)
     finally:
@@ -136,10 +136,10 @@ def test_ollama_available_falso_sem_servidor():
     assert OllamaProvider.available("http://127.0.0.1:1", timeout_s=0.3) is False
 
 
-# ═══ make_provider (seleção por ambiente) ══════════════════════════════
+# ═══ make_provider (environment-based selection) ═══════════════════════
 
 def test_make_provider_openrouter_quando_env():
-    os.environ["OPENROUTER_API_KEY"] = "chave-teste"
+    os.environ["OPENROUTER_API_KEY"] = "test-key"
     try:
         provider = make_provider()
         assert provider.name == "openrouter"
@@ -160,18 +160,18 @@ def test_make_provider_ollama_quando_env_e_responde():
     os.environ["OLLAMA_API_URL"] = base
     try:
         provider = make_provider()
-        # probe usa /api/tags (404 no fake, mas URL existe => considera não disponível)
+        # probe uses /api/tags (404 on the fake, but the URL exists => considered unavailable)
         assert provider.name == "stub" or provider.name == "ollama"
     finally:
         os.environ.pop("OLLAMA_API_URL", None)
         server.shutdown()
 
 
-# ═══ Agentes com provider real ═════════════════════════════════════════
+# ═══ Agents with a real provider ═══════════════════════════════════════
 
 def _ninput() -> NodeInput:
     state = WorkflowState(workflow_id="t1", status=WorkflowStatus.RUNNING, data={"planner_agent": {"plan_steps": ["x"]}})
-    return NodeInput(node_id="reviewer_agent", state=state, payload={"diff": "conteúdo"})
+    return NodeInput(node_id="reviewer_agent", state=state, payload={"diff": "content"})
 
 
 def test_reviewer_parseia_verdict_com_provider_real():
@@ -181,7 +181,7 @@ def test_reviewer_parseia_verdict_com_provider_real():
     assert output.review is not None
     assert output.review.verdict == "approved"
     assert output.payload.get("reviewer") == "llm:stub"
-    assert "llm_cost" in output.payload  # custo viaja para o orçamento do runner
+    assert "llm_cost" in output.payload  # cost travels to the runner's budget
 
 
 def test_planner_gera_steps_com_provider_real():
@@ -193,7 +193,7 @@ def test_planner_gera_steps_com_provider_real():
 
 
 def test_reviewer_default_e_changes_requested():
-    provider = StubProvider("sem marcador nenhum")
+    provider = StubProvider("no marker at all")
     agent = ReviewerAgent(provider=provider)
     output = agent.run(_ninput())
     assert output.review.verdict == "changes_requested"
@@ -213,5 +213,5 @@ if __name__ == "__main__":
                 print(f"FAIL {name}")
                 traceback.print_exc()
     total = sum(1 for n in globals() if n.startswith("test_"))
-    print(f"\n== {total - failed}/{total} passaram")
+    print(f"\n== {total - failed}/{total} passed")
     sys.exit(1 if failed else 0)

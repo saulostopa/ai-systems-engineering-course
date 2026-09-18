@@ -4,43 +4,43 @@ title: feature-report (v2)
 
 # feature-report (v2 — Eleanor)
 
-Relato de resultado, não tutorial: o que foi entregue, decisões com trade-offs
-causais, verificação executada e perguntas abertas — cada número rastreável a
-diff, teste ou log.
+Outcome report, not tutorial: what was delivered, decisions with causal
+trade-offs, verification executed and open questions — every number traceable to a
+diff, test or log.
 
-## Entregável F1
+## Deliverable F1
 
-A evolução está em `skills-artifacts/` (na raiz deste repo):
+The evolution is in `skills-artifacts/` (at the root of this repo):
 
-| Peça | O que é |
+| Piece | What it is |
 |---|---|
-| `skills-artifacts/feature-report/SKILL.md` | Skill v2: Gather → Write → Output, com checklist de acessibilidade obrigatória |
-| `skills-artifacts/feature-quiz/SKILL.md` | Skill v2: quiz 4 níveis + **modo de revisão adaptativo** (erradas entram na revisão) |
-| `skills-artifacts/assets/system.css` | CSS com **tokens Eleanor** (Figtree, red `#d81f41`, gray dark, indigo), claro/escuro, `:focus-visible`, `prefers-reduced-motion`, contrastes AA |
-| `skills-artifacts/assets/skeleton.html` | Skeleton acessível: `aria-live` no resultado, toggle EN/PT (`data-i18n`), progresso, revisão |
-| `skills-artifacts/scripts/build-demo.py` | Gerador mecânico (o mesmo caminho da skill) — produz os demos |
-| `skills-artifacts/reports/demo-report.html` | Report demo renderizado (evidência) |
-| `skills-artifacts/quizzes/demo-quiz.html` | Quiz demo renderizado: 4 níveis, 12 questões, validação estrutural OK |
-| `skills-artifacts/skill-design-v2.md` | A evolução do design system v1 → Eleanor, item a item |
+| `skills-artifacts/feature-report/SKILL.md` | v2 skill: Gather → Write → Output, with a mandatory accessibility checklist |
+| `skills-artifacts/feature-quiz/SKILL.md` | v2 skill: 4-level quiz + **adaptive review mode** (wrong answers enter the review) |
+| `skills-artifacts/assets/system.css` | CSS with **Eleanor tokens** (Figtree, red `#d81f41`, gray dark, indigo), light/dark, `:focus-visible`, `prefers-reduced-motion`, AA contrasts |
+| `skills-artifacts/assets/skeleton.html` | Accessible skeleton: `aria-live` on the result, EN/PT toggle (`data-i18n`), progress, review |
+| `skills-artifacts/scripts/build-demo.py` | Mechanical generator (the same path as the skill) — produces the demos |
+| `skills-artifacts/reports/demo-report.html` | Rendered report demo (evidence) |
+| `skills-artifacts/quizzes/demo-quiz.html` | Rendered quiz demo: 4 levels, 12 questions, structural validation OK |
+| `skills-artifacts/skill-design-v2.md` | The evolution of the v1 → Eleanor design system, item by item |
 
-## O que mudou (resumo)
+## What changed (summary)
 
-- **Eleanor**: fonte Figtree, brand red `#d81f41` como único accent, paleta gray/indigo real dos tokens.
-- **Acessibilidade executável**: foco visível em anel, movimento reduzido, `aria-live` no resultado do quiz, contraste AA, sem informação só por cor.
-- **Multi-idioma**: toggle EN/PT funcionando no toolbar (pares `data-i18n-pt/en`).
-- **Quiz adaptativo**: questões erradas entram automaticamente no modo de revisão — o leitor não passa batido pelo erro.
+- **Eleanor**: Figtree font, brand red `#d81f41` as the only accent, the real gray/indigo token palette.
+- **Executable accessibility**: visible focus ring, reduced motion, `aria-live` on the quiz result, AA contrast, no information conveyed by color alone.
+- **Multi-language**: working EN/PT toggle in the toolbar (`data-i18n-pt/en` pairs).
+- **Adaptive quiz**: wrong answers automatically enter review mode — the reader doesn't gloss over the error.
 
-## Como usar
+## How to use
 
 ```
-"gera o relatório dessa feature"      → skill v2 (se instalada deste repo)
-"me testa com um quiz dos 4 níveis"
+"generate the report for this feature"      → v2 skill (if installed from this repo)
+"quiz me with a 4-level quiz"
 ```
 
-Para gerar os demos novamente:
+To regenerate the demos:
 
 ```sh
 cd skills-artifacts && python3 scripts/build-demo.py
 ```
 
-**Relacionado**: [feature-quiz](/skills/feature-quiz) · [Criar uma skill nova](/skills/how-to-create)
+**Related**: [feature-quiz](/skills/feature-quiz) · [Create a new skill](/skills/how-to-create)

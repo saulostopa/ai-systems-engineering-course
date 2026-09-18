@@ -1,52 +1,53 @@
-# Piloto G3 — Area Copilot numa área real (finanças)
+# Pilot G3 — Area Copilot in a real area (finance)
 
-> **Área piloto**: finanças (metas por região 2026, preços, regras de precificação)
+> **Pilot area**: finance (2026 goals by region, prices, pricing rules)
 > **Harness**: `area-copilot` (D3) + playbook `domains/finance` (E3)
-> **Data**: 2026-09-12 · **Status**: ÁREA OPERACIONAL — relatório publicado com fontes
+> **Date**: 2026-09-12 · **Status**: AREA OPERATIONAL — report published with sources
 
-## Contexto da área (dados reais criados para o piloto)
+## Area context (real data created for the pilot)
 
 ```
 area-financas/
 ├── planilhas/
-│   ├── metas_2026.csv   (2 regiões × 7 meses: meta_vendas, veiculos_vendidos)
-│   └── precos.csv       (preço FIPE + desconto seminovo por modelo)
+│   ├── metas_2026.csv   (2 regions x 7 months: meta_vendas, veiculos_vendidos)
+│   └── precos.csv       (FIPE price + used discount per model)
 └── documentos/
-    ├── precificacao.md  (regras: 8% seminovos, 3% >100k km, meta +15% semestre)
-    └── briefing-q3.md   (pauta da reunião de fechamento)
+    ├── precificacao.md  (rules: 8% used cars, 3% >100k km, +15% half-year goal)
+    └── briefing-q3.md   (closing meeting agenda)
 ```
 
-## O que foi executado (evidência real)
+## What was executed (real evidence)
 
-| Etapa | Comando | Resultado |
+| Step | Command | Result |
 |---|---|---|
-| Indexação | `area_harness index` | 7 chunks de negócio |
-| Pipeline noturno | `domains/finance/scripts/nightly-run.sh` com 3 perguntas | **relatório publicado: 9 fontes citadas**, gate de saída aprovado |
-| Avaliação | `area_harness eval` (3 queries reais) | **Precisão 3/3 = 1.0** |
-| Consulta | `area_harness query` | respostas com `FONTE: <arquivo> (linhas X-Y)` |
+| Indexing | `area_harness index` | 7 business chunks |
+| Nightly pipeline | `domains/finance/scripts/nightly-run.sh` with 3 questions | **report published: 9 sources cited**, output gate approved |
+| Evaluation | `area_harness eval` (3 real queries) | **Precision 3/3 = 1.0** |
+| Query | `area_harness query` | answers with `FONTE: <file> (lines X-Y)` |
 
-## O relatório da madrugada (publicado)
+## The overnight report (published)
 
-`evidence/2026-09-12-resumo.md` — o artefato que o time encontra de manhã:
-cada pergunta respondida com a fonte citada (planilha + linhas), o pipeline
-registrado no cabeçalho e o gate de "nenhum número fora de bloco FONTE"
-aplicado (awk por bloco). **O harness trabalhou sozinho; a evidência é o
-que ficou.**
+`evidence/2026-09-12-resumo.md` — the artifact the team finds in the morning:
+each question answered with the cited source (spreadsheet + lines), the
+pipeline recorded in the header, and the "no number outside a FONTE block"
+gate applied (awk per block). **The harness worked on its own; the evidence
+is what was left behind.**
 
-## Métricas da área
+## Area metrics
 
-| Métrica | Valor |
+| Metric | Value |
 |---|---|
-| Chunks indexados | 7 (CSV por bloco de linhas + MD por seção) |
-| Fontes citadas no relatório | 9 |
-| Precisão de recuperação | 3/3 (1.0) — meta de julho, regra de seminovos, meta de crescimento |
-| Critério de saída do nightly | PASS (0 números fora de bloco FONTE) |
-| Fricção registrada | 0 (nenhum log-event necessário) |
+| Chunks indexed | 7 (CSV per line block + MD per section) |
+| Sources cited in the report | 9 |
+| Retrieval precision | 3/3 (1.0) — July goal, used-car rule, growth goal |
+| Nightly output criterion | PASS (0 numbers outside a FONTE block) |
+| Friction recorded | 0 (no log-event needed) |
 
-## Conclusão do piloto
+## Pilot conclusion
 
-O cenário que o usuário descreveu no plano original **funcionou de ponta a
-ponta**: o harness da área rodou o pipeline, validou as fontes e publicou o
-relatório — o time de finanças encontra o artefato pronto pela manhã, com
-cada número rastreável à planilha. A área virou um **Area Copilot operacional**:
-próximo passo natural é plugar dados reais e agendar o cron.
+The scenario the user described in the original plan **worked end to end**: the
+area harness ran the pipeline, validated the sources, and published the
+report — the finance team finds the artifact ready in the morning, with every
+number traceable to the spreadsheet. The area became an **operational Area
+Copilot**: the natural next step is plugging in real data and scheduling the
+cron.

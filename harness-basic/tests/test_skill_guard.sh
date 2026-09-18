@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# test_skill_guard.sh — testes do gate de instalação de skills.
+# test_skill_guard.sh — tests for the skill installation gate.
 #
-# Os testes de lógica (veredito, descoberta, nome de relatório) rodam sempre.
-# Os que exercitam o scanner de verdade precisam da imagem Docker e são
-# pulados com aviso quando ela não existe — mas nunca passam silenciosamente.
+# Logic tests (verdict, discovery, report naming) always run. The ones that
+# exercise the real scanner need the Docker image and are skipped with a
+# warning when it is absent — but they never pass silently.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -22,23 +22,23 @@ source "$GATE"
 
 has_image() { docker image inspect "$IMAGE" >/dev/null 2>&1; }
 
-# --- veredito ----------------------------------------------------------------
+# --- verdict ----------------------------------------------------------------
 
 t_read_verdict_parseia_relatorio_valido() {
   local out
   out="$(printf '%s' '{"risk_assessment":{"score":42,"severity":"MEDIUM","recommendation":"CAUTION","max_issue_severity":"HIGH"},"issues":[1,2,3],"analysis_completeness":{"status":"partial"},"metadata":{"skillspector_version":"2.11.2"}}' | read_verdict)"
   [ "$out" = "42|MEDIUM|CAUTION|3|partial|HIGH|2.11.2" ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "veredito inesperado: $out"
+    || _fail "${FUNCNAME[0]}" "unexpected verdict: $out"
 }
 
-# Um relatório truncado (timeout no meio do stream) não pode virar aprovação.
+# A truncated report (timeout mid-stream) must not become an approval.
 t_read_verdict_rejeita_json_truncado() {
   local out
   out="$(printf '%s' '{"risk_assessment":{"score":0,' | read_verdict)"
   case "$out" in
     ERRO*) _pass "${FUNCNAME[0]}" ;;
-    *)     _fail "${FUNCNAME[0]}" "JSON truncado devia virar ERRO, veio: $out" ;;
+    *)     _fail "${FUNCNAME[0]}" "truncated JSON should become ERRO, got: $out" ;;
   esac
 }
 
@@ -47,17 +47,17 @@ t_read_verdict_sem_campos_nao_inventa_score() {
   out="$(printf '%s' '{}' | read_verdict)"
   case "$out" in
     "?|"*) _pass "${FUNCNAME[0]}" ;;
-    *)     _fail "${FUNCNAME[0]}" "esperado score '?', veio: $out" ;;
+    *)     _fail "${FUNCNAME[0]}" "expected score '?', got: $out" ;;
   esac
 }
 
-# --- descoberta --------------------------------------------------------------
+# --- discovery --------------------------------------------------------------
 
 t_discover_pula_fixture_marcada() {
   local encontrados
   encontrados="$(discover_skills)"
   if printf '%s\n' "$encontrados" | grep -q 'fixture-reprovada'; then
-    _fail "${FUNCNAME[0]}" "fixture marcada com .skill-guard-fixture apareceu no --all"
+    _fail "${FUNCNAME[0]}" "fixture marked with .skill-guard-fixture appeared in --all"
   else
     _pass "${FUNCNAME[0]}"
   fi
@@ -68,21 +68,21 @@ t_discover_acha_as_skills_do_repo() {
   n="$(discover_skills | wc -l)"
   [ "$n" -gt 10 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "esperado >10 skills descobertas, veio $n"
+    || _fail "${FUNCNAME[0]}" "expected >10 discovered skills, got $n"
 }
 
-# --- nome do relatório -------------------------------------------------------
+# --- report name ------------------------------------------------------------
 
-# .claude/skills/agenfk e .agents/skills/agenfk têm o mesmo basename: com
-# basename, a segunda sobrescrevia o relatório da primeira.
+# .claude/skills/agenfk and .agents/skills/agenfk share the same basename:
+# with basename, the second would overwrite the first report.
 t_slug_distingue_mesmo_basename() {
   local a b
   a="$(report_slug "$SCAN_ROOT/.claude/skills/agenfk")"
   b="$(report_slug "$SCAN_ROOT/.agents/skills/agenfk")"
   if [ "$a" = "$b" ]; then
-    _fail "${FUNCNAME[0]}" "slugs colidiram: $a"
+    _fail "${FUNCNAME[0]}" "slugs collided: $a"
   elif [ "$a" = "agenfk" ] || [ "$b" = "agenfk" ]; then
-    _fail "${FUNCNAME[0]}" "slug caiu no basename: $a / $b"
+    _fail "${FUNCNAME[0]}" "slug fell back to basename: $a / $b"
   else
     _pass "${FUNCNAME[0]}"
   fi
@@ -93,62 +93,62 @@ t_slug_preserva_o_caminho_da_skill() {
   s="$(report_slug "$SCAN_ROOT/skills-artifacts/feature-quiz")"
   [ "$s" = "skills-artifacts-feature-quiz" ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "esperado skills-artifacts-feature-quiz, veio: $s"
+    || _fail "${FUNCNAME[0]}" "expected skills-artifacts-feature-quiz, got: $s"
 }
 
-# As skills moram em .claude/ e .agents/: sem cortar o ponto inicial o
-# relatório vira arquivo oculto e some de um `ls` no diretório.
+# Skills live in .claude/ and .agents/: without trimming the leading dot the
+# report becomes a hidden file and vanishes from an `ls` of the directory.
 t_slug_nao_gera_arquivo_oculto() {
   local a b
   a="$(report_slug "$SCAN_ROOT/.agents/skills/agenfk")"
   b="$(report_slug "$SCAN_ROOT/.claude/skills/agenfk")"
   case "$a$b" in
-    .*) _fail "${FUNCNAME[0]}" "slug começa com ponto: $a / $b" ;;
+    .*) _fail "${FUNCNAME[0]}" "slug starts with a dot: $a / $b" ;;
     *)  [ "$a" != "$b" ] \
           && _pass "${FUNCNAME[0]}" \
-          || _fail "${FUNCNAME[0]}" "slugs colidiram: $a" ;;
+          || _fail "${FUNCNAME[0]}" "slugs collided: $a" ;;
   esac
 }
 
-# --- códigos de saída --------------------------------------------------------
+# --- exit codes -------------------------------------------------------------
 
 t_opcao_invalida_sai_2() {
-  "$GATE" --nao-existe >/dev/null 2>&1
+  "$GATE" --does-not-exist >/dev/null 2>&1
   [ "$?" -eq 2 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "esperado exit 2"
+    || _fail "${FUNCNAME[0]}" "expected exit 2"
 }
 
 t_sem_alvo_sai_2() {
   "$GATE" >/dev/null 2>&1
   [ "$?" -eq 2 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "esperado exit 2"
+    || _fail "${FUNCNAME[0]}" "expected exit 2"
 }
 
-# --- gate de verdade (precisa da imagem) -------------------------------------
+# --- real gate (needs the image) --------------------------------------------
 
 t_gate_bloqueia_skill_ruim() {
-  has_image || { _skip "${FUNCNAME[0]}" "imagem $IMAGE ausente"; return; }
+  has_image || { _skip "${FUNCNAME[0]}" "image $IMAGE absent"; return; }
   SKILL_GUARD_REPORTS="$TMP/r1" "$GATE" "$REPO/pilots/skillspector-demo/fixture-reprovada" >/dev/null 2>&1
   [ "$?" -eq 1 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "fixture ruim devia sair 1"
+    || _fail "${FUNCNAME[0]}" "bad fixture should exit 1"
 }
 
 t_gate_aprova_skill_limpa() {
-  has_image || { _skip "${FUNCNAME[0]}" "imagem $IMAGE ausente"; return; }
+  has_image || { _skip "${FUNCNAME[0]}" "image $IMAGE absent"; return; }
   SKILL_GUARD_REPORTS="$TMP/r2" "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1
   [ "$?" -eq 0 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "skill limpa devia sair 0"
+    || _fail "${FUNCNAME[0]}" "clean skill should exit 0"
 }
 
-# O prazo existe para bloquear, não para avisar: estourar falha FECHADO.
-# Usa um docker falso que trava para sempre — com o scanner real o teste seria
-# uma corrida (um scan rápido terminaria antes do prazo) e não provaria nada.
-# Também confere a MENSAGEM: um gate que bloqueia por qualquer falha do docker
-# passaria sem nunca exercitar o timeout.
+# The deadline exists to block, not to warn: exceeding it fails CLOSED.
+# Uses a fake docker that stalls forever — with the real scanner the test
+# would be a race (a fast scan would finish before the deadline) and prove
+# nothing. Also checks the MESSAGE: a gate that blocks on any docker failure
+# would pass without ever exercising the timeout.
 t_timeout_falha_fechado() {
   local fake="$TMP/binto" out rc
   mkdir -p "$fake"
@@ -163,15 +163,15 @@ SH
   out="$(PATH="$fake:$PATH" SKILL_GUARD_TIMEOUT=2 SKILL_GUARD_REPORTS="$TMP/r3" \
     "$GATE" "$REPO/skills-artifacts/feature-quiz" 2>&1)"
   rc=$?
-  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'sem relatório (timeout'; then
+  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'no report (timeout'; then
     _pass "${FUNCNAME[0]}"
   else
-    _fail "${FUNCNAME[0]}" "esperado bloqueio por timeout (exit 1 + mensagem), veio exit $rc"
+    _fail "${FUNCNAME[0]}" "expected timeout block (exit 1 + message), got exit $rc"
   fi
 }
 
 t_gate_grava_relatorio_json() {
-  has_image || { _skip "${FUNCNAME[0]}" "imagem $IMAGE ausente"; return; }
+  has_image || { _skip "${FUNCNAME[0]}" "image $IMAGE absent"; return; }
   SKILL_GUARD_REPORTS="$TMP/r4" "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1
   local rc=$? f
   f="$(find "$TMP/r4" -name '*.json' | head -1)"
@@ -179,16 +179,16 @@ t_gate_grava_relatorio_json() {
      && python3 -c "import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if 'risk_assessment' in d else 1)" "$f" 2>/dev/null; then
     _pass "${FUNCNAME[0]}"
   else
-    _fail "${FUNCNAME[0]}" "relatório JSON não foi gravado ou é inválido"
+    _fail "${FUNCNAME[0]}" "JSON report was not written or is invalid"
   fi
 }
 
-# Relatório sintaticamente válido mas sem score: o gate tem que BLOQUEAR, não
-# cair no ramo de aprovação por a comparação numérica ter falhado.
+# Syntactically valid report without a score: the gate must BLOCK, not fall
+# into the approval branch because the numeric comparison failed.
 t_score_nao_numerico_bloqueia() {
   local fake="$TMP/fakebin" out
   mkdir -p "$fake"
-  # docker falso: devolve um relatório válido em JSON, porém sem risk_assessment
+  # fake docker: returns a valid JSON report, but without risk_assessment
   cat > "$fake/docker" <<'SH'
 #!/usr/bin/env bash
 case "$1" in
@@ -200,87 +200,87 @@ SH
   out="$(PATH="$fake:$PATH" SKILL_GUARD_REPORTS="$TMP/r5" \
     "$GATE" "$REPO/skills-artifacts/feature-quiz" 2>&1)"
   local rc=$?
-  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'sem score utilizável'; then
+  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'no usable score'; then
     _pass "${FUNCNAME[0]}"
   else
-    _fail "${FUNCNAME[0]}" "esperado bloqueio por score ausente (exit 1), veio exit $rc"
+    _fail "${FUNCNAME[0]}" "expected block for missing score (exit 1), got exit $rc"
   fi
 }
 
-# --- pin ---------------------------------------------------------------------
+# --- pin --------------------------------------------------------------------
 
-# Chama a verify_pin DO GATE, não uma reimplementação: um gate que perdesse a
-# verificação de pin precisa reprovar aqui.
+# Calls THE GATE's verify_pin, not a reimplementation: a gate that lost its
+# pin check must fail here.
 t_verify_pin_confirma_o_commit_fixado() {
   local out
   git ls-remote "$REPO_URL" "refs/tags/${VERSION}" >/dev/null 2>&1 \
-    || { _skip "${FUNCNAME[0]}" "sem rede"; return; }
+    || { _skip "${FUNCNAME[0]}" "no network"; return; }
   out="$(verify_pin 2>&1)"
-  printf '%s' "$out" | grep -q "pin confirmado: ${VERSION} = ${PINNED_SHA:0:12}" \
+  printf '%s' "$out" | grep -q "pin confirmed: ${VERSION} = ${PINNED_SHA:0:12}" \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "verify_pin não confirmou o pin: $out"
+    || _fail "${FUNCNAME[0]}" "verify_pin did not confirm the pin: $out"
 }
 
-# Pin divergente tem que abortar o gate (exit 2), não seguir com um scanner
-# cuja procedência não confere.
+# A diverged pin must abort the gate (exit 2), not continue with a scanner
+# whose provenance does not check out.
 t_verify_pin_rejeita_sha_divergente() {
   local out rc
   git ls-remote "$REPO_URL" "refs/tags/${VERSION}" >/dev/null 2>&1 \
-    || { _skip "${FUNCNAME[0]}" "sem rede"; return; }
+    || { _skip "${FUNCNAME[0]}" "no network"; return; }
   out="$(PINNED_SHA=0000000000000000000000000000000000000000 verify_pin 2>&1)"; rc=$?
-  if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q 'pin divergente'; then
+  if [ "$rc" -ne 0 ] && printf '%s' "$out" | grep -q 'pin diverged'; then
     _pass "${FUNCNAME[0]}"
   else
-    _fail "${FUNCNAME[0]}" "pin divergente devia abortar, veio rc=$rc: $out"
+    _fail "${FUNCNAME[0]}" "diverged pin should abort, got rc=$rc: $out"
   fi
 }
 
-# --- bypass (achados da revisão externa) --------------------------------------
+# --- bypass (external review findings) --------------------------------------
 
-# CRÍTICO: um baseline dentro do diretório da skill é controlado pela própria
-# skill. O gate não pode usá-lo — e não pode ignorá-lo em silêncio.
+# CRITICAL: a baseline inside the skill directory is controlled by the skill
+# itself. The gate must not use it — and must not ignore it silently.
 t_baseline_dentro_do_alvo_bloqueia() {
   local dir="$TMP/skillmal" out rc
   mkdir -p "$dir"
   printf -- '---\nname: mal\ndescription: x\n---\n' > "$dir/SKILL.md"
-  printf 'version: 2\nrules:\n  - id: "SC2"\n    reason: "suprime tudo"\n' \
+  printf 'version: 2\nrules:\n  - id: "SC2"\n    reason: "suppresses everything"\n' \
     > "$dir/.skillspector-baseline.yaml"
   out="$(SKILL_GUARD_REPORTS="$TMP/rb" "$GATE" "$dir" 2>&1)"; rc=$?
-  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'baseline dentro do diretório'; then
+  if [ "$rc" -eq 1 ] && printf '%s' "$out" | grep -q 'baseline inside the skill directory'; then
     _pass "${FUNCNAME[0]}"
   else
-    _fail "${FUNCNAME[0]}" "esperado bloqueio COM a razão 'baseline dentro do diretório' (exit 1); veio exit $rc — se bloqueou por outro motivo, a guarda não existe"
+    _fail "${FUNCNAME[0]}" "expected block WITH the reason 'baseline inside the skill directory' (exit 1); got exit $rc — if it blocked for another reason, the guard does not exist"
   fi
 }
 
-# ALTO: a allowlist de fixtures mora fora da árvore. Um arquivo largado dentro
-# do diretório da skill não pode mais escondê-la do --all.
+# HIGH: the fixture allowlist lives outside the tree. A file dropped inside
+# the skill directory must no longer be able to hide it from --all.
 t_marcador_interno_nao_esconde_mais_a_skill() {
   local dir="$TMP/repo_fake/skills/evil"
   mkdir -p "$dir"
   printf -- '---\nname: evil\n---\n' > "$dir/SKILL.md"
   : > "$dir/.skill-guard-fixture"
   SCAN_ROOT="$TMP/repo_fake" FIXTURES_ALLOW="$TMP/repo_fake/.harness/skill-guard-fixtures" \
-    bash -c 'source "'"$GATE"'"; SCAN_ROOT="'"$TMP"'/repo_fake"; FIXTURES_ALLOW="'"$TMP"'/nao-existe"; discover_skills' \
+    bash -c 'source "'"$GATE"'"; SCAN_ROOT="'"$TMP"'/repo_fake"; FIXTURES_ALLOW="'"$TMP"'/does-not-exist"; discover_skills' \
     2>/dev/null | grep -q 'skills/evil' \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "marcador interno ainda escondeu a skill do --all"
+    || _fail "${FUNCNAME[0]}" "internal marker still hid the skill from --all"
 }
 
-# A allowlist externa continua funcionando para as fixtures legítimas.
+# The external allowlist keeps working for legitimate fixtures.
 t_allowlist_externa_pula_a_fixture() {
   discover_skills | grep -q 'fixture-reprovada' \
-    && _fail "${FUNCNAME[0]}" "fixture listada na allowlist apareceu no --all" \
+    && _fail "${FUNCNAME[0]}" "fixture listed in the allowlist appeared in --all" \
     || _pass "${FUNCNAME[0]}"
 }
 
-# ALTO: limiar não-inteiro desarmava o gate (score 70 era aprovado).
+# HIGH: non-integer threshold disarmed the gate (score 70 was approved).
 t_limiar_nao_inteiro_aborta() {
   local rc
   SKILL_GUARD_MAX_SCORE=abc "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1; rc=$?
   [ "$rc" -eq 2 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "MAX_SCORE=abc devia abortar com exit 2, veio $rc"
+    || _fail "${FUNCNAME[0]}" "MAX_SCORE=abc should abort with exit 2, got $rc"
 }
 
 t_limiar_de_aviso_acima_do_de_bloqueio_aborta() {
@@ -289,23 +289,23 @@ t_limiar_de_aviso_acima_do_de_bloqueio_aborta() {
     "$GATE" "$REPO/skills-artifacts/feature-quiz" >/dev/null 2>&1; rc=$?
   [ "$rc" -eq 2 ] \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "WARN > MAX devia abortar com exit 2, veio $rc"
+    || _fail "${FUNCNAME[0]}" "WARN > MAX should abort with exit 2, got $rc"
 }
 
 t_separador_permite_alvo_com_hifen() {
   local out
   out="$("$GATE" -- -alvo-inexistente 2>&1)"
-  printf '%s' "$out" | grep -q 'opção desconhecida' \
-    && _fail "${FUNCNAME[0]}" "alvo após -- foi tratado como opção" \
+  printf '%s' "$out" | grep -q 'unknown option' \
+    && _fail "${FUNCNAME[0]}" "target after -- was treated as an option" \
     || _pass "${FUNCNAME[0]}"
 }
 
-# O registro do veredito não pode apagar a triagem escrita por uma pessoa.
+# Recording a verdict must not erase the triage written by a person.
 t_record_preserva_campos_de_triagem() {
   local lock="$TMP/lockrepo/skills-lock.json"
   mkdir -p "$TMP/lockrepo"
   cat > "$lock" <<'JSON'
-{"version":1,"skills":{"x":{"source":"a/b","scanVerdict":{"decision":"ACEITO_COM_RESSALVA","notes":"triagem manual","rawScore":100}}}}
+{"version":1,"skills":{"x":{"source":"a/b","scanVerdict":{"decision":"ACEITO_COM_RESSALVA","notes":"manual triage","rawScore":100}}}}
 JSON
   SCAN_ROOT="$TMP/lockrepo" record_verdict "$TMP/lockrepo/x" \
     '{"risk_assessment":{"score":7,"severity":"LOW"},"issues":[],"suppressed_count":3,"analysis_completeness":{"status":"partial"}}' \
@@ -315,11 +315,11 @@ import json,sys
 v=json.load(open('$lock'))['skills']['x']['scanVerdict']
 sys.exit(0 if v.get('decision')=='ACEITO_COM_RESSALVA' and v.get('rawScore')==100 and v.get('score')==7 else 1)" \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "record_verdict apagou os campos de triagem"
+    || _fail "${FUNCNAME[0]}" "record_verdict erased the triage fields"
 }
 
-# O lock registra o que foi APROVADO. Gravar o veredito de uma skill bloqueada
-# faria "tem scanVerdict" virar sinônimo de "passou no gate".
+# The lock records what was APPROVED. Writing the verdict of a blocked skill
+# would make "has a scanVerdict" a synonym for "passed the gate".
 t_record_nao_grava_skill_bloqueada() {
   local fake="$TMP/binrec" lock="$TMP/recrepo/skills-lock.json"
   mkdir -p "$fake" "$TMP/recrepo/evil"
@@ -327,7 +327,7 @@ t_record_nao_grava_skill_bloqueada() {
   cat > "$lock" <<'JSON'
 {"version":1,"skills":{"evil":{"source":"x/y"}}}
 JSON
-  # docker falso: sempre devolve um relatório CRITICAL acima do limiar
+  # fake docker: always returns a CRITICAL report above the threshold
   cat > "$fake/docker" <<'SH'
 #!/usr/bin/env bash
 case "$1" in
@@ -343,16 +343,16 @@ import json,sys
 v=json.load(open('$lock'))['skills']['evil'].get('scanVerdict')
 sys.exit(1 if v else 0)" \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "veredito de skill bloqueada foi gravado no lock"
+    || _fail "${FUNCNAME[0]}" "verdict of a blocked skill was recorded in the lock"
 }
 
-# --- patches locais em skills de terceiro -------------------------------------
+# --- local patches on third-party skills ------------------------------------
 
 VH="$ROOT/scripts/validate-harness.sh"
 
-# Um patch local só vale enquanto aplicado. Reinstalar a skill o descarta em
-# silêncio, e o lock continuaria afirmando uma correção que já não existe.
-_patch_fixture() {  # $1 = conteúdo do arquivo "patchado"
+# A local patch only counts while applied. Reinstalling the skill silently
+# discards it, and the lock would keep claiming a fix that no longer exists.
+_patch_fixture() {  # $1 = contents of the "patched" file
   local d="$TMP/patchrepo"
   mkdir -p "$d/vendor"
   printf '%s' "$1" > "$d/vendor/package-lock.json"
@@ -368,34 +368,34 @@ t_patch_local_aplicado_passa() {
   local lock; lock="$(_patch_fixture 'resolved: dep-2.0.0.tgz')"
   local out
   out="$(SKILL_GUARD_LOCK="$lock" "$VH" 2>&1 || true)"
-  printf '%s' "$out" | grep -q 'patch(es) local(is) ainda aplicado' \
+  printf '%s' "$out" | grep -q 'local patch(es) still applied' \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "patch aplicado devia passar"
+    || _fail "${FUNCNAME[0]}" "applied patch should pass"
 }
 
 t_patch_local_perdido_falha() {
-  local lock; lock="$(_patch_fixture 'resolved: outra-coisa.tgz')"
+  local lock; lock="$(_patch_fixture 'resolved: something-else.tgz')"
   local out
   out="$(SKILL_GUARD_LOCK="$lock" "$VH" 2>&1 || true)"
-  printf '%s' "$out" | grep -q 'patch perdido' \
+  printf '%s' "$out" | grep -q 'patch lost' \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "patch ausente devia falhar"
+    || _fail "${FUNCNAME[0]}" "missing patch should fail"
 }
 
 t_patch_local_revertido_falha() {
-  local lock; lock="$(_patch_fixture 'resolved: dep-2.0.0.tgz e dep-1.0.0.tgz')"
+  local lock; lock="$(_patch_fixture 'resolved: dep-2.0.0.tgz and dep-1.0.0.tgz')"
   local out
   out="$(SKILL_GUARD_LOCK="$lock" "$VH" 2>&1 || true)"
-  printf '%s' "$out" | grep -q 'patch revertido' \
+  printf '%s' "$out" | grep -q 'patch reverted' \
     && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "volta da versão vulnerável devia falhar"
+    || _fail "${FUNCNAME[0]}" "return of the vulnerable version should fail"
 }
 
-# --- execução ----------------------------------------------------------------
+# --- execution --------------------------------------------------------------
 
 for t in $(declare -F | awk '{print $3}' | grep '^t_'); do "$t"; done
 
-printf '\n== %d/%d passaram' "$PASS" "$((PASS + FAIL))"
-[ "$SKIP" -gt 0 ] && printf ' (%d pulados)' "$SKIP"
+printf '\n== %d/%d passed' "$PASS" "$((PASS + FAIL))"
+[ "$SKIP" -gt 0 ] && printf ' (%d skipped)' "$SKIP"
 printf '\n'
 exit "$FAIL"

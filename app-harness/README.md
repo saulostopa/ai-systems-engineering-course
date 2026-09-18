@@ -1,60 +1,60 @@
-# App Harness — camada QA (E2E)
+# App Harness — QA layer (E2E)
 
-> Gate mecânico de E2E para o app harness: mudança de frontend sem teste
-> correspondente = commit bloqueado. Modelado no `frontend-qa-gate.sh` do factory.
+> Mechanical E2E gate for the app harness: frontend change without a matching
+> test = blocked commit. Modeled on the `frontend-qa-gate.sh` from the factory.
 
-## O que está aqui
+## What is here
 
 ```
 app-harness/
 ├── scripts/
-│   └── e2e-gate.sh              # pre-commit gate (fail-open sem config)
+│   └── e2e-gate.sh              # pre-commit gate (fail-open without config)
 ├── templates/
-│   ├── .harness/config.yaml     # config: paths de frontend + suíte E2E
+│   ├── .harness/config.yaml     # config: frontend paths + E2E suite
 │   └── e2e/
-│       ├── pages/search_page.py # exemplo de Page Object Model
-│       └── test_search.py       # exemplo de teste com rede interceptada
-└── skills/                      # (C2) navegação agêntica com visão
+│       ├── pages/search_page.py # example Page Object Model
+│       └── test_search.py       # example test with intercepted network
+└── skills/                      # (C2) agentic navigation with vision
 ```
 
-## Instalação (em cima do harness básico)
+## Installation (on top of the basic harness)
 
 ```sh
-cp app-harness/scripts/e2e-gate.sh <projeto>/scripts/
-cp app-harness/templates/.harness/config.yaml <projeto>/.harness/config.yaml
-# adiciona o gate ao pre-commit:
-echo 'exec "$(dirname "$0")/../scripts/e2e-gate.sh"' >> <projeto>/.githooks/pre-commit
+cp app-harness/scripts/e2e-gate.sh <project>/scripts/
+cp app-harness/templates/.harness/config.yaml <project>/.harness/config.yaml
+# adds the gate to pre-commit:
+echo 'exec "$(dirname "$0")/../scripts/e2e-gate.sh"' >> <project>/.githooks/pre-commit
 ```
 
-## Como funciona o gate
+## How the gate works
 
-1. Config ausente (`fail-open`): nada a checar — o harness de conteúdo não quebra.
-2. Frontend staged (ex.: `src/*.tsx`)? Sem teste E2E staged em `tests/e2e/` → **bloqueia**.
-3. `pytest` disponível? Roda a suíte tocada — falha → **bloqueia** (com triagem via trace viewer).
-4. Bypass consciente: `.harness/skip-e2e-gate` (expira em 5 min) — registrado, não silencioso.
+1. No config (`fail-open`): nothing to check — the content harness does not break.
+2. Staged frontend (e.g.: `src/*.tsx`)? No staged E2E test in `tests/e2e/` → **blocks**.
+3. `pytest` available? Runs the touched suite — failure → **blocks** (with triage via trace viewer).
+4. Conscious bypass: `.harness/skip-e2e-gate` (expires in 5 min) — logged, not silent.
 
-## Padrões exigidos dos testes (skill qa-playwright-e2e)
+## Required test standards (qa-playwright-e2e skill)
 
-- Locators semânticos (`get_by_role`, `get_by_label`) — nunca CSS/XPath frágil.
-- Page Object Model — um arquivo por tela.
-- Interceptação de rede (`page.route`) — setup determinístico, sem depender da API.
-- Flaky é bug: triar com `playwright show-trace`, nunca "re-rodar até passar".
+- Semantic locators (`get_by_role`, `get_by_label`) — never fragile CSS/XPath.
+- Page Object Model — one file per screen.
+- Network interception (`page.route`) — deterministic setup, no API dependency.
+- Flaky is a bug: triage with `playwright show-trace`, never "re-run until it passes".
 
-## Triagem de flaky — o protocolo
+## Flaky triage — the protocol
 
 ```
-pytest tests/e2e -q --trace=retain-on-failure   # captura trace na falha
-playwright show-trace trace.zip                 # inspeciona passo a passo
+pytest tests/e2e -q --trace=retain-on-failure   # captures trace on failure
+playwright show-trace trace.zip                 # inspects step by step
 ```
 
-Perguntas da triagem: o locator era semântico? O setup era determinístico
-(interceptado)? O estado anterior da tela era esperado? Se a resposta é "não",
-o teste é o bug — não o app.
+Triage questions: was the locator semantic? Was the setup deterministic
+(intercepted)? Was the previous screen state expected? If the answer is "no",
+the test is the bug — not the app.
 
-## Verificação
+## Verification
 
-- Mudança de frontend sem E2E: commit bloqueado com mensagem clara.
-- Com E2E: suíte roda e o commit passa.
-- `validate-harness.sh` continua verde (gate novo não quebra o harness).
+- Frontend change without E2E: commit blocked with a clear message.
+- With E2E: suite runs and the commit passes.
+- `validate-harness.sh` stays green (new gate does not break the harness).
 
-**Camada 2 (agêntica)**: [navegação agêntica com visão](/harness-designs/app-harness) — C2.
+**Layer 2 (agentic)**: [agentic navigation with vision](/harness-designs/app-harness) — C2.

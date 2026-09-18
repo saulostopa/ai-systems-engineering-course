@@ -1,63 +1,63 @@
 ---
-title: Aula 01 — Por que agentes capazes ainda falham
+title: Lesson 01 — Why capable agents still fail
 ---
 
-# Aula 01 — Por que agentes capazes ainda falham
+# Lesson 01 — Why capable agents still fail
 
-> A primeira pergunta que este curso responde: se os modelos são tão bons, por que os agentes ainda erram tanto?
+> The first question this course answers: if the models are so good, why do agents still get things wrong so often?
 
-## O modelo não é o produto
+## The model is not the product
 
-O modelo de linguagem resolve o problema *cognitivo*: ele raciocina, escreve, lê e decide. Mas um agente que trabalha de verdade precisa de muito mais do que cognição. Ele precisa:
+The language model solves the *cognitive* problem: it reasons, writes, reads and decides. But an agent that actually works needs much more than cognition. It needs:
 
-- **Saber o que existe** — quais arquivos, quais serviços, qual a regra de negócio.
-- **Saber o que fazer** — qual feature, em que ordem, com que critério de pronto.
-- **Saber quando parar** — como verificar que terminou sem declarar vitória cedo demais.
-- **Lembrar onde estava** — o que já foi feito quando a sessão termina e outra começa.
+- **To know what exists** — which files, which services, what the business rule is.
+- **To know what to do** — which feature, in what order, with what definition of done.
+- **To know when to stop** — how to verify it finished without declaring victory too early.
+- **To remember where it was** — what was done when one session ends and another begins.
 
-Quando um desses quatro está ausente, o agente falha — mesmo sendo "capaz". E aqui está a virada de chave deste curso:
+When one of these four is missing, the agent fails — even when it is "capable". And here is the key insight of this course:
 
-> **A falha quase nunca está no modelo. Está no ambiente em volta dele.**
+> **The failure is almost never in the model. It is in the environment around it.**
 
-## O experimento mental
+## The thought experiment
 
-Pegue a mesma pessoa (ou o mesmo modelo) e coloque-a em dois ambientes:
+Take the same person (or the same model) and put them in two environments:
 
-1. **Ambiente A**: uma mesa com uma pilha de papéis sem ordem, instruções orais vagas, nenhuma definição de "pronto", nenhuma forma de verificar o próprio trabalho, e interrupções a cada 10 minutos.
-2. **Ambiente B**: uma mesa com o objetivo escrito, o escopo delimitado, os materiais organizados, uma checklist de aceite e um espelho onde conferir o resultado.
+1. **Environment A**: a desk with an unordered pile of papers, vague oral instructions, no definition of "done", no way to verify one's own work, and interruptions every 10 minutes.
+2. **Environment B**: a desk with the goal written down, a delimited scope, organized materials, an acceptance checklist and a mirror to check the result.
 
-A mesma pessoa produz resultados dramaticamente diferentes. O modelo é o mesmo; o **harness** é o que muda.
+The same person produces dramatically different results. The model is the same; the **harness** is what changes.
 
-## Na Webmotors
+## At Webmotors
 
-Nosso próprio repositório de curso é um exemplo vivo. No `harness-plannig`, o `.claude/CLAUDE.md`, o `AGENTS.md` e o `feature_list.json` do AgEnFK são o "Ambiente B" para o agente que constrói o curso com a gente. Quando o gatekeeper bloqueou a story A1 de ir para DONE sem build e evidência, ele estava corrigindo exatamente o sintoma desta aula: **o agente se sentia pronto; o ambiente exigia prova**.
+Our own course repository is a living example. In `harness-plannig`, the `.claude/CLAUDE.md`, the `AGENTS.md` and the AgEnFK `feature_list.json` are "Environment B" for the agent building the course with us. When the gatekeeper blocked story A1 from going to DONE without a build and evidence, it was correcting exactly the symptom of this lesson: **the agent felt ready; the environment demanded proof**.
 
-E no `webmotors-harness-factory`, o mesmo princípio aparece mecanizado: pre-commit hooks que bloqueiam, `scripts/validate-harness.sh` que verifica, `policies/definition-of-done.md` que define o aceite. Nenhum desses arquivos faz o modelo mais inteligente — eles fazem o trabalho mais confiável.
+And in `webmotors-harness-factory`, the same principle appears mechanized: pre-commit hooks that block, `scripts/validate-harness.sh` that verifies, `policies/definition-of-done.md` that defines acceptance. None of these files make the model smarter — they make the work more reliable.
 
-## O que um harness faz (resumo)
+## What a harness does (summary)
 
-| Necessidade do agente | O que o harness oferece |
+| Agent's need | What the harness provides |
 |---|---|
-| Saber o que existe | AGENTS.md, docs, feature_list, skills |
-| Saber o que fazer | Items/flows, escopo declarado, prioridade |
-| Saber quando parar | Definition of Done, testes, gatekeeper |
-| Lembrar onde estava | progress.md, session-handoff.md, estado no repo |
+| Know what exists | AGENTS.md, docs, feature_list, skills |
+| Know what to do | Items/flows, declared scope, priority |
+| Know when to stop | Definition of Done, tests, gatekeeper |
+| Remember where it was | progress.md, session-handoff.md, state in the repo |
 
-## Principais aprendizados
+## Key takeaways
 
-1. Agente = modelo + harness. Modelo raciocina; harness faz o trabalho acontecer.
-2. Erros de agente são sintomas de ambiente, não de inteligência.
-3. O harness não "melhora" o modelo — ele **constitui o sistema de trabalho** em que o modelo opera.
-4. Tudo que você vai construir neste curso existe para responder: "como o agente sabe, age, verifica e lembra?"
+1. Agent = model + harness. The model reasons; the harness makes the work happen.
+2. Agent errors are symptoms of the environment, not of intelligence.
+3. The harness does not "improve" the model — it **constitutes the work system** in which the model operates.
+4. Everything you will build in this course exists to answer: "how does the agent know, act, verify and remember?"
 
-## Verifique seu aprendizado
+## Check your learning
 
-Peca a um agente para gerar o quiz desta aula com a skill `feature-quiz`:
+Ask an agent to generate the quiz for this lesson with the `feature-quiz` skill:
 
 ```
-"me testa com um quiz dos 4 níveis sobre a Aula 01"
+"quiz me on Lesson 01 with the 4 levels"
 ```
 
-Se ainda não tem a skill instalada, volte para a [Biblioteca](/resources/) e instale o pacote `harness-agent-skills`.
+If you don't have the skill installed yet, go back to the [Library](/resources/) and install the `harness-agent-skills` package.
 
-**Próxima aula**: [02 — O que é um harness, de fato](/lectures/lecture-02).
+**Next lesson**: [02 — What a harness really is](/lectures/lecture-02).

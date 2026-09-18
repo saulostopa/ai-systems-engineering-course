@@ -1,132 +1,132 @@
 ---
-title: Harness grande (multi-time)
+title: Enterprise harness (multi-team)
 ---
 
-# Harness grande (multi-time)
+# Enterprise harness (multi-team)
 
-> O harness para projetos onde muitas equipes trabalham: o básico + camadas de
-> governança, fluxo e observabilidade. Referência de implementação: o AgEnFK.
+> The harness for projects where many teams work: the basic + layers of
+> governance, flow and observability. Implementation reference: AgEnFK.
 
-## Para quem é
+## Who it's for
 
-Projetos grandes, múltiplas equipes, muitos agentes em paralelo, necessidade de
-auditoria e medição. O harness grande não substitui o básico — **ele o envolve**:
-cada equipe continua com seu esqueleto; a camada enterprise adiciona fluxo,
-gatekeepers, telemetria e relatórios.
+Large projects, multiple teams, many agents in parallel, need for
+auditing and measurement. The enterprise harness doesn't replace the basic — **it wraps it**:
+each team keeps its skeleton; the enterprise layer adds flow,
+gatekeepers, telemetry and reports.
 
-## As camadas
+## The layers
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ 4. Observabilidade  (telemetria, log-friction,      │
-│    dashboards, health check do harness)             │
+│ 4. Observability  (telemetry, log-friction,         │
+│    dashboards, harness health check)                │
 ├─────────────────────────────────────────────────────┤
-│ 3. Workflow engine  (itens, flows, gatekeeper,      │
-│    evidência, DONE só com validação)                │
+│ 3. Workflow engine  (items, flows, gatekeeper,      │
+│    evidence, DONE only with validation)             │
 ├─────────────────────────────────────────────────────┤
-│ 2. Governança       (políticas, gates mecânicos,    │
-│    hooks, revisão cruzada)                          │
+│ 2. Governance       (policies, mechanical gates,    │
+│    hooks, cross-review)                             │
 ├─────────────────────────────────────────────────────┤
-│ 1. Esqueleto        (harness básico por projeto:    │
+│ 1. Skeleton         (basic harness per project:     │
 │    AGENTS.md, feature list, policies)               │
 └─────────────────────────────────────────────────────┘
 ```
 
-### Camada 1 — Esqueleto (por projeto)
+### Layer 1 — Skeleton (per project)
 
-O [harness básico](/harness-designs/basic-harness). Cada equipe tem o seu, com
-a feature list da sua área. Nada muda aqui quando você sobe de tamanho.
+The [basic harness](/harness-designs/basic-harness). Each team has its own, with
+its area's feature list. Nothing changes here when you scale up.
 
-### Camada 2 — Governança
+### Layer 2 — Governance
 
-O que o básico já tem (gatekeeper de commit, validação) vira **contrato
-organizacional**:
+What the basic already has (commit gatekeeper, validation) becomes an
+**organizational contract**:
 
-| Mecanismo | Básico | Grande |
+| Mechanism | Basic | Enterprise |
 |---|---|---|
-| Gate de commit | UMA feature in_progress | + escopo declarado obrigatório (policies/scope-control.md) |
-| Gate de push | Harness saudável | + relatório de PR obrigatório, CI com validação |
-| Verificação | Build + testes | + E2E gate para frontend (factory: `frontend-qa-gate.sh`) + revisão cruzada por fluxo |
-| Exceção | Bypass consciente local | Bypass registrado e auditável (log + motivo) |
+| Commit gate | ONE in_progress feature | + mandatory declared scope (policies/scope-control.md) |
+| Push gate | Healthy harness | + mandatory PR report, CI with validation |
+| Verification | Build + tests | + E2E gate for frontend (factory: `frontend-qa-gate.sh`) + cross-review per flow |
+| Exception | Conscious local bypass | Recorded and auditable bypass (log + reason) |
 
-A regra da governança: **se o processo depende de boa vontade, não acontece**
-(Aula 07). Tudo vira script, hook ou etapa de fluxo.
+The governance rule: **if the process depends on goodwill, it doesn't happen**
+(Lesson 07). Everything becomes a script, hook or flow step.
 
-### Camada 3 — Workflow engine
+### Layer 3 — Workflow engine
 
-É aqui que o AgEnFK entra como referência de implementação. O que ele resolve:
+This is where AgEnFK comes in as the implementation reference. What it solves:
 
-- **Itens com hierarquia e tipo** (EPIC → STORY → TASK/BUG) — o `feature_list.json`
-  vira um sistema com parentesco e fluxo.
-- **Flows configuráveis** — cada tipo de trabalho tem etapas com critérios de
-  saída obrigatórios (Aula 13: loops com critério verificável).
-- **Gatekeeper mecânico** — edição só dentro de item ativo; **DONE inalcançável
-  por atalho** (só via `validate_progress` no passo final, com evidência).
-- **Evidência e teste como etapas** — `log-test PASSED/FAILED` antes de concluir;
-  o auto-engano da Aula 09 vira falha de fluxo.
-- **Trilha auditável** — histórico de status, comentários, evidências: o "quem,
-  quando, por quê" de cada item.
+- **Items with hierarchy and type** (EPIC → STORY → TASK/BUG) — the `feature_list.json`
+  becomes a system with parentage and flow.
+- **Configurable flows** — each work type has steps with mandatory
+  exit criteria (Lesson 13: loops with verifiable criteria).
+- **Mechanical gatekeeper** — edits only within an active item; **DONE unreachable
+  by shortcut** (only via `validate_progress` in the final step, with evidence).
+- **Evidence and test as steps** — `log-test PASSED/FAILED` before completing;
+  Lesson 09's self-deception becomes a flow failure.
+- **Auditable trail** — status history, comments, evidence: the "who,
+  when, why" of each item.
 
-### Camada 4 — Observabilidade
+### Layer 4 — Observability
 
-A camada que distingue harness de processo burocrático de sistema de melhoria
-contínua (Aula 11):
+The layer that distinguishes a harness from a bureaucratic process as a continuous
+improvement system (Lesson 11):
 
-| Métrica | Fonte |
+| Metric | Source |
 |---|---|
-| Tempo por etapa/item | timestamps do workflow |
-| Fricção (retries, loops, travadas) | `log-friction` / `log-event.sh` |
-| Custo por feature | telemetria de tokens |
-| Saúde do harness | `validate-harness.sh` + health check da camada 3 |
-| Qualidade | testes falhando antes do green, retomadas |
+| Time per step/item | workflow timestamps |
+| Friction (retries, loops, stalls) | `log-friction` / `log-event.sh` |
+| Cost per feature | token telemetry |
+| Harness health | `validate-harness.sh` + layer 3 health check |
+| Quality | tests failing before green, resumptions |
 
-Regra de ouro: **fricção não registrada é dívida de observabilidade**. Todo
-atrito vira entrada de log — e cada entrada de log é um candidato a melhoria
-do harness.
+Golden rule: **unrecorded friction is observability debt**. Every
+friction point becomes a log entry — and every log entry is a candidate for
+harness improvement.
 
-## O modelo multi-team
+## The multi-team model
 
-Cada equipe = um projeto com seus itens e fluxos, **no mesmo framework**:
+Each team = a project with its items and flows, **in the same framework**:
 
 ```
-Equipe Catalogo  (projeto A) ──┐
-Equipe Fipe      (projeto B) ──┼──▶ AgEnFK (workflow engine compartilhado)
-Equipe Finanças  (projeto C) ──┘        │
-                                       ├── telemetria central
-                                       └── relatório por equipe
+Catalog team   (project A) ──┐
+Fipe team      (project B) ──┼──▶ AgEnFK (shared workflow engine)
+Finance team   (project C) ──┘        │
+                                       ├── central telemetry
+                                       └── per-team report
 ```
 
-Benefícios: o padrão é um só (curva de aprendizado única), a telemetria
-agrega por time, e a governança escala sem reinventar.
+Benefits: a single pattern (single learning curve), telemetry
+aggregates per team, and governance scales without reinventing.
 
-## Scoping — o harness grande só onde você quer
+## Scoping — the enterprise harness only where you want it
 
-O harness grande precisa de uma decisão de **escopo**: ele só deve agir nos
-projetos que aderiram. A mecânica:
+The enterprise harness needs a **scope** decision: it must only act on the
+projects that opted in. The mechanics:
 
-- o gatekeeper **verifica o caminho do arquivo** contra `.agenfk/project.json`
-  e só age dentro de projetos gerenciados (fail-open fora deles);
-- regras e skills são instaladas **no projeto** (`.claude/skills/`, `AGENTS.md`
-  do repo), não globalmente;
-- fora do projeto: agente 100% independente; dentro: workflow completo.
+- the gatekeeper **checks the file path** against `.agenfk/project.json`
+  and only acts inside managed projects (fail-open outside them);
+- rules and skills are installed **in the project** (`.claude/skills/`, the repo's
+  `AGENTS.md`), not globally;
+- outside the project: fully independent agent; inside: complete workflow.
 
-Foi exatamente o que fizemos neste curso ao escopar o AgEnFK para o
-`harness-plannig` — a independência entre agentes na máquina não é negociável.
+That is exactly what we did in this course when scoping AgEnFK for
+`harness-plannig` — independence between agents on the machine is non-negotiable.
 
-## Relação com o factory e o AgEnFK
+## Relationship with the factory and AgEnFK
 
-| Repositório | Papel no harness grande |
+| Repository | Role in the enterprise harness |
 |---|---|
-| `webmotors-harness-factory` | Camadas 1-2: esqueleto, policies, hooks, scripts de validação |
-| `agenfk` | Camadas 3-4: itens, flows, gatekeeper, evidência, telemetria, UI |
-| `harness-agent-skills` | Skills compartilhadas: artefatos, QA, perf (EPIC F) |
-| `harness-plannig` | O curso + este blueprint (dogfooding) |
+| `webmotors-harness-factory` | Layers 1-2: skeleton, policies, hooks, validation scripts |
+| `agenfk` | Layers 3-4: items, flows, gatekeeper, evidence, telemetry, UI |
+| `harness-agent-skills` | Shared skills: artifacts, QA, perf (EPIC F) |
+| `harness-plannig` | The course + this blueprint (dogfooding) |
 
-## Próximos passos deste projeto
+## Next steps for this project
 
-O harness grande completo (documentado e demonstrado) se concretiza nos pilotos
-do EPIC G — quando o harness básico e o workflow engine rodarem juntos num repo
-real com métricas registradas.
+The complete enterprise harness (documented and demonstrated) materializes in the
+EPIC G pilots — when the basic harness and the workflow engine run together in a real
+repo with recorded metrics.
 
-**Relacionados**: [Harness básico](/harness-designs/basic-harness) ·
-[App Harness](/harness-designs/app-harness) · [Harnesses de domínio](/harness-designs/domain-harnesses)
+**Related**: [Basic harness](/harness-designs/basic-harness) ·
+[App Harness](/harness-designs/app-harness) · [Domain harnesses](/harness-designs/domain-harnesses)

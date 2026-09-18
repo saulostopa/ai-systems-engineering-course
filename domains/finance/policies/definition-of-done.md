@@ -1,14 +1,14 @@
-# Definition of Done — domínio Finanças
+# Definition of Done — Finance domain
 
-Uma entrega financeira está pronta quando:
+A financial delivery is done when:
 
-1. **Pipeline executou de verdade** — `scripts/nightly-run.sh <area_root>` rodou (ou o item foi processado manualmente com o mesmo motor).
-2. **Reconciliação feita** — totais conferidos: esperado vs. real em tabela; divergência registrada com linha citada, **nunca arredondada**.
-3. **Toda fonte citada** — nenhum número sem `FONTE: <arquivo> (linhas X-Y)` (critério de saída do nightly: 0 linhas com número sem fonte).
-4. **Artefato publicado** — `relatorios/YYYY-MM-DD-<slug>.md` versionado no playbook.
-5. **Evidência registrada** — saída do pipeline anexada; feature em `passing`.
+1. **Pipeline really ran** — `scripts/nightly-run.sh <area_root>` executed (or the item was processed manually with the same engine).
+2. **Reconciliation done** — totals checked: expected vs. actual in a table; divergence recorded with the cited line, **never rounded**.
+3. **Every source cited** — no number without `FONTE: <file> (lines X-Y)` (nightly exit criterion: 0 lines with an unsourced number).
+4. **Artifact published** — `relatorios/YYYY-MM-DD-<slug>.md` versioned in the playbook.
+5. **Evidence recorded** — pipeline output attached; feature in `passing`.
 
-## O que NÃO é "pronto" no domínio
-- Relatório com número sem fonte.
-- Total "arredondado para bater" — divergência é dado, não bug.
-- "O cron deve rodar" — sem a execução registrada de hoje.
+## What is NOT "done" in this domain
+- Report with an unsourced number.
+- Total "rounded to fit" — divergence is data, not a bug.
+- "The cron should run" — without today's recorded execution.

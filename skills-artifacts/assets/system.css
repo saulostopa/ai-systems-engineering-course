@@ -1,10 +1,10 @@
 /* ============================================================
    system.css — v2 (Eleanor)
-   Tokens do design system Webmotors (webmotors.ds.eleanor.tokens):
-   brand red, gray dark scale, indigo complementary, fonte Figtree.
-   Acessibilidade: contraste AA, focus-visible, reduced-motion,
-   aria-live suportado pelos scripts do skeleton.
-   Claro por padrão; escuro via data-theme="dark".
+   Webmotors design system tokens (webmotors.ds.eleanor.tokens):
+   brand red, gray dark scale, indigo complementary, Figtree font.
+   Accessibility: AA contrast, focus-visible, reduced-motion,
+   aria-live supported by the skeleton scripts.
+   Light by default; dark via data-theme="dark".
    ============================================================ */
 
 :root {
@@ -30,7 +30,7 @@
   --wm-yellow-500: #b98a00;
   --wm-orange-500: #c2410c;
 
-  /* ── Papéis (nome por papel, não por valor) ── */
+  /* ── Roles (named by role, not by value) ── */
   --color-accent: var(--wm-red-500);
   --color-accent-strong: var(--wm-red-700);
   --color-accent-soft: rgba(216, 31, 65, 0.12);
@@ -66,7 +66,7 @@
   --tier-3: var(--wm-yellow-500); --tier-3-soft: rgba(185, 138, 0, 0.14);  --tier-3-text: #7a5900;
   --tier-4: var(--wm-red-500);    --tier-4-soft: rgba(216, 31, 65, 0.12);  --tier-4-text: var(--wm-red-700);
 
-  /* ── Tipografia (Eleanor: Figtree) ── */
+  /* ── Typography (Eleanor: Figtree) ── */
   --font-display: "Figtree", "Inter", system-ui, sans-serif;
   --font-body: "Figtree", "Inter", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -74,7 +74,7 @@
   --text-xs: 0.75rem;   --text-sm: 0.875rem;  --text-base: 1rem;
   --text-lg: 1.125rem;  --text-xl: 1.375rem;  --text-2xl: 1.75rem;  --text-3xl: 2.25rem;
 
-  /* ── Espaço, raio, elevação ── */
+  /* ── Space, radius, elevation ── */
   --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
   --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
   --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-full: 999px;
@@ -127,7 +127,7 @@ h1 { font-size: var(--text-3xl); } h2 { font-size: var(--text-2xl); } h3 { font-
 a { color: var(--color-accent-text); text-decoration: underline; text-underline-offset: 2px; }
 a:hover { color: var(--color-accent); }
 
-/* Acessibilidade: foco visível em anel (IBM Carbon) */
+/* Accessibility: visible ring focus (IBM Carbon) */
 :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-xs); }
 
 /* ── Layout ── */
@@ -136,7 +136,7 @@ a:hover { color: var(--color-accent); }
 .brand { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-display); font-weight: 700; }
 .brand-mark { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--color-accent); color: var(--color-text-on-accent); display: grid; place-items: center; font-weight: 800; }
 
-/* ── Card (única unidade estrutural) ── */
+/* ── Card (single structural unit) ── */
 .card {
   background: var(--color-bg-surface);
   border-radius: var(--radius-lg);
@@ -146,13 +146,13 @@ a:hover { color: var(--color-accent); }
 }
 .card h2:first-child, .card h3:first-child { margin-top: 0; }
 
-/* ── Badge / status (3 variantes: sólido, soft, text) ── */
+/* ── Badge / status (3 variants: solid, soft, text) ── */
 .badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600; }
 .badge-solid { color: var(--color-text-on-accent); }
 .badge-soft { color: var(--color-accent-text); background: var(--color-accent-soft); }
 .badge-text { color: var(--color-accent-text); }
 
-/* ── Tabelas ── */
+/* ── Tables ── */
 table { width: 100%; border-collapse: collapse; margin: var(--space-3) 0; font-size: var(--text-sm); }
 th { text-align: left; background: var(--color-bg-sunken); color: var(--color-text-secondary); }
 th, td { padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border-subtle); }
@@ -180,21 +180,21 @@ td { font-variant-numeric: tabular-nums; }
 }
 .quiz-why[data-visible="true"] { display: block; }
 
-/* ── Progresso ── */
+/* ── Progress ── */
 .progress { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
 .progress-bar { flex: 1; height: 8px; border-radius: var(--radius-full); background: var(--color-bg-sunken); overflow: hidden; }
 .progress-fill { height: 100%; background: var(--color-accent); border-radius: var(--radius-full); transition: width 0.3s ease; width: 0; }
 .progress-label { font-size: var(--text-sm); color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
 
-/* ── Resultado (aria-live) ── */
+/* ── Result (aria-live) ── */
 .result { margin-top: var(--space-5); padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-bg-soft); border: 1px solid var(--color-accent-soft); }
 .result[hidden] { display: none; }
 .result h2 { margin-top: 0; }
 
-/* ── Modo revisão (quiz adaptativo) ── */
+/* ── Review mode (adaptive quiz) ── */
 .review-item { padding: var(--space-4); border: 1px dashed var(--color-border); border-radius: var(--radius-md); margin-bottom: var(--space-3); }
 
-/* ── Rodapé do tema/idioma ── */
+/* ── Theme/language toolbar ── */
 .toolbar { display: flex; gap: var(--space-2); align-items: center; }
 .toolbar button {
   padding: var(--space-1) var(--space-3); font: inherit; font-size: var(--text-sm);
@@ -203,12 +203,12 @@ td { font-variant-numeric: tabular-nums; }
 }
 .toolbar button:hover { border-color: var(--color-accent); color: var(--color-accent-text); }
 
-/* ── Acessibilidade: movimento reduzido ── */
+/* ── Accessibility: reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* ── Impressão ── */
+/* ── Print ── */
 @media print {
   body { background: #fff; color: #000; }
   .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }

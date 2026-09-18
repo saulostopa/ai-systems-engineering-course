@@ -1,29 +1,29 @@
-# AGENTS.md — Harness da área (template Area Copilot)
+# AGENTS.md — Area harness (Area Copilot template)
 
-> Copie para a raiz da área. Regra de ouro: **número sem fonte é proibido**.
+> Copy to the area root. Golden rule: **a number without a source is forbidden**.
 
-## 1. Como trabalhar
+## 1. How to work
 
-- Antes de qualquer tarefa, leia `area_context/index.md` (o mapa da área).
-- Contexto específico? Use o Area Copilot (`python -m area_harness query area_context "<pergunta>"`) ou abra o arquivo apontado pelo índice — **nunca adivinhe**.
-- Todo dado citado vem de um arquivo lido: planilha, documento ou imagem.
+- Before any task, read `area_context/index.md` (the area map).
+- Specific context? Use the Area Copilot (`python -m area_harness query area_context "<question>"`) or open the file pointed to by the index — **never guess**.
+- Every cited datum comes from a file you read: spreadsheet, document, or image.
 
-## 2. Como verificar
+## 2. How to verify
 
-- Todo artefato cita a fonte: `FONTE: <caminho> (linhas X-Y)`.
-- "Não sei" é resposta válida; **número inventado não é**.
-- Nenhum número sai sem o chunk de origem anexado.
+- Every artifact cites its source: `FONTE: <path> (lines X-Y)`.
+- "I don't know" is a valid answer; **a made-up number is not**.
+- No number leaves without its source chunk attached.
 
-## 3. Estado
+## 3. State
 
-- As features da área vivem em `feature_list.json` (uma `in_progress` por vez).
-- Relatórios agendados (modo madrugada) publicam em `relatorios/` com data no nome.
+- The area's features live in `feature_list.json` (one `in_progress` at a time).
+- Scheduled reports (nightly mode) publish to `relatorios/` with the date in the name.
 
-## 4. Onde mora o contexto
+## 4. Where the context lives
 
-| Pasta | O que contém |
+| Folder | What it contains |
 |---|---|
-| `area_context/planilhas/` | Dados tabulares (CSV/XLSX) |
-| `area_context/documentos/` | Briefings, regras, processos |
-| `area_context/imagens/` | Evidência visual (prints, peças) |
-| `area_context/index.md` | Mapa da área (tags + resumos) — regenere quando adicionar arquivos |
+| `area_context/planilhas/` | Tabular data (CSV/XLSX) |
+| `area_context/documentos/` | Briefings, rules, processes |
+| `area_context/imagens/` | Visual evidence (screenshots, parts) |
+| `area_context/index.md` | Area map (tags + summaries) — regenerate when you add files |

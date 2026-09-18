@@ -2,22 +2,22 @@
   "features": [
     {
       "id": "game-001",
-      "title": "Personagem: o Mecânico da Garagem (persona + narrativa)",
-      "description": "Persona do jogador iniciante + arco narrativo de 3 missões introduzindo o mundo do jogo.",
+      "title": "Character: the Garage Mechanic (persona + narrative)",
+      "description": "Newbie player persona + 3-mission narrative arc introducing the game world.",
       "status": "not_started",
       "priority": 1
     },
     {
       "id": "game-002",
-      "title": "Mecânica: tuning de veículo",
-      "description": "Loop de customização (input -> regra de desempenho -> feedback visual) com economia de moedas.",
+      "title": "Mechanic: vehicle tuning",
+      "description": "Customization loop (input -> performance rule -> visual feedback) with a coin economy.",
       "status": "not_started",
       "priority": 2
     },
     {
       "id": "game-003",
-      "title": "Publicação: garagem interativa no Roblox",
-      "description": "Build Luau/Rojo da garagem + Developer Products de moedas, com checklist de plataforma.",
+      "title": "Publication: interactive garage on Roblox",
+      "description": "Luau/Rojo build of the garage + coin Developer Products, with platform checklist.",
       "status": "not_started",
       "priority": 3
     }

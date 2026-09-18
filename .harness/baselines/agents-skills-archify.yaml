@@ -1,91 +1,91 @@
 # SkillSpector baseline — archify
 #
-# Falsos positivos VERIFICADOS um a um contra o código, em 2026-09-17, no scan
-# estático do skill-guard. Cada regra abaixo foi aberta, o trecho lido e a
-# causa do casamento identificada — nenhuma foi suprimida por ser inconveniente.
+# False positives VERIFIED one by one against the code, on 2026-09-17, in the
+# skill-guard static scan. Each rule below was opened, the snippet read, and
+# the match cause identified — none was suppressed for being inconvenient.
 #
-# O que NÃO está aqui, de propósito:
-#   SC4 — fast-uri==3.1.5 com 4 CVEs (via ajv). Achado REAL, fica visível até
-#         ser corrigido upstream.
-#   SC1 — "ajv": "^8.17.1" sem pin exato. Verdadeiro, ainda que menor.
+# What is NOT here, on purpose:
+#   SC4 — fast-uri==3.1.5 with 4 CVEs (via ajv). REAL finding, stays visible
+#         until fixed upstream.
+#   SC1 — "ajv": "^8.17.1" without an exact pin. True, albeit minor.
 #
-# Contexto: archify é um toolkit de renderização vendorado (MIT, ~62k stars) —
-# um CLI Node grande, com suíte de testes e uma fonte WOFF2 embutida no
-# template HTML. Quase todo o ruído vem daí, não da skill.
+# Context: archify is a vendored rendering toolkit (MIT, ~62k stars) — a
+# large Node CLI with a test suite and a WOFF2 font embedded in the HTML
+# template. Almost all the noise comes from there, not from the skill.
 #
-# Reavaliar quando a versão do archify mudar: origem nova, veredito novo.
+# Re-evaluate when the archify version changes: new source, new verdict.
 
 version: 2
 
 rules:
   - id: "AE1"
     reason: >-
-      Cobertura parcial, não evasão: bin/archify.mjs (2101 linhas),
-      assets/template.html (14934 linhas) e renderers/ excedem o limite de
-      inspeção por arquivo do scanner. Sinal de cobertura, e já reportado
-      separadamente pelo gate como "cobertura: partial".
+      Partial coverage, not evasion: bin/archify.mjs (2101 lines),
+      assets/template.html (14934 lines) and renderers/ exceed the scanner's
+      per-file inspection limit. Coverage signal, and already reported
+      separately by the gate as "coverage: partial".
 
   - id: "P2"
     message: "*"
     reason: >-
-      "Hidden Instructions" casando com comentários HTML/SVG comuns
-      (<!-- Toolbar -->, <!-- Definitions -->, <!-- Legend -->) no template,
-      nos renderers e nos testes de parsing. São comentários de marcação, não
-      instruções dirigidas a um agente.
+      "Hidden Instructions" matching common HTML/SVG comments
+      (<!-- Toolbar -->, <!-- Definitions -->, <!-- Legend -->) in the
+      template, the renderers, and the parsing tests. They are markup
+      comments, not instructions directed at an agent.
 
   - id: "YR4"
     reason: >-
-      Regra YARA de MCP tool poisoning casando com o blob base64 da fonte
-      JetBrains Mono embutida no template (prefixo d09GMg = "wOF2", magic de
-      WOFF2) somado a "description =" do CSS. É uma fonte, não um manifesto
-      de ferramenta — archify não expõe nenhum tool MCP.
+      YARA MCP tool poisoning rule matching the base64 blob of the
+      JetBrains Mono font embedded in the template (prefix d09GMg = "wOF2",
+      the WOFF2 magic) combined with "description =" from the CSS. It is a
+      font, not a tool manifest — archify exposes no MCP tool.
 
   - id: "EA3"
     message: "*NOT LIMITED TO*"
     reason: >-
-      "Scope Creep" casando com a frase NOT LIMITED TO do texto da SIL Open
-      Font License (assets/JetBrainsMono-OFL.txt e a mesma licença embutida no
-      template e nos exemplos). Boilerplate de licença.
+      "Scope Creep" matching the NOT LIMITED TO phrase from the SIL Open
+      Font License text (assets/JetBrainsMono-OFL.txt and the same license
+      embedded in the template and the examples). License boilerplate.
 
   - id: "RA2"
     reason: >-
-      "Session Persistence" casando com o identificador JavaScript pList, uma
-      variável local do renderer (assets/template.html) e do teste de
-      relacionamento. Colisão de nome, sem persistência de sessão.
+      "Session Persistence" matching the JavaScript identifier pList, a
+      local variable of the renderer (assets/template.html) and of the
+      relationship test. Name collision, no session persistence.
 
   - id: "PE3"
     path: "test/*"
     reason: >-
-      "Credential Access" casando com as strings /etc/passwd, secret.txt e
-      "access tokens" dentro de arquivos de teste — são fixtures que verificam
-      o próprio tratamento desses casos, não leitura de credenciais.
+      "Credential Access" matching the strings /etc/passwd, secret.txt and
+      "access tokens" inside test files — they are fixtures verifying the
+      handling of those very cases, not credential reads.
 
   - id: "RP1"
     path: "test/*"
     reason: >-
-      "MCP Rug Pull" em arquivos de teste, sem trecho associado e com
-      confiança 0.7. archify não é servidor MCP e não declara ferramentas.
+      "MCP Rug Pull" in test files, with no associated snippet and a
+      confidence of 0.7. archify is not an MCP server and declares no tools.
 
   - id: "TM1"
     path: "test/*"
     reason: >-
-      "Tool Parameter Abuse" casando com a palavra "remove" em um comentário
-      de test/reader-layout-browser.test.mjs.
+      "Tool Parameter Abuse" matching the word "remove" in a comment of
+      test/reader-layout-browser.test.mjs.
 
   - id: "MP3"
     path: "test/*"
     reason: >-
-      "Memory Manipulation" casando com "reset state" em
-      test/update-notifier.test.mjs — reset de estado de teste.
+      "Memory Manipulation" matching "reset state" in
+      test/update-notifier.test.mjs — test state reset.
 
   - id: "OH3"
     path: "test/*"
     reason: >-
-      "Unbounded Output" casando com "without cutting" em
-      test/readme-showcase.test.mjs, uma asserção sobre truncamento de texto.
+      "Unbounded Output" matching "without cutting" in
+      test/readme-showcase.test.mjs, an assertion about text truncation.
 
   - id: "LP3"
     path: "SKILL.md"
     reason: >-
-      "MCP Least Privilege" avaliado sobre um SKILL.md que não declara nenhum
-      servidor nem ferramenta MCP — a regra não se aplica a esta skill.
+      "MCP Least Privilege" evaluated against a SKILL.md that declares no
+      MCP server or tool — the rule does not apply to this skill.

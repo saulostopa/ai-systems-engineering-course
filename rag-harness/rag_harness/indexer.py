@@ -1,11 +1,11 @@
-"""Indexação com cache por content-hash (rag-harness.md: embeddings como
-cache de computação — re-embed apenas quando o arquivo muda).
+"""Indexing with content-hash caching (rag-harness.md: embeddings as a
+computation cache — re-embed only when the file changes).
 
-Estrutura do índice:
-    .rag_index/<sha256 do diretório>/
-        chunks.json          # todos os chunks (texto + metadados)
-        vectors.json         # embeddings por chunk id
-        hashes.json          # content-hash por arquivo (cache de re-indexação)
+Index layout:
+    .rag_index/<sha256 of the directory>/
+        chunks.json          # all chunks (text + metadata)
+        vectors.json         # embeddings per chunk id
+        hashes.json          # content-hash per file (re-index cache)
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from .embeddings import cosine
 class Index:
     chunks: list[Chunk]
     vectors: dict[str, list[float]]  # chunk.hash -> embedding
-    file_hashes: dict[str, str]      # path -> sha256 do conteúdo
+    file_hashes: dict[str, str]  # path -> sha256 of the file content
 
 
 def file_hash(path: str) -> str:
@@ -75,7 +75,7 @@ def index_dir(root: str, embedder, index_dir_path: str | None = None, verbose: b
     new_chunks: list[Chunk] = []
     new_vectors: dict[str, list[float]] = {}
     new_file_hashes: dict[str, str] = {}
-    # Reaproveita vetores de chunks cujo hash não mudou (cache de computação)
+    # Reuse vectors for chunks whose hash did not change (computation cache)
     old_by_hash = {c.hash: c for c in old_chunks}
 
     for path in files:
@@ -112,7 +112,7 @@ def index_dir(root: str, embedder, index_dir_path: str | None = None, verbose: b
         )
 
     if verbose:
-        print(f"indexed {len(new_chunks)} chunks de {len(files)} arquivos ({changed} alterados)")
+        print(f"indexed {len(new_chunks)} chunks from {len(files)} files ({changed} changed)")
     return Index(new_chunks, new_vectors, new_file_hashes)
 
 

@@ -1,9 +1,10 @@
-"""Chunker de negócio — planilhas (CSV/stdlib, XLSX via openpyxl opcional),
-documentos Markdown e texto. Cada chunk carrega FONTE citável (arquivo + linha/
-aba) — a regra de ouro do Area Copilot: nunca número sem fonte.
+"""Business chunker — spreadsheets (CSV/stdlib, XLSX via optional openpyxl),
+Markdown documents and plain text. Every chunk carries a citable SOURCE
+(file + line/sheet) — the Area Copilot golden rule: never a number without
+a source.
 
-Usa o motor do rag_harness (indexação híbrida + controle agêntico); este
-módulo só traduz arquivos de negócio em chunks com metadados de fonte.
+Uses the rag_harness engine (hybrid indexing + agentic control); this
+module only converts business files into chunks with source metadata.
 """
 
 from __future__ import annotations
@@ -28,7 +29,7 @@ def _csv_rows_to_chunks(path: str, max_rows_per_chunk: int = 50) -> list[Chunk]:
         text_lines = [", ".join(header)]
         for i, row in enumerate(block, start=start):
             cells = [f"{h}:{v}" for h, v in zip(header, row) if v]
-            text_lines.append(f"linha {i + 1}: " + " | ".join(cells))
+            text_lines.append(f"row {i + 1}: " + " | ".join(cells))
         text = "\n".join(text_lines)
         chunks.append(
             Chunk(
@@ -45,9 +46,9 @@ def _csv_rows_to_chunks(path: str, max_rows_per_chunk: int = 50) -> list[Chunk]:
 
 def _xlsx_sheets_to_chunks(path: str, max_rows_per_chunk: int = 50) -> list[Chunk]:
     try:
-        import openpyxl  # opcional
+        import openpyxl  # optional
     except ImportError:
-        raise RuntimeError("openpyxl não instalado — use CSV ou: pip install openpyxl")
+        raise RuntimeError("openpyxl not installed — use CSV or: pip install openpyxl")
 
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     chunks: list[Chunk] = []
@@ -59,10 +60,10 @@ def _xlsx_sheets_to_chunks(path: str, max_rows_per_chunk: int = 50) -> list[Chun
         header = [str(h) if h is not None else "" for h in rows[0]]
         for start in range(1, len(rows), max_rows_per_chunk):
             block = rows[start : start + max_rows_per_chunk]
-            lines = [f"aba: {sheet_name} | colunas: {', '.join(header)}"]
+            lines = [f"sheet: {sheet_name} | columns: {', '.join(header)}"]
             for i, row in enumerate(block, start=start):
                 cells = [f"{h}:{v}" for h, v in zip(header, row) if v is not None and str(v)]
-                lines.append(f"linha {i + 1}: " + " | ".join(cells))
+                lines.append(f"row {i + 1}: " + " | ".join(cells))
             chunks.append(
                 Chunk(
                     path=f"{path}#{sheet_name}",
@@ -116,7 +117,7 @@ def chunk_business_file(path: str) -> list[Chunk]:
         return _xlsx_sheets_to_chunks(path)
     if lower.endswith((".md", ".markdown", ".txt")):
         return _md_to_chunks(path)
-    raise ValueError(f"extensão não suportada para negócio: {path}")
+    raise ValueError(f"unsupported extension for business files: {path}")
 
 
 def chunk_business_dir(root: str) -> list[Chunk]:
@@ -128,5 +129,5 @@ def chunk_business_dir(root: str) -> list[Chunk]:
             try:
                 chunks.extend(chunk_business_file(path))
             except (ValueError, RuntimeError) as exc:
-                print(f"[area-copilot] pulando {path}: {exc}")
+                print(f"[area-copilot] skipping {path}: {exc}")
     return chunks

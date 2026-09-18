@@ -1,75 +1,75 @@
 ---
-title: Harness básico (download)
+title: Basic harness (download)
 ---
 
-# Harness básico (download)
+# Basic harness (download)
 
-> O pacote que qualquer projeto pequeno baixa e roda em minutos. Versionado em
-> `harness-basic/` na raiz deste repositório.
+> The package any small project downloads and runs in minutes. Versioned in
+> `harness-basic/` at the root of this repository.
 
-## Para quem é
+## Who it's for
 
-Projetos pequenos e médios, times de 1-5 pessoas, sem infraestrutura própria de
-processo. O harness básico entrega **o mínimo que muda o comportamento do
-agente**: roteador, estado, políticas e dois gates mecânicos.
+Small and medium projects, teams of 1-5 people, without their own process
+infrastructure. The basic harness delivers **the minimum that changes the agent's
+behavior**: router, state, policies and two mechanical gates.
 
-## O que o pacote contém
+## What the package contains
 
 ```
 harness-basic/
-├── package.json              # metadados (npm privado)
-├── install.sh                # instalador: copia tudo + ativa hooks
-├── templates/                # os arquivos do harness (mesma base da A4)
-│   ├── AGENTS.md             # roteador (Aula 04)
-│   ├── feature_list.json     # escopo com estado (Aula 08)
-│   ├── claude-progress.md    # diário de sessão (Aula 05)
-│   ├── session-handoff.md    # bilhete entre sessões (Aula 05)
+├── package.json              # metadata (private npm)
+├── install.sh                # installer: copies everything + activates hooks
+├── templates/                # the harness files (same base as A4)
+│   ├── AGENTS.md             # router (Lesson 04)
+│   ├── feature_list.json     # scope with state (Lesson 08)
+│   ├── claude-progress.md    # session diary (Lesson 05)
+│   ├── session-handoff.md    # note between sessions (Lesson 05)
 │   ├── policies/             # scope-control, definition-of-done, evidence
-│   └── init.sh               # boot (Aula 06)
+│   └── init.sh               # boot (Lesson 06)
 ├── scripts/
-│   ├── gatekeeper.sh         # pre-commit: exige UMA feature in_progress
-│   ├── validate-harness.sh   # health check completo do harness (Aula 11)
-│   └── log-event.sh          # registro de fricção (Aula 11)
+│   ├── gatekeeper.sh         # pre-commit: requires ONE in_progress feature
+│   ├── validate-harness.sh   # full harness health check (Lesson 11)
+│   └── log-event.sh          # friction logging (Lesson 11)
 └── .githooks/
-    ├── pre-commit            # roda gatekeeper.sh
-    └── pre-push              # roda validate-harness.sh
+    ├── pre-commit            # runs gatekeeper.sh
+    └── pre-push              # runs validate-harness.sh
 ```
 
-## Instalação
+## Installation
 
 ```sh
-git clone <este repo>              # ou copie a pasta harness-basic/
-cd <seu-projeto>                   # repo git existente
-./harness-basic/install.sh <seu-projeto>
-./init.sh                          # valida o ambiente e imprime próximos passos
+git clone <this repo>              # or copy the harness-basic/ folder
+cd <your-project>                  # existing git repo
+./harness-basic/install.sh <your-project>
+./init.sh                          # validates the environment and prints next steps
 ```
 
-O instalador:
-1. copia templates, scripts e hooks;
-2. ativa `git config core.hooksPath .githooks`;
-3. recusa sobrescrever arquivos existentes (use `--force` conscientemente).
+The installer:
+1. copies templates, scripts and hooks;
+2. activates `git config core.hooksPath .githooks`;
+3. refuses to overwrite existing files (use `--force` consciously).
 
-## O que os gates fazem (testado)
+## What the gates do (tested)
 
-| Gate | Quando | Comportamento |
+| Gate | When | Behavior |
 |---|---|---|
-| `pre-commit` (gatekeeper.sh) | todo commit | **Bloqueia** se 0 features `in_progress` (Aula 08) ou >1 (Aula 06/07); bypass consciente de 5 min via `.harness/skip-gatekeeper` |
-| `pre-push` (validate-harness.sh) | todo push | Bloqueia se arquivos obrigatórios faltarem, JSON inválido, estados errados ou >1 `in_progress` |
+| `pre-commit` (gatekeeper.sh) | every commit | **Blocks** if 0 features `in_progress` (Lesson 08) or >1 (Lesson 06/07); conscious 5-min bypass via `.harness/skip-gatekeeper` |
+| `pre-push` (validate-harness.sh) | every push | Blocks if required files are missing, JSON is invalid, states are wrong or >1 `in_progress` |
 
-O `validate-harness.sh` é o "health check" da Aula 11: 0 falhas = harness saudável;
-qualquer falha = o harness quebrou e o push é bloqueado **antes** de publicar.
+The `validate-harness.sh` is the Lesson 11 "health check": 0 failures = healthy harness;
+any failure = the harness broke and the push is blocked **before** publishing.
 
-## Evolução natural
+## Natural evolution
 
-| Quando | Evolua para |
+| When | Evolve to |
 |---|---|
-| Time cresceu, várias equipes no mesmo repo | [Harness grande (multi-time)](/harness-designs/enterprise-harness) — B2 |
-| App com QA | [App Harness](/harness-designs/app-harness) — C |
-| Contexto de negócio da área | [RAG Harness & Area Copilots](/harness-designs/rag-harness) — D |
-| Domínio específico (games/finanças/comercial) | [Harnesses de domínio](/harness-designs/domain-harnesses) — E |
+| Team grew, several teams in the same repo | [Enterprise harness (multi-team)](/harness-designs/enterprise-harness) — B2 |
+| App with QA | [App Harness](/harness-designs/app-harness) — C |
+| Area business context | [RAG Harness & Area Copilots](/harness-designs/rag-harness) — D |
+| Specific domain (games/finance/sales) | [Domain harnesses](/harness-designs/domain-harnesses) — E |
 
-## Garantia
+## Guarantee
 
-Nenhum arquivo é decorativo: cada um responde a uma pergunta do agente (o quê,
-como, quando parar, onde estava) ou a um gate do processo (escopo, pronto,
-evidência). Pasta de harness inchada é dívida, não rigor.
+No file is decorative: each one answers an agent question (what, how, when to
+stop, where it was) or a process gate (scope, done, evidence). A bloated harness
+folder is debt, not rigor.
