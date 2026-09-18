@@ -19,5 +19,5 @@ raiz deste repositório.
 
 ## Estrutura do projeto
 
-O desenvolvimento é rastreado no framework [AgEnFK](https://github.com/svslwm/agenfk),
-projeto **Harness Foundation Course**, com 7 EPICs (A–G) e 25 stories.
+O curso é organizado em módulos, aulas, projetos e pilotos executáveis dentro
+do próprio repositório.

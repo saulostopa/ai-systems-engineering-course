@@ -16,7 +16,7 @@ npm install        # primeira vez (Node >= 22)
 npm run dev        # http://localhost:5173 (ou use a porta abaixo se ocupada)
 ```
 
-Se a porta 5173 estiver ocupada (ex.: pelo Kanban do AgEnFK):
+Se a porta 5173 estiver ocupada:
 
 ```sh
 npx vitepress dev docs --port 5174
@@ -28,22 +28,6 @@ Build de produção:
 ```sh
 npm run build && npm run preview
 ```
-
-### 2. Kanban / gestão do projeto (AgEnFK)
-
-```sh
-/home/svslwm/wm/agenfk/agenfk up        # sobe API (3001) + UI (5173)
-# → http://localhost:5173
-```
-
-Checar saúde:
-
-```sh
-/home/svslwm/wm/agenfk/agenfk health
-```
-
-> Nota: a API do AgEnFK cai para a porta 3001 quando a 3000 está ocupada
-> (ex.: dev server de outro app). O discovery de porta é automático.
 
 ## Ambientes extras
 
@@ -105,8 +89,8 @@ primeira execução. Veja `docs/skills/skill-guard.md` e
 
 - **Branch de integração**: `develop` (default). **Release**: `main`.
 - Todo trabalho novo entra por **PR para `develop`**.
-- A gestão do trabalho (itens, gates, evidência) roda no AgEnFK, escopado a
-  este repositório — fora daqui os agentes são independentes.
+- O trabalho pode ser acompanhado pelas issues, pull requests e workflows do
+  GitHub.
 
 ## Referências
 
