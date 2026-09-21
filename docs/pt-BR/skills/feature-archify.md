@@ -146,7 +146,7 @@ escaneado, triado achado a achado, com um patch local registrado no
 | `skills-artifacts/feature-archify/SKILL.md` | O wrapper, no padrão do curso (Gather / Write / Output) |
 | `.agents/skills/archify/` | O Archify em si (MIT), escaneado e fixado no `skills-lock.json` |
 | `harness-basic/scripts/artifacts.sh` | O passo de renderizar-e-validar, instalado em todo repo adotado |
-| `pilots/archify-demo/*.json` | A fonte da demo — reproduzível, um comando |
+| `pilots/archify-demo/*.json` | As fontes da demo — reproduzíveis; renderizadas em `docs/public/demos/` |
 
 **Relacionados**: [feature-report](/pt-BR/skills/feature-report) · [feature-quiz](/pt-BR/skills/feature-quiz) ·
 [skill-guard](/pt-BR/skills/skill-guard) · [Criar uma nova skill](/pt-BR/skills/how-to-create)

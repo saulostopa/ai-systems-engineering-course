@@ -226,9 +226,11 @@ def verify(kind: str, html: str) -> None:
 
 
 def main() -> None:
-    os.makedirs(os.path.join(ROOT, "reports"), exist_ok=True)
-    os.makedirs(os.path.join(ROOT, "quizzes"), exist_ok=True)
-    os.makedirs(os.path.join(ROOT, "animations"), exist_ok=True)
+    # The site serves docs/public/demos, so that is where a rendered demo
+    # lives — full stop. Keeping a second copy under skills-artifacts meant two
+    # byte-identical files in git and a guarantee they would drift.
+    out = os.path.join(os.path.dirname(ROOT), "docs", "public", "demos")
+    os.makedirs(out, exist_ok=True)
     report = build("report", REPORT_BODY)
     quiz = build("quiz", QUIZ_BODY)
     animation = build("animation", ANIMATION_BODY)
@@ -239,10 +241,10 @@ def main() -> None:
     verify("quiz", quiz)
     verify("animation", animation)
     verify("consent", consent)
-    report_path = os.path.join(ROOT, "reports", "demo-report.html")
-    quiz_path = os.path.join(ROOT, "quizzes", "demo-quiz.html")
-    animation_path = os.path.join(ROOT, "animations", "demo-animation.html")
-    consent_path = os.path.join(ROOT, "animations", "demo-consent-journey.html")
+    report_path = os.path.join(out, "demo-report.html")
+    quiz_path = os.path.join(out, "demo-quiz.html")
+    animation_path = os.path.join(out, "demo-animation.html")
+    consent_path = os.path.join(out, "demo-consent-journey.html")
     with open(report_path, "w", encoding="utf-8") as fh:
         fh.write(report)
     with open(quiz_path, "w", encoding="utf-8") as fh:

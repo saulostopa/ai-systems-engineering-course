@@ -143,7 +143,7 @@ Do the same for anything you add.
 | `skills-artifacts/feature-archify/SKILL.md` | The wrapper, in the course pattern (Gather / Write / Output) |
 | `.agents/skills/archify/` | Archify itself (MIT), scanned and pinned in `skills-lock.json` |
 | `harness-basic/scripts/artifacts.sh` | The render-and-validate step, installed into every adopted repo |
-| `pilots/archify-demo/*.json` | The demo source — reproducible, one command |
+| `pilots/archify-demo/*.json` | The demo sources — reproducible; rendered into `docs/public/demos/` |
 
 **Related**: [feature-report](/skills/feature-report) · [feature-quiz](/skills/feature-quiz) ·
 [skill-guard](/skills/skill-guard) · [Create a new skill](/skills/how-to-create)
