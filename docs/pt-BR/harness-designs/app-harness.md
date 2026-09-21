@@ -83,6 +83,6 @@ está quebrado de verdade na tela.
 
 - **[Projeto 03](/pt-BR/projects/project-03)** constrói o app harness do zero — este
   blueprint é a solução de referência.
-- **EPIC G** (pilotos) roda as duas camadas num app Webmotors real.
+- **O piloto G2** rodou as duas camadas num app real: o gate de E2E bloqueou e liberou corretamente, e a navegação agêntica retornou HTTP 200. Evidência em `pilots/g2-app-harness/evidence/`.
 
 **Relacionados**: [Harness básico](/pt-BR/harness-designs/basic-harness) · [Harness grande](/pt-BR/harness-designs/enterprise-harness)

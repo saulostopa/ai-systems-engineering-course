@@ -9,7 +9,6 @@ versionados, revisáveis em PR e instaláveis em qualquer harness que leia
 |-------|-----------|
 | [feature-report](/pt-BR/skills/feature-report) | Relatório HTML autocontido do que foi entregue numa feature. |
 | [feature-quiz](/pt-BR/skills/feature-quiz) | Quiz graduado em 4 níveis sobre a feature — a "peça de ouro". |
-| [feature-flowchart](/pt-BR/skills/feature-flowchart) | Flowchart HTML do processo da feature. |
 | [feature-animation](/pt-BR/skills/feature-animation) | Animação HTML de um dado atravessando a feature. |
 | [qa-playwright-e2e](/pt-BR/skills/qa-playwright-e2e) | Testes E2E com Playwright (Python), locators semânticos. |
 | [qa-perf-triage](/pt-BR/skills/qa-perf-triage) | Diagnóstico de regressões de latência sob carga. |

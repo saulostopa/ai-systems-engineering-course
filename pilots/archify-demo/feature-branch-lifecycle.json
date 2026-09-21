@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "feature/OEM-123 — from ticket to production",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "happy-path",
+        "label": "Everything green",
+        "focus": [
+          "ticket",
+          "branch",
+          "code",
+          "commit",
+          "ci",
+          "review",
+          "deploy"
+        ],
+        "note": "The path when the gates agree: ticket, branch, code, commit, CI, review, ship."
+      },
+      {
+        "id": "returns",
+        "label": "Where it sends you back",
+        "focus": [
+          "code",
+          "commit",
+          "ci",
+          "review"
+        ],
+        "note": "Three ways the work returns to the keyboard — each one cheaper than the next."
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "dev",
+      "label": "Developer"
+    },
+    {
+      "id": "pipeline",
+      "label": "Pipeline"
+    },
+    {
+      "id": "delivery",
+      "label": "Delivery"
+    }
+  ],
+  "phases": [
+    {
+      "id": "plan",
+      "label": "Plan",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "build",
+      "label": "Build",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "verify",
+      "label": "Verify",
+      "fromCol": 4,
+      "toCol": 4
+    },
+    {
+      "id": "ship",
+      "label": "Ship",
+      "fromCol": 5,
+      "toCol": 5
+    }
+  ],
+  "groups": [
+    {
+      "id": "gates",
+      "label": "Automated gates",
+      "lane": "pipeline",
+      "fromCol": 4,
+      "toCol": 4,
+      "variant": "security"
+    }
+  ],
+  "mainPath": [
+    "ticket",
+    "branch",
+    "code",
+    "commit",
+    "ci",
+    "review",
+    "deploy"
+  ],
+  "nodes": [
+    {
+      "id": "ticket",
+      "lane": "dev",
+      "col": 0,
+      "type": "external",
+      "label": "OEM-123",
+      "sublabel": "Jira ticket",
+      "width": 132
+    },
+    {
+      "id": "branch",
+      "lane": "dev",
+      "col": 1,
+      "type": "cloud",
+      "label": "feature/OEM-123",
+      "sublabel": "branch + plan",
+      "width": 150
+    },
+    {
+      "id": "code",
+      "lane": "dev",
+      "col": 2,
+      "type": "frontend",
+      "label": "Implementation",
+      "sublabel": "scope declared",
+      "width": 140
+    },
+    {
+      "id": "commit",
+      "lane": "dev",
+      "col": 3,
+      "type": "security",
+      "label": "Commit",
+      "sublabel": "pre-commit gate",
+      "width": 140
+    },
+    {
+      "id": "ci",
+      "lane": "pipeline",
+      "col": 4,
+      "type": "backend",
+      "label": "CI pipeline",
+      "sublabel": "build · tests · E2E",
+      "width": 150
+    },
+    {
+      "id": "review",
+      "lane": "pipeline",
+      "col": 5,
+      "type": "external",
+      "label": "Review",
+      "sublabel": "approval required",
+      "width": 145
+    },
+    {
+      "id": "deploy",
+      "lane": "delivery",
+      "col": 5,
+      "type": "cloud",
+      "label": "Deploy",
+      "sublabel": "staging then prod",
+      "width": 148
+    }
+  ],
+  "edges": [
+    {
+      "id": "ticket-branch",
+      "from": "ticket",
+      "to": "branch",
+      "variant": "default"
+    },
+    {
+      "id": "branch-code",
+      "from": "branch",
+      "to": "code",
+      "variant": "default"
+    },
+    {
+      "id": "code-commit",
+      "from": "code",
+      "to": "commit",
+      "variant": "default"
+    },
+    {
+      "id": "commit-ci",
+      "from": "commit",
+      "to": "ci",
+      "label": "push",
+      "variant": "default"
+    },
+    {
+      "id": "ci-review",
+      "from": "ci",
+      "to": "review",
+      "label": "green",
+      "variant": "emphasis"
+    },
+    {
+      "id": "review-deploy",
+      "from": "review",
+      "to": "deploy",
+      "label": "merge",
+      "variant": "emphasis"
+    },
+    {
+      "id": "commit-back",
+      "from": "commit",
+      "to": "code",
+      "label": "gate blocked",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "ci-back",
+      "from": "ci",
+      "to": "code",
+      "label": "tests red",
+      "variant": "dashed",
+      "role": "error"
+    },
+    {
+      "id": "review-back",
+      "from": "review",
+      "to": "code",
+      "label": "changes requested",
+      "variant": "dashed",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Branch naming",
+      "items": [
+        "feature/ · bugfix/ · hotfix/ · release/ · improvement/, plus the Jira key",
+        "The branch name is also the execution plan id — one name, no translation"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "What the reader should learn",
+      "items": [
+        "Every return arrow is a gate doing its job, not a delay",
+        "The earlier a gate catches you, the cheaper the trip back is"
+      ]
+    }
+  ]
+}

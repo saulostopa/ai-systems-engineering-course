@@ -1,6 +1,6 @@
 """Base — StateStore interface (Protocol) and lock helpers.
 
-Minimum persistence contract. New implementations (SQLite, AgEnFK,
+Minimum persistence contract. New implementations (SQLite, an external tracker,
 Redis) implement the same Protocol — the runner does not know where the
 state lives.
 """

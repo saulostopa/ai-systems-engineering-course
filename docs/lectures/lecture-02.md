@@ -29,7 +29,7 @@ The model is replaceable (Claude, GPT, Gemini, DeepSeek, Llama...). The harness 
 | **Skills** | Instruction packages activated on demand (`SKILL.md`) | `feature-report`, `feature-quiz`, `qa-playwright-e2e` |
 | **Rules/Gates** | Mechanisms that constrain behavior | Gatekeeper, pre-commit hooks, policies |
 | **Verification** | How the agent proves it finished | Tests, `validate-harness.sh`, evidence |
-| **State** | What persists across sessions | `feature_list.json`, `claude-progress.md`, `session-handoff.md` |
+| **State** | What persists across sessions | `feature_list.json`, `progress.md`, `session-handoff.md` |
 
 ## Harness ≠ prompt
 
@@ -62,7 +62,7 @@ Without the verification loop, the agent is a box that only emits text. With the
 
 - **`webmotors-harness-factory`** — the process skeleton: hooks, policies, scripts.
 - **`harness-agent-skills`** — the skill catalog: artifacts + QA + perf.
-- **`agenfk`** — the management framework: items, flows, gatekeeper, telemetry and Kanban.
+- **a workflow engine** — the management layer: items, flows, gatekeeper, telemetry and Kanban. Optional, and interchangeable: see [enterprise harness](/harness-designs/enterprise-harness).
 - **`harness-plannig`** — **this course**, which is a harness running on top of the other three (dogfooding).
 
 ## Key takeaways

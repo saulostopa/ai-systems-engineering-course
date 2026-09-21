@@ -17,8 +17,9 @@ cd <seu-projeto>
 |---|---|---|
 | [`AGENTS.md`](https://github.com/svslwm/harness-plannig/tree/develop/templates/AGENTS.md) | Roteador: o que ler, como escolher, como verificar, como terminar | 04 |
 | `feature_list.json` | Fonte de verdade do escopo (estado por feature) | 08 |
-| `claude-progress.md` | Diário da sessão atual | 05 |
+| `progress.md` | Diário da sessão atual | 05 |
 | `session-handoff.md` | Bilhete para a próxima sessão (cabeçalho obrigatório) | 05 |
+| `exec-plan.md` | Rota de uma feature para `docs/exec-plans/` (camada grande) | 13 |
 | `policies/scope-control.md` | Escopo declarado antes de editar | 07 |
 | `policies/definition-of-done.md` | Critérios verificáveis de "pronto" | 09 |
 | `policies/evidence-required.md` | Formato de evidência (comando → esperado → real) | 09 |

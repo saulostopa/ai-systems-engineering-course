@@ -22,7 +22,7 @@ The `webmotors-harness-factory` solves this with three complementary files:
 
 ```
 feature_list.json      → WHAT exists and in what state (scope source of truth)
-claude-progress.md     → what happened in THIS session (recent work, failures, next action)
+progress.md            → what happened in THIS session (recent work, failures, next action)
 session-handoff.md     → what stays FOR the next session (verified, broken, next step)
 ```
 
@@ -42,9 +42,9 @@ A good resumption follows a fixed protocol — and the harness turns it into a h
 4. **Update the handoff** before closing: what remained verified, what broke, what the next action is.
 5. **Update the feature_list** with the real state of the features.
 
-## At Webmotors — AgEnFK as continuity
+## At Webmotors — continuity in practice
 
-AgEnFK formalizes this protocol on top of the repo: each story has status, comments with evidence and a test trail. When the agent resumes story A2, it doesn't ask "where did we stop?" — it reads the story, the comments and the state, and continues.
+A workflow engine formalizes this protocol on top of the repo: each story carries status, comments with evidence and a test trail. When the agent resumes story A2, it doesn't ask "where did we stop?" — it reads the story, the comments and the state, and continues. The file-based triad above does the same job with no engine at all; what matters is that the record is in the repository.
 
 In practice this week: story A1 was completed in one session; the evidence (build OK, test PASSED) was recorded; when we resumed, the state was intact with no previous conversation in memory. **Continuity did not come from the agent's memory — it came from the harness.**
 

@@ -39,8 +39,9 @@ point for LLM-based decisions: `decide_with_llm()`.
 ### The POC decision (read the full `POC_REPORT.md`)
 
 - ✅ **Architecture adopted** — portable to pgvector without redesign.
-- ❌ **Heavy infra postponed** (watcher/queue/pgvector) — only with evidence from
-  EPIC G. The POC runs without infra: on-demand indexing.
+- ❌ **Heavy infra postponed** (watcher/queue/pgvector) — the EPIC G pilots closed
+  without needing it, so the bar for adopting it is still unmet. The POC runs
+  without infra: on-demand indexing.
 - ⚖️ **Priority inverted**: business RAG (D3) has more immediate ROI than the
   watcher.
 

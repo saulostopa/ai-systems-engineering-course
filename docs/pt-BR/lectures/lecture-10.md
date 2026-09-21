@@ -55,7 +55,7 @@ O e2e pergunta "o fluxo funciona?"; a navegação agêntica pergunta "o app est�
 
 ## Na Webmotors — o caso real
 
-Nosso próprio ecossistema tem o padrão em produção: o `webmotors-harness-factory` bloqueia commit de frontend sem E2E; o `harness-agent-skills` entrega a skill que escreve e revisa esses testes; o AgEnFK registra o resultado como etapa do fluxo (test PASSED antes de DONE). O curso inteiro é construído sobre esse mesmo loop — cada aula termina com verificação, e o site só sobe se o build passar.
+Nosso próprio ecossistema tem o padrão em produção: o `webmotors-harness-factory` bloqueia commit de frontend sem E2E; o `harness-agent-skills` entrega a skill que escreve e revisa esses testes; o workflow registra o resultado como etapa do fluxo (test PASSED antes de DONE). O curso inteiro é construído sobre esse mesmo loop — cada aula termina com verificação, e o site só sobe se o build passar.
 
 ## Principais aprendizados
 

@@ -10,15 +10,15 @@ YYYY-MM-DD
 (tool/agent name)
 
 ## What is VERIFIED
-- [ ] feature-001: implementation done, `npm test` passed (3 tests, no reduction)
-- [ ] feature-001: build OK
+- [ ] feature/OEM-123: implementation done, `npm test` passed (3 tests, no reduction)
+- [ ] feature/OEM-123: build OK
 
 ## What is BROKEN / PENDING
-- [ ] feature-001: diff review still needed before the PR
-- [ ] feature-002: not started
+- [ ] feature/OEM-123: diff review still needed before the PR
+- [ ] bugfix/AC-455: not started
 
 ## Next action (the single best one)
-1. Review the feature-001 diff (`git diff main...HEAD`) and open the PR.
+1. Review the feature/OEM-123 diff (`git diff main...HEAD`) and open the PR.
 
 ## How to verify resumption
 - `git status` clean? (expected: yes)

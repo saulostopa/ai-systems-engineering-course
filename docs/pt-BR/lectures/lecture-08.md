@@ -24,13 +24,17 @@ O `webmotors-harness-factory` usa exatamente esse padrão:
 ```json
 {
   "status": "not_started",
-  "id": "feature-001",
+  "id": "feature/OEM-123",
   "title": "Landing page do grupo de carros",
   "description": "..."
 }
 ```
 
 Estados do ciclo: `not_started` → `in_progress` → `blocked` → `passing`.
+
+O id segue a convenção de branch que já está em uso — `feature/OEM-123`,
+`bugfix/AC-455`, `release/EST-3445` — então escopo, branch e ticket têm o mesmo
+nome. Uma tradução a menos para um humano fazer, e um lugar a menos para errar.
 
 E a regra de operação (que já vimos na Aula 06):
 
@@ -47,9 +51,9 @@ E a regra de operação (que já vimos na Aula 06):
 
 A feature list conecta o harness ao **produto**: sem ela, o harness é um processo que roda vazio.
 
-## No AgEnFK: a mesma ideia, com fluxo
+## A mesma ideia, com fluxo
 
-O AgEnFK generaliza a feature list para itens com tipo (EPIC, STORY, TASK, BUG), hierarquia (parent/children), status por fluxo configurável e trilha de evidência. O `feature_list.json` do factory é a versão "arquivo"; os itens do AgEnFK são a versão "sistema" — com gates, comentários e testes atrelados.
+Em escala, a feature list generaliza para itens com tipo (EPIC, STORY, TASK, BUG), hierarquia (parent/children), status por fluxo configurável e trilha de evidência. O `feature_list.json` do factory é a versão "arquivo"; um [workflow engine](/pt-BR/harness-designs/enterprise-harness) é a versão "sistema" — com gates, comentários e testes atrelados.
 
 A lição que conecta os dois: **a forma não importa (arquivo, banco, planilha); o contrato importa** — existe uma estrutura consultável que diz o que fazer, em que estado e com que prioridade, e o harness inteiro opera em cima dela.
 

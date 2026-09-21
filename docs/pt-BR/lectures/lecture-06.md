@@ -39,15 +39,15 @@ O factory é explícito:
 
 Isso não é burocracia: é a proteção contra o agente que espalha trabalho por dez frentes e não termina nenhuma (o sintoma da Aula 07).
 
-## A inicialização no AgEnFK
+## A inicialização como fase do workflow
 
-No AgEnFK, o boot tem cara de fase do workflow: `/agenfk-plan` lê o item, confirma o projeto, lê escopo e arquitetura, **decompõe tudo antes de qualquer trabalho** e só então libera a execução. O `current-project` resolve o `.agenfk/project.json` do diretório — o equivalente mecânico do "onde estou?".
+Quando um projeto roda sobre um [workflow engine](/pt-BR/harness-designs/enterprise-harness), o boot deixa de ser checklist e vira fase do fluxo: o engine lê o item, confirma o projeto, lê escopo e arquitetura, **decompõe tudo antes de qualquer trabalho** e só então libera a execução. Resolver o projeto é ler o `.harness/config.yaml` do diretório — o equivalente mecânico do "onde estou?".
 
 E o gatekeeper estende o boot para o meio da sessão: a cada edição, ele verifica se o arquivo está dentro de um projeto gerenciado e se há item ativo. **O agente não consegue trabalhar "sem saber onde está"** — o harness lembra por ele.
 
 ## Na Webmotors — o caso do nosso scoping
 
-Quando escopamos o AgEnFK para este curso, o "boot" foi literalmente refeito: removemos regras globais, instalamos as regras **no projeto** e verificamos que, dentro do `harness-plannig`, o `current-project` resolve e o workflow ativa — e fora dele, nada. A inicialização correta é o que garante que cada agente, em cada repo, comece com o harness certo.
+Quando escopamos o workflow engine para este curso, o "boot" foi literalmente refeito: removemos regras globais, instalamos as regras **no projeto** e verificamos que, dentro do `harness-plannig`, o projeto resolve e o workflow ativa — e fora dele, nada. A inicialização correta é o que garante que cada agente, em cada repo, comece com o harness certo.
 
 ## Checklist de boot (copie para seu projeto)
 

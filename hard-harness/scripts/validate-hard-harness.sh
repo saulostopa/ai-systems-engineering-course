@@ -13,7 +13,7 @@ section() { printf '\n== %s ==\n' "$1"; }
 section "Required structure"
 for f in hard_harness/core/schemas.py hard_harness/core/graph.py hard_harness/core/runner.py \
          hard_harness/core/gates.py hard_harness/core/events.py \
-         hard_harness/stores/base.py hard_harness/stores/file_store.py hard_harness/stores/agenfk_store.py \
+         hard_harness/stores/base.py hard_harness/stores/file_store.py \
          hard_harness/adapters/adk2.py hard_harness/adapters/rag.py \
          hard_harness/llm/providers.py \
          hard_harness/agents/base.py \

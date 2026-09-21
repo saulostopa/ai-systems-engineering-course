@@ -17,8 +17,9 @@ cd <your-project>
 |---|---|---|
 | [`AGENTS.md`](https://github.com/svslwm/harness-plannig/tree/develop/templates/AGENTS.md) | Router: what to read, how to choose, how to verify, how to finish | 04 |
 | `feature_list.json` | Scope source of truth (state per feature) | 08 |
-| `claude-progress.md` | Current session diary | 05 |
+| `progress.md` | Current session diary | 05 |
 | `session-handoff.md` | Note for the next session (required header) | 05 |
+| `exec-plan.md` | Route of one feature for `docs/exec-plans/` (enterprise layer) | 13 |
 | `policies/scope-control.md` | Scope declared before editing | 07 |
 | `policies/definition-of-done.md` | Verifiable "done" criteria | 09 |
 | `policies/evidence-required.md` | Evidence format (command → expected → actual) | 09 |

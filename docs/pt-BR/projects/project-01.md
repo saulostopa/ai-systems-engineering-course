@@ -87,7 +87,7 @@ Um parágrafo no seu diário de aprendizagem (ou no `session-handoff.md` do proj
 > "Sem harness o agente [X]; com harness ele [Y]. A diferença veio de [arquivos/políticas]."
 
 ::: tip Dica
-Guarde a planilha da comparação — ela será a semente do benchmark interno do curso (EPIC G, métricas e evidência).
+Guarde a planilha da comparação. A mesma medição foi feita para o próprio curso nos pilotos do EPIC G — os números consolidados estão em `pilots/g4-metrics/G4-REPORT.md`, e a sua é a versão local dessa evidência.
 :::
 
 **Próximo projeto**: [02 — Harness básico instalável](/pt-BR/projects/project-02).

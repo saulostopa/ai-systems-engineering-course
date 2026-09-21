@@ -37,7 +37,7 @@ The `webmotors-harness-factory/AGENTS.md` is an exemplary router: 9 short sectio
 
 `harness-agent-skills` follows the same pattern at the skill level: each skill is a short `SKILL.md` with frontmatter (`name` + `description`), and the body in `Gather → Write → Output`. The description is the loading trigger: the skill is only read **when the task matches** — on demand, not at boot.
 
-And AgEnFK itself distributes rules per platform (`clauderules/`, `codexrules/`, `cursorrules/`, `geminirules/`) instead of a single universal file — each harness gets the format it understands.
+Mature harnesses distribute rules per platform — one directory per agent format (Claude, Codex, Cursor, Gemini, OpenCode) instead of a single universal file — so each tool gets the format it actually reads.
 
 ## Practical rule: the 10% file
 

@@ -17,7 +17,7 @@ O sintoma clássico: o próximo agente abre o repo, roda os testes, e eles falha
 O `webmotors-harness-factory` define o fim de sessão com precisão (`AGENTS.md` §8):
 
 1. Atualizar `feature_list.json` — estados reais das features.
-2. Atualizar `claude-progress.md` — o que foi feito, o que falhou, próxima ação.
+2. Atualizar `progress.md` — o que foi feito, o que falhou, próxima ação.
 3. Atualizar `session-handoff.md` — seções obrigatórias do cabeçalho.
 4. Rodar `scripts/cleanup-scanner.sh` — detectar drift e artefatos esquecidos.
 5. Rodar `scripts/validate-harness.sh` — **deve passar**.
@@ -37,7 +37,7 @@ Repare na simetria com a Aula 06 (boot): **o boot começa lendo o handoff; o enc
 
 ## O encerramento como contrato
 
-O AgEnFK trata o encerramento como parte do fluxo: o item só conclui depois do teste registrado e da evidência — e a transição entre fases preserva o estado. Quando uma sessão é pausada, o `agenfk-pause` salva o contexto completo; quando retoma, o `agenfk-resume` restaura — o "estado limpo" vira mecânico, não hábito.
+Um workflow engine trata o encerramento como parte do fluxo: o item só conclui depois do teste registrado e da evidência — e a transição entre fases preserva o estado. Pausar salva o contexto completo; retomar restaura — o "estado limpo" vira mecânico, não hábito. A mesma garantia é alcançável sem engine nenhum: é exatamente o que o `progress.md` e o `session-handoff.md` compram.
 
 E na prática deste projeto: a sessão que fez o scoping terminou com tudo commitado (working tree clean), pushed e com a story A2 em `IN_PROGRESS` coerente — a sessão seguinte (esta, escrevendo as aulas) começou lendo o estado e continuou sem retrabalho.
 

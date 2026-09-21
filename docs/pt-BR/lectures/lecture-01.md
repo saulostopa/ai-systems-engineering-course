@@ -30,7 +30,7 @@ A mesma pessoa produz resultados dramaticamente diferentes. O modelo é o mesmo;
 
 ## Na Webmotors
 
-Nosso próprio repositório de curso é um exemplo vivo. No `harness-plannig`, o `.claude/CLAUDE.md`, o `AGENTS.md` e o `feature_list.json` do AgEnFK são o "Ambiente B" para o agente que constrói o curso com a gente. Quando o gatekeeper bloqueou a story A1 de ir para DONE sem build e evidência, ele estava corrigindo exatamente o sintoma desta aula: **o agente se sentia pronto; o ambiente exigia prova**.
+Nosso próprio repositório de curso é um exemplo vivo. No `harness-plannig`, o `.claude/CLAUDE.md`, o `AGENTS.md` e o `feature_list.json` são o "Ambiente B" para o agente que constrói o curso com a gente. Quando o gatekeeper bloqueou a story A1 de ir para DONE sem build e evidência, ele estava corrigindo exatamente o sintoma desta aula: **o agente se sentia pronto; o ambiente exigia prova**.
 
 E no `webmotors-harness-factory`, o mesmo princípio aparece mecanizado: pre-commit hooks que bloqueiam, `scripts/validate-harness.sh` que verifica, `policies/definition-of-done.md` que define o aceite. Nenhum desses arquivos faz o modelo mais inteligente — eles fazem o trabalho mais confiável.
 

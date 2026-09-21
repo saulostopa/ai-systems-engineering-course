@@ -36,20 +36,20 @@ Na prática, evidência é:
 ✓ testes rodaram          (nome dos testes + contagem, não "testei")
 ✓ diff revisado           (git diff: só o escopo declarado)
 ✓ gates passaram          (pre-commit/pre-push hooks)
-✓ artefato gerado         (report/quiz/flowchart salvos)
+✓ artefatos gerados       (report/quiz/diagrama salvos)
 ```
 
 E o requisito sutil do factory:
 
 > "Compare os nomes dos testes antes e depois e confirme que nenhum foi deletado, renomeado, pulado ou enfraquecido — uma suíte verde com menos testes do que você começou é uma regressão, não um passe."
 
-## O fluxo do AgEnFK como professor
+## O fluxo como professor
 
-O workflow do AgEnFK encarna a aula:
+Um workflow que encarna esta aula tem três propriedades:
 
-1. `verify` exige evidência com **critérios de saída obrigatórios** por passo;
-2. o teste é uma etapa separada (`log-test PASSED/FAILED`);
-3. **DONE só é alcançável via `validate_progress` no passo final** — não existe "marcar como done".
+1. avançar exige evidência com **critérios de saída obrigatórios** por passo;
+2. o teste é uma etapa separada, registrada PASSED/FAILED;
+3. **DONE só é alcançável pelo passo final** — não existe "marcar como done".
 
 A story A1 passou por isso: o gate recusou o DONE direto; o caminho foi rodar o build, registrar o teste com o comando real, e avançar com evidência. O "declarei vitória" foi convertido em "provei a vitória".
 

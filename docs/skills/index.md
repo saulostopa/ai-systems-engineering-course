@@ -9,7 +9,6 @@ versioned, reviewable in PR and installable in any harness that reads
 |-------|-----------|
 | [feature-report](/skills/feature-report) | Self-contained HTML report of what was delivered in a feature. |
 | [feature-quiz](/skills/feature-quiz) | Quiz graded in 4 levels about the feature — the "golden piece". |
-| [feature-flowchart](/skills/feature-flowchart) | HTML flowchart of the feature's process. |
 | [feature-animation](/skills/feature-animation) | HTML animation of a datum flowing through the feature. |
 | [qa-playwright-e2e](/skills/qa-playwright-e2e) | E2E tests with Playwright (Python), semantic locators. |
 | [qa-perf-triage](/skills/qa-perf-triage) | Diagnosis of latency regressions under load. |

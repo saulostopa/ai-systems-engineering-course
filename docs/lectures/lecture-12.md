@@ -17,7 +17,7 @@ The classic symptom: the next agent opens the repo, runs the tests, and they fai
 The `webmotors-harness-factory` defines the end of session precisely (`AGENTS.md` §8):
 
 1. Update `feature_list.json` — real states of the features.
-2. Update `claude-progress.md` — what was done, what failed, next action.
+2. Update `progress.md` — what was done, what failed, next action.
 3. Update `session-handoff.md` — required header sections.
 4. Run `scripts/cleanup-scanner.sh` — detect drift and forgotten artifacts.
 5. Run `scripts/validate-harness.sh` — **must pass**.
@@ -37,7 +37,7 @@ Notice the symmetry with Lesson 06 (boot): **the boot starts by reading the hand
 
 ## Shutdown as a contract
 
-AgEnFK treats shutdown as part of the flow: the item only completes after the recorded test and evidence — and the transition between phases preserves state. When a session is paused, `agenfk-pause` saves the full context; when it resumes, `agenfk-resume` restores it — "clean state" becomes mechanical, not a habit.
+A workflow engine treats shutdown as part of the flow: the item only completes after the recorded test and evidence — and the transition between phases preserves state. Pausing saves the full context; resuming restores it — "clean state" becomes mechanical, not a habit. The same guarantee is reachable without an engine: it is exactly what `progress.md` and `session-handoff.md` buy you.
 
 And in practice in this project: the session that did the scoping ended with everything committed (clean working tree), pushed and with story A2 in a coherent `IN_PROGRESS` — the following session (this one, writing the lessons) started by reading the state and continued without rework.
 
