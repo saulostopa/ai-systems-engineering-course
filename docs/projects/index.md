@@ -10,6 +10,7 @@ you will have a complete harness in your own repository — or in your area's.
 | [03 · App Harness with QA](/projects/project-03) | E2E Playwright + agentic navigation with vision. |
 | [04 · Domain harness](/projects/project-04) | Playbook for games, finance or sales. |
 | [05 · Area Copilot with RAG](/projects/project-05) | Your area's context available to the agent. |
+| [06 · ADK + RAG + Jev harness](/projects/project-06) | Typed decisions route retrieval inside a deterministic ADK workflow. |
 
 ::: tip How to study
 The projects are cumulative: 01 creates your baseline, 02 packages the harness,

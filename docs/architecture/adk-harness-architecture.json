@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ADK + RAG + Jev Harness Architecture",
+    "subtitle": "Typed decisions route retrieval while ADK controls the workflow",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/svslwm/harness-plannig",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "af3732bd62d6569defdc62f84cbfcd138ff8a7ee"
+    },
+    "views": [
+      {
+        "id": "deterministic-core",
+        "label": "Deterministic core",
+        "focus": ["trigger", "runner", "workflow", "decision", "validators", "state"],
+        "note": "Follow the controlled path from a request through Jev decisions to a validated result."
+      },
+      {
+        "id": "tool-boundary",
+        "label": "Tool boundary",
+        "focus": ["workflow", "decision", "agents", "tool_gateway", "rag"],
+        "note": "Inspect how Jev selects a retrieval policy while ADK tools stay behind typed boundaries."
+      },
+      {
+        "id": "runtime-evaluation",
+        "label": "Runtime and evaluation",
+        "focus": ["runner", "rag", "runtime", "observability", "evaluation"],
+        "note": "Separate retrieval quality and fallback evaluation from deployment and runtime telemetry."
+      }
+    ]
+  },
+  "components": [
+    { "id": "trigger", "type": "external", "label": "User or CI trigger", "sublabel": "task / event / test", "pos": [40, 300], "size": [150, 64] },
+    { "id": "runner", "type": "backend", "label": "ADK Runner", "sublabel": "session + event loop", "tag": "single entry point", "pos": [250, 300], "size": [150, 64], "sources": [{ "path": "docs/harness-designs/hard-harness.md", "label": "course design" }] },
+    { "id": "workflow", "type": "backend", "label": "Workflow graph", "sublabel": "seq / parallel / loop", "tag": "deterministic path", "pos": [460, 300], "size": [170, 64], "sources": [{ "path": "hard-harness/hard_harness/core/graph.py", "label": "graph core" }] },
+    { "id": "decision", "type": "security", "label": "Jev decision layer", "sublabel": "Noul / Choice / Score", "tag": "typed confidence", "pos": [680, 150], "size": [170, 64] },
+    { "id": "agents", "type": "backend", "label": "Specialist agents", "sublabel": "planner / coder / reviewer", "pos": [680, 300], "size": [160, 64] },
+    { "id": "validators", "type": "security", "label": "Validators and gates", "sublabel": "schema / policy / evidence", "tag": "fail closed", "pos": [460, 150], "size": [170, 64], "sources": [{ "path": "hard-harness/hard_harness/core/gates.py", "label": "gates" }] },
+    { "id": "state", "type": "database", "label": "Session and state", "sublabel": "events / artifacts / resume", "pos": [900, 150], "size": [160, 64] },
+    { "id": "tool_gateway", "type": "security", "label": "Tool gateway", "sublabel": "function / MCP / OpenAPI", "tag": "typed boundary", "pos": [900, 300], "size": [160, 64] },
+    { "id": "rag", "type": "database", "label": "RAG adapter", "sublabel": "hybrid search + evidence", "tag": "independent subsystem", "pos": [1110, 300], "size": [170, 64] },
+    { "id": "runtime", "type": "cloud", "label": "Agent Runtime", "sublabel": "local / Cloud Run / GKE", "pos": [900, 500], "size": [160, 64] },
+    { "id": "observability", "type": "cloud", "label": "Observability", "sublabel": "logs / traces / metrics", "pos": [680, 500], "size": [160, 64] },
+    { "id": "evaluation", "type": "backend", "label": "Evaluation harness", "sublabel": "trajectory + custom metrics", "tag": "repeatable checks", "pos": [460, 500], "size": [170, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Course harness code", "wraps": ["runner", "workflow", "agents", "validators", "state", "evaluation"] },
+    { "kind": "security-group", "label": "Controlled decision and tool boundary", "wraps": ["validators", "decision", "tool_gateway", "rag"] }
+  ],
+  "connections": [
+    { "id": "trigger-runner", "from": "trigger", "to": "runner", "label": "start session", "variant": "emphasis", "labelDy": -26 },
+    { "id": "runner-workflow", "from": "runner", "to": "workflow", "label": "dispatch event", "labelDy": -26 },
+    { "id": "workflow-decision", "from": "workflow", "to": "decision", "label": "ask typed questions", "variant": "security", "fromSide": "top", "toSide": "bottom", "labelDy": 24 },
+    { "id": "decision-agents", "from": "decision", "to": "agents", "label": "route / gate", "fromSide": "bottom", "toSide": "top", "labelAt": [870, 250] },
+    { "id": "validators-workflow", "from": "validators", "to": "workflow", "label": "allow / block", "variant": "security", "fromSide": "bottom", "toSide": "top", "labelDy": 24 },
+    { "id": "decision-state", "from": "decision", "to": "state", "label": "persist decisions", "variant": "dashed", "fromSide": "right", "toSide": "left", "labelDy": -26 },
+    { "id": "agents-tools", "from": "agents", "to": "tool_gateway", "label": "typed tool call", "labelDy": 75 },
+    { "id": "gateway-rag", "from": "tool_gateway", "to": "rag", "label": "retrieval request", "variant": "dashed", "labelDy": -26 },
+    { "id": "runner-runtime", "from": "runner", "to": "runtime", "label": "deploy / invoke", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "runner-observability", "from": "runner", "to": "observability", "label": "trace run", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "evaluation-runner", "from": "evaluation", "to": "runner", "label": "replay cases", "variant": "dashed", "fromSide": "top", "toSide": "bottom" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Deterministic decisions", "items": ["Explicit workflow graph owns ordering and branching", "Jev returns typed route decisions with confidence", "Code applies thresholds, fallbacks and escalation"] },
+    { "dot": "emerald", "title": "Retrieval boundary", "items": ["RAG owns chunking, search, reranking and citations", "The adapter exposes a typed retrieval contract", "Low-confidence decisions fall back safely"] },
+    { "dot": "rose", "title": "Proof", "items": ["Every run emits decisions, evidence and tool events", "Evaluation measures routing, recall, citations and trajectories", "Runtime deployment remains separate from local course execution"] }
+  ]
+}
