@@ -114,6 +114,15 @@ HARNESS_OFFLINE=1 OLLAMA_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.
 This opt-in check fails if the model does not call `run_workflow`, returns the
 wrong route, or produces a retrieval result without evidence.
 
+The next integration boundary is Jev. Set the key only in your shell and run:
+
+```sh
+TYPESAFE_API_KEY=your-key uv run python evals/run_jev_evals.py
+```
+
+This check evaluates Jev's typed routing decisions separately from Ollama and
+prints only the provider model, route, confidence and evidence count.
+
 ## How to read the Dev UI
 
 ### Events

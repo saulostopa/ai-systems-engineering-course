@@ -117,6 +117,17 @@ HARNESS_OFFLINE=1 OLLAMA_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.
 Essa verificação opt-in falha se o modelo não chamar `run_workflow`, retornar a
 rota errada ou produzir uma recuperação sem evidência.
 
+A próxima fronteira de integração é o Jev. Configure a chave somente no shell
+e execute:
+
+```sh
+TYPESAFE_API_KEY=sua-chave uv run python evals/run_jev_evals.py
+```
+
+Essa verificação avalia as decisões tipadas de roteamento do Jev separadamente
+do Ollama e exibe apenas modelo do provedor, rota, confiança e quantidade de
+evidências.
+
 ## Como ler o Dev UI
 
 ### Events

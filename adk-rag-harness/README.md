@@ -69,6 +69,17 @@ wrong route, or if a retrieved result has no evidence. It is intentionally
 separate from the default suite because it needs a running local model and can
 take several seconds per prompt.
 
+To test the live Jev decision provider independently from the conversational
+model, export `TYPESAFE_API_KEY` in the shell and run:
+
+```bash
+TYPESAFE_API_KEY=your-key uv run python evals/run_jev_evals.py
+```
+
+The runner sends only the typed routing questions to Jev, keeps retrieval in the
+workflow, and prints provider model, route, confidence and evidence count. It
+never prints the API key or raw provider payloads.
+
 ## Test
 
 ```bash
