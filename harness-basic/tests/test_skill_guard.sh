@@ -63,12 +63,19 @@ t_discover_pula_fixture_marcada() {
   fi
 }
 
+# Asserts discovery actually works, by name — a bare count would only be a
+# threshold calibrated to whatever happened to be installed that week.
 t_discover_acha_as_skills_do_repo() {
-  local n
-  n="$(discover_skills | wc -l)"
-  [ "$n" -gt 10 ] \
-    && _pass "${FUNCNAME[0]}" \
-    || _fail "${FUNCNAME[0]}" "expected >10 discovered skills, got $n"
+  local encontrados n
+  encontrados="$(discover_skills)"
+  n="$(printf '%s\n' "$encontrados" | grep -c . )"
+  if [ "$n" -lt 1 ]; then
+    _fail "${FUNCNAME[0]}" "discovered no skills at all"
+  elif ! printf '%s\n' "$encontrados" | grep -q 'archify'; then
+    _fail "${FUNCNAME[0]}" "catalogued skill 'archify' was not discovered ($n found)"
+  else
+    _pass "${FUNCNAME[0]}"
+  fi
 }
 
 # --- report name ------------------------------------------------------------

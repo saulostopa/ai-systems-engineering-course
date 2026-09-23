@@ -19,7 +19,7 @@ harness-basico/
 ├── init.sh                    # validates environment, prints next steps
 ├── AGENTS.md                  # short router (Lesson 04)
 ├── feature_list.json          # scope source of truth (Lesson 08)
-├── claude-progress.md         # session diary (Lesson 05)
+├── progress.md                # session diary (Lesson 05)
 ├── session-handoff.md         # note for the next session (Lesson 05)
 ├── policies/
 │   ├── scope-control.md       # scope before editing (Lesson 07)
@@ -62,7 +62,7 @@ A feature is done when:
 
 ### 3. Add the state files
 
-Use the [Library](/resources/templates) templates: `feature_list.json` with 3-5 example features, `claude-progress.md` and `session-handoff.md` with the required headers (Lesson 05).
+Use the [Library](/resources/templates) templates: `feature_list.json` with 3-5 example features, `progress.md` and `session-handoff.md` with the required headers (Lesson 05).
 
 ### 4. Install in a real repo
 

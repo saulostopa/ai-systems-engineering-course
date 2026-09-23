@@ -13,7 +13,7 @@ title: Lesson 17 — Building a Hard Harness
 ```
 hard-harness/
 ├── core/          # graph, runner, schemas, gates, events — the core
-├── stores/        # FileStateStore (no database) + AgEnFKStore (adapter)
+├── stores/        # FileStateStore — all state stays in the repo
 ├── adapters/      # adk2 (optional inspiration) + rag (context provider)
 ├── agents/        # planner, coder, reviewer, evidence — reasoning only
 ├── examples/basic_workflow/   # the complete graph of the requirement
@@ -96,7 +96,7 @@ generated and audited by the runtime.
 ```
 
 `StateStore` interface (read/write/events) — `FileStateStore` for now;
-`AgEnFKStore` and SQLite later, with the same contract.
+SQLite or an external system later, with the same contract.
 
 ## Resumption and auditing
 

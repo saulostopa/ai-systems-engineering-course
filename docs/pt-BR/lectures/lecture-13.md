@@ -43,7 +43,7 @@ Cada loop tem ferramentas próprias, gates próprios e saída verificável. O ha
 
 ## No nosso ecossistema
 
-- **AgEnFK**: cada fase do fluxo (plan → code → test → review → close) é um loop com critério de saída — o `verify` exige evidência para *avançar* o item, não apenas "continuar".
+- **Um workflow engine**: cada fase do fluxo (plan → code → test → review → close) é um loop com critério de saída — avançar o item exige evidência, não apenas "continuar".
 - **Factory**: `init.sh` é o loop de escopo; os pre-commit hooks fecham o loop de código; o `pr-hook.sh` fecha o loop de entrega.
 - **Skills de artefato**: `feature-report` roda o loop de evidência — ler o diff/testes, sintetizar, gerar o HTML.
 

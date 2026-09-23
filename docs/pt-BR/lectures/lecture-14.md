@@ -46,7 +46,7 @@ No grafo, o agente que **escreve** não é o mesmo que **revisa**. Isso não é 
 - o revisor quebra o auto-engano;
 - a evidência do revisor é registrada como etapa do fluxo.
 
-No AgEnFK, isso é nativo: as fases `code` e `review` são steps separados, e o item só avança com a validação de cada um. O "grafo" mínimo de um item AgEnFK já é: plan → code → test → review → close.
+Num workflow engine isso é nativo: as fases `code` e `review` são steps separados, e o item só avança com a validação de cada um. O "grafo" mínimo de um item gerenciado já é: plan → code → test → review → close.
 
 ## Como o harness governa o grafo
 

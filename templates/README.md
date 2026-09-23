@@ -18,8 +18,9 @@ chmod +x init.sh   # if the execution bit was lost in the copy
 |---|---|---|
 | `AGENTS.md` | Router: what to read, how to choose, how to verify, how to finish | 04 |
 | `feature_list.json` | Source of truth for scope (state per feature) | 08 |
-| `claude-progress.md` | Diary of the current session | 05 |
+| `progress.md` | Diary of the current session | 05 |
 | `session-handoff.md` | Note for the next session (mandatory header) | 05 |
+| `exec-plan.md` | Template for `docs/exec-plans/` — the route of one feature, with evidence | 13 |
 | `policies/scope-control.md` | Scope declared before editing | 07 |
 | `policies/definition-of-done.md` | Verifiable "done" criteria | 09 |
 | `policies/evidence-required.md` | Evidence format (command → expected → actual) | 09 |
@@ -35,7 +36,7 @@ chmod +x init.sh   # if the execution bit was lost in the copy
 ## Natural evolution
 
 - Need mechanical gates? Add pre-commit/pre-push hooks (course Project 02).
-- Need flow management? Use AgEnFK on top of this package.
+- Need flow management? Add a workflow engine on top of this package — see the enterprise harness design for the contract it must satisfy.
 - Need area context? Evolve to the Area Copilot (Project 05).
 
 ## Guarantee

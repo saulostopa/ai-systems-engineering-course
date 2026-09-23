@@ -15,7 +15,7 @@ title: Hard Harness — executable orchestration
 ```
 hard-harness/
 ├── core/          # schemas, graph, runner, gates, events
-├── stores/        # FileStateStore (no database) + AgEnFKStore (adapter)
+├── stores/        # FileStateStore — all state stays in the repo
 ├── adapters/      # adk2 (inspiration), rag (context provider)
 ├── agents/        # planner, coder, reviewer, evidence (reasoning only)
 ├── examples/
@@ -51,13 +51,20 @@ boot → load_scope → planner_agent → validate_plan (gate) → coder_agent
 The B1 gates (`gatekeeper.sh`, `validate-harness.sh`) remain in the hooks;
 what changed is that **order and state** now belong to the graph, not the instruction.
 
-### 2 · Enterprise harness (B2) — AgEnFK adapter
+### 2 · Enterprise harness (B2) — the store is an interface
 
-`stores/agenfk_store.py` implements the `StateStore` interface against AgEnFK:
-reads item/status, records progress (`verify`) and evidence (`log-test`) when
-available. If AgEnFK is unavailable, the store **stops and informs** —
-never bypasses. Hierarchy, evidence, gatekeeper and telemetry remain
-AgEnFK's; the runner only talks to it through the interface.
+The runner never touches persistence directly: it talks to `StateStore`, and the
+only implementation shipped is `FileStateStore` — every byte of state in the repo,
+which is what the [enterprise harness](/harness-designs/enterprise-harness) requires
+of layer B.
+
+That interface is the extension point. An organization that already runs a
+management system can put it behind the same four methods and the runner will not
+notice. `examples/adapters/agenfk_store.py` is one worked example: it reads
+item/status from an external CLI, records progress and evidence, and **stops and
+informs** when the system is unavailable — never bypasses. Nothing in
+`hard_harness/` imports it; it is a demonstration that the seam is real, not a
+dependency.
 
 ### 3 · App harness (C) — QA fan-out + join
 
@@ -120,7 +127,7 @@ OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workfl
 | File-first persistence | `.harness/` (state.json + events.jsonl + artifacts + locks) — database later |
 | Limits in code | MAX_DEPTH/CHILDREN/RETRIES/LLM_CALLS/timeout/budget in the runner |
 | RAG = context, never orchestrator | retrieval separated from orchestration (course requirement) |
-| No database in this version | `FileStateStore` today; `AgEnFKStore`/SQLite via the same interface |
+| No database in this version | `FileStateStore` today; SQLite or an external system later, via the same interface |
 
 **Limitations**: agents are stubs (LLM provider to inject); Collaborative and
 Dynamic (ADK 2) are declared evolution, not implemented in the core — the graph

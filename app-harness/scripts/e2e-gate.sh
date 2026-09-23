@@ -13,8 +13,15 @@ if [ ! -f "$CONFIG" ]; then
   exit 0
 fi
 
+# Reads one value out of the `qa:` block. The previous version anchored on the
+# end of the line, so an inline comment made the pattern miss and the variable
+# became the WHOLE line — the gate then matched nothing and waved every commit
+# through. A gate that fails open on a config it cannot parse is worse than no
+# gate, because it reports "ok".
 qa_value() {
-  grep -A6 '^qa:' "$CONFIG" 2>/dev/null | grep "^[[:space:]]*$1:" | head -1 | sed -E "s/^[^:]+: *\"?([^\"]*)\"?[[:space:]]*$/\1/"
+  grep -A6 '^qa:' "$CONFIG" 2>/dev/null \
+    | sed -n "s/^[[:space:]]*$1:[[:space:]]*//p" | head -1 \
+    | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"[[:space:]]*$//' -e 's/[[:space:]]*$//'
 }
 
 FRONTEND_PATHS="$(qa_value frontend_paths)"
@@ -25,6 +32,15 @@ if [ -z "$FRONTEND_PATHS" ] || [ -z "$E2E_TEST_PATH" ]; then
   echo "E2E-GATE: incomplete config in $CONFIG (frontend_paths, e2e_test_path required)" >&2
   exit 0
 fi
+
+# Absent config is a choice; unparseable config is a mistake. Only the first
+# one gets to fail open.
+case "$FRONTEND_PATHS$FRONTEND_EXTS$E2E_TEST_PATH" in
+  *"#"*|*'"'*)
+    echo "E2E-GATE: BLOCKED — could not parse the qa: block in $CONFIG" >&2
+    echo "  values read: paths='$FRONTEND_PATHS' exts='$FRONTEND_EXTS' e2e='$E2E_TEST_PATH'" >&2
+    exit 1 ;;
+esac
 
 # 1. Staged frontend files?
 STAGED=$(git diff --cached --name-only | grep -E "^($FRONTEND_PATHS)/.*\.(${FRONTEND_EXTS// /|})$" || true)

@@ -22,7 +22,7 @@ harness-basic/
 ├── templates/                # the harness files (same base as A4)
 │   ├── AGENTS.md             # router (Lesson 04)
 │   ├── feature_list.json     # scope with state (Lesson 08)
-│   ├── claude-progress.md    # session diary (Lesson 05)
+│   ├── progress.md           # session diary (Lesson 05)
 │   ├── session-handoff.md    # note between sessions (Lesson 05)
 │   ├── policies/             # scope-control, definition-of-done, evidence
 │   └── init.sh               # boot (Lesson 06)

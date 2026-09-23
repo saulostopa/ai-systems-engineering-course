@@ -37,7 +37,7 @@ O `webmotors-harness-factory/AGENTS.md` é um roteador exemplar: 9 seções curt
 
 O `harness-agent-skills` segue o mesmo padrão no nível de skills: cada skill é um `SKILL.md` curto com frontmatter (`name` + `description`), e o corpo em `Gather → Write → Output`. A descrição é o gatilho de carregamento: a skill só é lida **quando a tarefa combina** — sob demanda, não no boot.
 
-E o próprio AgEnFK distribui regras por plataforma (`clauderules/`, `codexrules/`, `cursorrules/`, `geminirules/`) em vez de um único arquivo universal — cada harness recebe o formato que entende.
+Harnesses maduros distribuem regras por plataforma — um diretório por formato de agente (Claude, Codex, Cursor, Gemini, OpenCode) em vez de um único arquivo universal — para que cada ferramenta receba o formato que de fato lê.
 
 ## Regra prática: o arquivo de 10%
 

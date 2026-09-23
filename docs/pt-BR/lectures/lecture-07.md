@@ -43,15 +43,15 @@ A regra é: **se o processo depende da boa vontade do agente, ele não vai acont
 
 > "A conclusão exige evidência registrada (comandos executados, esperado vs. real). Nunca afirme 'done' sem prova."
 
-## O gatekeeper do AgEnFK como exemplo vivo
+## O gatekeeper como exemplo vivo
 
-O AgEnFK leva isso ao nível de workflow:
+Um workflow engine leva isso ao nível de processo. As três regras que importam, seja qual for a implementação:
 
 - **Item ativo obrigatório**: edições fora de um item em andamento são bloqueadas pelo gatekeeper.
-- **DONE inalcançável por atalho**: não existe transição direta para DONE — só via `validate_progress` no passo final do fluxo, com evidência.
-- **Teste como etapa**: o item passa por um estado de teste (`log-test PASSED/FAILED`) antes de concluir.
+- **DONE inalcançável por atalho**: não existe transição direta para DONE — só pelo passo final do fluxo, com evidência.
+- **Teste como etapa**: o item passa por um estado de teste (registrado PASSED/FAILED) antes de concluir.
 
-Vimos isso na prática na story A1: o agente tentou marcar DONE e o workflow **violou a regra** — a resposta foi mover para o fluxo correto, rodar o build, registrar o teste e só então concluir. O overreach ("eu terminei") foi interceptado pelo harness, não pelo bom senso.
+Vimos isso na prática na story A1: o agente tentou marcar DONE e o workflow **recusou** — a resposta foi mover para o fluxo correto, rodar o build, registrar o teste e só então concluir. O overreach ("eu terminei") foi interceptado pelo harness, não pelo bom senso.
 
 ## Escopo de tempo também conta
 

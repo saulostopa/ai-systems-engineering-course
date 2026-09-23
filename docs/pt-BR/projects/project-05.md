@@ -92,4 +92,4 @@ O `area-context/` + `index.md` + `AGENTS.md` da área versionados + 1 artefato d
 A versão com banco de vetores, OCR de imagens e execução agendada é o **EPIC D** do curso.
 :::
 
-**Você terminou os projetos!** Revise as [Aulas](/pt-BR/lectures/) ou explore os [Designs de Harnesses](/pt-BR/harness-designs/) para ver onde cada peça se encaixa no plano completo.
+**Próximo projeto**: [06 — Harness grande (multi-time)](/pt-BR/projects/project-06) — o passo de um repositório só para vários.

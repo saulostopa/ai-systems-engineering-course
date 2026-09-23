@@ -19,7 +19,7 @@ harness-basico/
 ├── init.sh                    # valida ambiente, imprime próximos passos
 ├── AGENTS.md                  # roteador curto (Aula 04)
 ├── feature_list.json          # fonte de verdade de escopo (Aula 08)
-├── claude-progress.md         # diário de sessão (Aula 05)
+├── progress.md                # diário de sessão (Aula 05)
 ├── session-handoff.md         # bilhete para a próxima sessão (Aula 05)
 ├── policies/
 │   ├── scope-control.md       # escopo antes de editar (Aula 07)
@@ -62,7 +62,7 @@ Uma feature está pronta quando:
 
 ### 3. Adicione os arquivos de estado
 
-Use os modelos da [Biblioteca](/pt-BR/resources/templates): `feature_list.json` com 3-5 features de exemplo, `claude-progress.md` e `session-handoff.md` com os cabeçalhos obrigatórios (Aula 05).
+Use os modelos da [Biblioteca](/pt-BR/resources/templates): `feature_list.json` com 3-5 features de exemplo, `progress.md` e `session-handoff.md` com os cabeçalhos obrigatórios (Aula 05).
 
 ### 4. Instale num repo real
 

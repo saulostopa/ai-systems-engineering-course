@@ -22,7 +22,7 @@ O `webmotors-harness-factory` resolve com três arquivos complementares:
 
 ```
 feature_list.json      → o QUE existe e em que estado (fonte de verdade de escopo)
-claude-progress.md     → o que aconteceu NESTA sessão (trabalho recente, falhas, próxima ação)
+progress.md            → o que aconteceu NESTA sessão (trabalho recente, falhas, próxima ação)
 session-handoff.md     → o que fica PARA a próxima sessão (verificado, quebrado, próximo passo)
 ```
 
@@ -42,9 +42,9 @@ Uma boa retomada segue um protocolo fixo — e o harness o transforma em hábito
 4. **Atualize o handoff** antes de encerrar: o que ficou verificado, o que quebrou, qual a próxima ação.
 5. **Atualize o feature_list** com o estado real das features.
 
-## Na Webmotors — o AgEnFK como continuidade
+## Na Webmotors — a continuidade na prática
 
-O AgEnFK formaliza esse protocolo em cima do repo: cada story tem status, comentários com evidência e trilha de teste. Quando o agente retoma a story A2, ele não pergunta "onde paramos?" — ele lê a story, os comentários e o estado, e continua.
+Um workflow engine formaliza esse protocolo em cima do repo: cada story carrega status, comentários com evidência e trilha de teste. Quando o agente retoma a story A2, ele não pergunta "onde paramos?" — ele lê a story, os comentários e o estado, e continua. A tríade de arquivos acima faz o mesmo trabalho sem engine nenhum; o que importa é que o registro esteja no repositório.
 
 Na prática desta semana: a story A1 foi concluída numa sessão; a evidência (build OK, test PASSED) ficou registrada; quando retomamos, o estado estava íntegro sem nenhuma conversa anterior na memória. **A continuidade não veio da memória do agente — veio do harness.**
 

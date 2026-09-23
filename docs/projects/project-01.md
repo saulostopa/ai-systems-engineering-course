@@ -87,7 +87,7 @@ A paragraph in your learning journal (or in the project's `session-handoff.md`):
 > "Without a harness the agent [X]; with a harness it [Y]. The difference came from [files/policies]."
 
 ::: tip Tip
-Keep the comparison spreadsheet — it will be the seed of the course's internal benchmark (EPIC G, metrics and evidence).
+Keep the comparison spreadsheet. The same measurement was done for the course itself in the EPIC G pilots — the consolidated numbers are in `pilots/g4-metrics/G4-REPORT.md`, and yours is the local version of that evidence.
 :::
 
 **Next project**: [02 — Installable basic harness](/projects/project-02).

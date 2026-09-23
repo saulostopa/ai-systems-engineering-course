@@ -39,8 +39,9 @@ extensão para decisão via LLM: `decide_with_llm()`.
 ### Decisão da POC (leia o `POC_REPORT.md` completo)
 
 - ✅ **Arquitetura adotada** — portável para pgvector sem redesenho.
-- ❌ **Infra pesada adiada** (watcher/fila/pgvector) — só com evidência do
-  EPIC G. A POC roda sem infra: indexação sob demanda.
+- ❌ **Infra pesada adiada** (watcher/fila/pgvector) — os pilotos do EPIC G
+  fecharam sem precisar dela, então a régua para adotá-la continua não atingida.
+  A POC roda sem infra: indexação sob demanda.
 - ⚖️ **Prioridade invertida**: RAG de negócio (D3) tem mais ROI imediato que o
   watcher.
 

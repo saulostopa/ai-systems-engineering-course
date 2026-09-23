@@ -43,7 +43,7 @@ Each loop has its own tools, its own gates and a verifiable output. The harness 
 
 ## In our ecosystem
 
-- **AgEnFK**: each flow phase (plan → code → test → review → close) is a loop with an exit criterion — `verify` requires evidence to *advance* the item, not just "continue".
+- **A workflow engine**: each flow phase (plan → code → test → review → close) is a loop with an exit criterion — advancing the item requires evidence, not just "continue".
 - **Factory**: `init.sh` is the scope loop; the pre-commit hooks close the code loop; `pr-hook.sh` closes the delivery loop.
 - **Artifact skills**: `feature-report` runs the evidence loop — read the diff/tests, synthesize, generate the HTML.
 

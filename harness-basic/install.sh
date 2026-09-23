@@ -35,11 +35,24 @@ copy() {
 log "Installing basic harness into: $TARGET"
 
 # 1. Templates
-for f in AGENTS.md feature_list.json claude-progress.md session-handoff.md; do
+for f in AGENTS.md feature_list.json progress.md session-handoff.md; do
   copy "$ROOT/templates/$f" "$TARGET/$f"
 done
 copy "$ROOT/templates/policies" "$TARGET/policies"
 copy "$ROOT/templates/init.sh" "$TARGET/init.sh"
+
+# The execution-plan structure, ready to use. TEMPLATE.md sits at the root of
+# exec-plans/ on purpose: the gate only reads active/ and done/, so the template
+# is never mistaken for a plan.
+copy "$ROOT/templates/exec-plan.md" "$TARGET/docs/exec-plans/TEMPLATE.md"
+mkdir -p "$TARGET/docs/exec-plans/active" "$TARGET/docs/exec-plans/done"
+touch "$TARGET/docs/exec-plans/active/.gitkeep" "$TARGET/docs/exec-plans/done/.gitkeep"
+log "installed: $TARGET/docs/exec-plans/{active,done}"
+
+# Where the delivery diagrams land (scripts/artifacts.sh writes here).
+mkdir -p "$TARGET/docs/artifacts"
+touch "$TARGET/docs/artifacts/.gitkeep"
+log "installed: $TARGET/docs/artifacts"
 
 # 2. Validation scripts
 copy "$ROOT/scripts" "$TARGET/scripts"

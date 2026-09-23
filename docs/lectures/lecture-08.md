@@ -24,13 +24,18 @@ The `webmotors-harness-factory` uses exactly this pattern:
 ```json
 {
   "status": "not_started",
-  "id": "feature-001",
+  "id": "feature/OEM-123",
   "title": "Car group landing page",
   "description": "..."
 }
 ```
 
 States of the cycle: `not_started` → `in_progress` → `blocked` → `passing`.
+
+The id follows the branch convention already in use — `feature/OEM-123`,
+`bugfix/AC-455`, `release/EST-3445` — so scope, branch and ticket are the same
+name. One less translation for a human to do, and one less place to get it
+wrong.
 
 And the operating rule (which we already saw in Lesson 06):
 
@@ -47,9 +52,9 @@ And the operating rule (which we already saw in Lesson 06):
 
 The feature list connects the harness to the **product**: without it, the harness is a process running empty.
 
-## In AgEnFK: the same idea, with flow
+## The same idea, with flow
 
-AgEnFK generalizes the feature list into items with type (EPIC, STORY, TASK, BUG), hierarchy (parent/children), configurable per-flow status and an evidence trail. The factory's `feature_list.json` is the "file" version; AgEnFK items are the "system" version — with gates, comments and tests attached.
+At scale the feature list generalizes into items with type (EPIC, STORY, TASK, BUG), hierarchy (parent/children), configurable per-flow status and an evidence trail. The factory's `feature_list.json` is the "file" version; a [workflow engine](/harness-designs/enterprise-harness) is the "system" version — with gates, comments and tests attached.
 
 The lesson connecting the two: **the form doesn't matter (file, database, spreadsheet); the contract matters** — there is a queryable structure that says what to do, in what state and with what priority, and the whole harness operates on top of it.
 

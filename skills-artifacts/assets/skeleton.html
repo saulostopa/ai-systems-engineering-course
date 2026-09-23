@@ -34,6 +34,26 @@
       <p data-i18n="lede" data-i18n-pt="Resumo em uma frase." data-i18n-en="One-sentence summary.">One-sentence summary.</p>
     </section>
 
+
+    <!-- Flow animation (feature-animation). One .flow-stage per real stage,
+         3 to 6 of them. data-caption-pt/en feed #flow-caption when the stage
+         is active — the DOM is the source of truth, the script only reads it. -->
+    <section class="card" id="flow-root" hidden aria-label="Flow">
+      <h2 data-i18n="flow-title" data-i18n-pt="Um dado real atravessando a feature" data-i18n-en="One real trip through the feature">One real trip through the feature</h2>
+      <div class="flow-track" id="flow-track">
+        <div class="flow-packet" id="flow-packet" aria-hidden="true"></div>
+      </div>
+      <div class="flow-controls">
+        <button type="button" class="flow-btn" id="flow-play">
+          <span data-i18n="flow-play" data-i18n-pt="Reproduzir" data-i18n-en="Play">Play</span>
+        </button>
+        <button type="button" class="flow-btn" id="flow-step">
+          <span data-i18n="flow-step" data-i18n-pt="Avançar" data-i18n-en="Step">Step</span>
+        </button>
+        <p class="flow-caption" id="flow-caption" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
     <!-- Dynamic quiz: the .quiz-level sections are generated here.
          The script below scores, announces via aria-live and offers
          review mode (wrong items repeated) when enabled. -->
@@ -131,6 +151,7 @@ function revealResult() {
       if (isCorrect && picked) correct++;
       if (picked && !isCorrect) wrong.push({ level: l.dataset.levelLabel, text: l.querySelector(".quiz-stem").textContent, why: l.querySelector(".quiz-why") });
     });
+    l.dataset.checked = "true";
     l.querySelectorAll(".quiz-why").forEach((w) => w.dataset.visible = "true");
   });
   const result = document.getElementById("quiz-result");
@@ -163,6 +184,65 @@ document.addEventListener("click", (e) => {
   }
   if (e.target.closest("#submit-quiz")) revealResult();
 });
+
+/* Flow playback (feature-animation).
+ * Autoplay is opt-out by preference, never forced: prefers-reduced-motion stops
+ * it before it starts. The caption is aria-live, so a screen reader is told
+ * which stage is active instead of watching a border change colour. */
+/* The skeleton ships a quiz shell for the generator to fill. An artifact that
+ * is not a quiz was still rendering the empty card, complete with a 0% bar. */
+(function () {
+  // Count levels document-wide: the generator emits them into the content area,
+  // not inside #quiz-root, so scoping the check to the card hid the submit
+  // button on the one artifact that needed it.
+  const root = document.getElementById("quiz-root");
+  if (root && !document.querySelectorAll(".quiz-level").length) root.hidden = true;
+})();
+
+(function () {
+  const track = document.getElementById("flow-track");
+  if (!track) return;
+  const stages = Array.prototype.slice.call(track.querySelectorAll(".flow-stage"));
+  if (!stages.length) return;
+  const root = document.getElementById("flow-root");
+  if (root) root.hidden = false;
+
+  const packet = document.getElementById("flow-packet");
+  const caption = document.getElementById("flow-caption");
+  const playBtn = document.getElementById("flow-play");
+  const stepBtn = document.getElementById("flow-step");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+  let timer = null;
+
+  const lang = () => (localStorage.getItem("hsk-lang") || "en");
+  const label = (key, pt, en) => (lang() === "pt" ? pt : en);
+
+  function render() {
+    stages.forEach((stage, i) => stage.classList.toggle("active", i === current));
+    const stage = stages[current];
+    packet.style.left = stage.offsetLeft + stage.offsetWidth / 2 + "px";
+    const text = stage.getAttribute("data-caption-" + lang()) || stage.dataset.caption || "";
+    caption.textContent =
+      label("step", "Passo ", "Step ") + (current + 1) +
+      label("of", " de ", " of ") + stages.length + " — " + text;
+    playBtn.querySelector("span").textContent = timer
+      ? label("pause", "Pausar", "Pause")
+      : label("play", "Reproduzir", "Play");
+  }
+  function step() { current = (current + 1) % stages.length; render(); }
+  function play() { if (timer) return; timer = setInterval(step, 1800); render(); }
+  function pause() { clearInterval(timer); timer = null; render(); }
+
+  playBtn.addEventListener("click", () => (timer ? pause() : play()));
+  stepBtn.addEventListener("click", () => { pause(); step(); });
+  window.addEventListener("resize", render);
+  document.getElementById("lang-toggle").addEventListener("click", () => setTimeout(render, 0));
+
+  render();
+  if (!reduced) play();
+})();
+
 </script>
 </body>
 </html>

@@ -36,20 +36,20 @@ In practice, evidence is:
 ✓ tests ran               (test names + counts, not "I tested")
 ✓ diff reviewed           (git diff: only the declared scope)
 ✓ gates passed            (pre-commit/pre-push hooks)
-✓ artifact generated      (report/quiz/flowchart saved)
+✓ artifacts generated     (report/quiz/diagram saved)
 ```
 
 And the factory's subtle requirement:
 
 > "Compare the test names before and after and confirm none were deleted, renamed, skipped or weakened — a green suite with fewer tests than you started with is a regression, not a pass."
 
-## The AgEnFK flow as a teacher
+## The flow as a teacher
 
-The AgEnFK workflow embodies the lesson:
+A workflow that embodies this lesson has three properties:
 
-1. `verify` requires evidence with **mandatory exit criteria** per step;
-2. the test is a separate step (`log-test PASSED/FAILED`);
-3. **DONE is only reachable via `validate_progress` in the final step** — there is no "mark as done".
+1. advancing requires evidence with **mandatory exit criteria** per step;
+2. the test is a separate step, recorded PASSED/FAILED;
+3. **DONE is only reachable through the final step** — there is no "mark as done".
 
 Story A1 went through this: the gate refused the direct DONE; the path was to run the build, record the test with the real command, and advance with evidence. "I declared victory" was converted into "I proved victory".
 

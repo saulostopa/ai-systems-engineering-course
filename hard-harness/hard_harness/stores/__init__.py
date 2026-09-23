@@ -6,9 +6,12 @@ Minimum interface (StateStore):
   append_event(event) -> None
   list_events() -> list[Event]
 
-Implementations:
+Implementation shipped with the harness:
   - FileStateStore  (.harness/state.json + events.jsonl + artifacts/ + locks/)
-  - AgEnFKStore     (optional adapter: mirrors progress/evidence in AgEnFK)
+
+Everything the harness needs lives in the repository. Adapting an external
+management system is possible but is nobody's dependency — see
+examples/adapters/ for one worked example.
 """
 
 from __future__ import annotations
@@ -27,6 +30,5 @@ class StateStore(Protocol):
 
 
 from .file_store import FileStateStore
-from .agenfk_store import AgEnFKStore
 
-__all__ = ["StateStore", "FileStateStore", "AgEnFKStore"]
+__all__ = ["StateStore", "FileStateStore"]

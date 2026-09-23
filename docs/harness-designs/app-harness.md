@@ -83,6 +83,6 @@ and is genuinely broken on the screen.
 
 - **[Project 03](/projects/project-03)** builds the app harness from scratch — this
   blueprint is the reference solution.
-- **EPIC G** (pilots) runs both layers on a real Webmotors app.
+- **Pilot G2** ran both layers on a real app: the E2E gate blocked and allowed correctly, and the agentic navigation returned HTTP 200. Evidence in `pilots/g2-app-harness/evidence/`.
 
 **Related**: [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness)

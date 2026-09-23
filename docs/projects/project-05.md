@@ -92,4 +92,4 @@ The versioned `area-context/` + `index.md` + area `AGENTS.md` + 1 example artifa
 The version with vector database, image OCR and scheduled execution is **EPIC D** of the course.
 :::
 
-**You finished the projects!** Review the [Lessons](/lectures/) or explore the [Harness Designs](/harness-designs/) to see where each piece fits in the complete plan.
+**Next project**: [06 — Enterprise harness (multi-team)](/projects/project-06) — the step out of a single repository into many.

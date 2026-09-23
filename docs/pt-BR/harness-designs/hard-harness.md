@@ -15,7 +15,7 @@ title: Hard Harness — orquestração executável
 ```
 hard-harness/
 ├── core/          # schemas, graph, runner, gates, events
-├── stores/        # FileStateStore (sem banco) + AgEnFKStore (adapter)
+├── stores/        # FileStateStore — todo o estado fica no repo
 ├── adapters/      # adk2 (inspiração), rag (provedor de contexto)
 ├── agents/        # planner, coder, reviewer, evidence (só raciocínio)
 ├── examples/
@@ -51,13 +51,20 @@ boot → load_scope → planner_agent → validate_plan (gate) → coder_agent
 Os gates do B1 (`gatekeeper.sh`, `validate-harness.sh`) continuam nos hooks;
 o que mudou é que a **ordem e o estado** agora são do grafo, não da instrução.
 
-### 2 · Harness enterprise (B2) — adapter AgEnFK
+### 2 · Harness grande (B2) — o store é uma interface
 
-`stores/agenfk_store.py` implementa a interface `StateStore` contra o AgEnFK:
-lê item/status, registra avanço (`verify`) e evidências (`log-test`) quando
-disponível. Se o AgEnFK estiver indisponível, o store **para e informa** —
-nunca contorna. Hierarquia, evidência, gatekeeper e telemetria continuam
-sendo do AgEnFK; o runner apenas fala com ele via interface.
+O runner nunca toca na persistência diretamente: ele fala com `StateStore`, e a
+única implementação que acompanha o núcleo é o `FileStateStore` — todo byte de
+estado no repo, que é o que o [harness grande](/pt-BR/harness-designs/enterprise-harness)
+exige da camada B.
+
+Essa interface é o ponto de extensão. Uma organização que já roda um sistema de
+gestão pode colocá-lo atrás dos mesmos quatro métodos e o runner não percebe.
+O `examples/adapters/agenfk_store.py` é um exemplo trabalhado: lê item/status de
+um CLI externo, registra avanço e evidência, e **para e informa** quando o
+sistema está indisponível — nunca contorna. Nada dentro de `hard_harness/`
+importa esse arquivo; ele é a demonstração de que a costura existe, não uma
+dependência.
 
 ### 3 · App harness (C) — fan-out de QA + join
 
@@ -120,7 +127,7 @@ OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workfl
 | Persistência em arquivo primeiro | `.harness/` (state.json + events.jsonl + artifacts + locks) — banco depois |
 | Limites em código | MAX_DEPTH/CHILDREN/RETRIES/LLM_CALLS/timeout/budget no runner |
 | RAG = contexto, nunca orquestrador | recuperação separada da orquestração (requisito do curso) |
-| Sem banco nesta versão | `FileStateStore` hoje; `AgEnFKStore`/SQLite via mesma interface |
+| Sem banco nesta versão | `FileStateStore` hoje; SQLite ou sistema externo depois, pela mesma interface |
 
 **Limitações**: agentes são stubs (provider LLM a injetar); Collaborative e
 Dynamic (ADK 2) são evolução declarada, não implementados no núcleo — o grafo

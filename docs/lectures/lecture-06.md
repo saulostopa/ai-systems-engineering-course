@@ -39,15 +39,15 @@ The factory is explicit:
 
 This is not bureaucracy: it is the protection against the agent that spreads work across ten fronts and finishes none (the symptom of Lesson 07).
 
-## Initialization in AgEnFK
+## Initialization as a workflow phase
 
-In AgEnFK, the boot looks like a workflow phase: `/agenfk-plan` reads the item, confirms the project, reads scope and architecture, **decomposes everything before any work** and only then releases execution. The `current-project` resolves the `.agenfk/project.json` of the directory — the mechanical equivalent of "where am I?".
+Once a project runs on a [workflow engine](/harness-designs/enterprise-harness), the boot stops being a checklist and becomes a phase of the flow: the engine reads the item, confirms the project, reads scope and architecture, **decomposes everything before any work**, and only then releases execution. Resolving the project means reading the `.harness/config.yaml` of the directory — the mechanical equivalent of "where am I?".
 
 And the gatekeeper extends the boot into the middle of the session: on every edit, it checks whether the file is inside a managed project and whether there is an active item. **The agent cannot work "without knowing where it is"** — the harness remembers for it.
 
 ## At Webmotors — the case of our scoping
 
-When we scoped AgEnFK for this course, the "boot" was literally redone: we removed global rules, installed the rules **in the project** and verified that, inside `harness-plannig`, the `current-project` resolves and the workflow activates — and outside it, nothing. Correct initialization is what guarantees that every agent, in every repo, starts with the right harness.
+When we scoped the workflow engine for this course, the "boot" was literally redone: we removed global rules, installed the rules **in the project** and verified that, inside `harness-plannig`, the project resolves and the workflow activates — and outside it, nothing. Correct initialization is what guarantees that every agent, in every repo, starts with the right harness.
 
 ## Boot checklist (copy to your project)
 

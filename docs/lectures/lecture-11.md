@@ -34,15 +34,15 @@ And the skill comes with a decision criterion we saw in `rag-harness.md`:
 
 In other words: **the decision to build was postponed for lack of evidence, and the evidence would come from observability.** This is the most strategic lesson of the course — it teaches deciding with data instead of intuition.
 
-## Telemetry in AgEnFK
+## Telemetry at the engine level
 
-AgEnFK collects token, command and adoption events, with a dedicated database and a dashboard. The questions it answers in our project:
+An [enterprise harness](/harness-designs/enterprise-harness) collects token, command and adoption events, aggregating them across teams. The questions it answered in our project:
 
-- How much did story A1 cost in tokens? (for the EPIC G benchmark)
+- How much did story A1 cost in tokens?
 - How long did each phase (plan → code → verify) take?
 - How many times did the gatekeeper block, and was it correct?
 
-These numbers feed the **harness health check** — the metric we will use in EPIC G (metrics and evidence) to prove the harness's value to the C-Level.
+These numbers feed the **harness health check**. In this project they became the EPIC G report: 7 EPICs and 21 stories delivered, three pilots with recorded evidence, every test suite green (`pilots/g4-metrics/G4-REPORT.md`). That is what "proving the harness's value" looks like when it is measured instead of argued.
 
 ## Observability for each domain
 

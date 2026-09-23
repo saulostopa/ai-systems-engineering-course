@@ -25,7 +25,7 @@ Isso vale para:
 
 - **O que fazer** → `feature_list.json`, itens do framework de gestão
 - **Como fazer** → AGENTS.md, policies, skills
-- **O que já foi feito** → commits, relatórios, `claude-progress.md`
+- **O que já foi feito** → commits, relatórios, `progress.md`
 - **Onde parou** → `session-handoff.md`
 - **O que foi decidido** → comentários, ADRs, docs
 
@@ -38,7 +38,7 @@ O `webmotors-harness-factory` define a hierarquia de arquivos de estado:
 | Arquivo | Papel | Quem lê |
 |---|---|---|
 | `feature_list.json` | Estado de cada feature (not_started, in_progress, blocked, passing) | O agente decide o que fazer |
-| `claude-progress.md` | Trabalho recente, atual, falhas, próxima ação | O agente retoma a sessão |
+| `progress.md` | Trabalho recente, atual, falhas, próxima ação | O agente retoma a sessão |
 | `session-handoff.md` | O que está verificado, o que está quebrado, próximo passo | O próximo agente/pessoa |
 | `AGENTS.md` | O roteiro permanente: o que ler, como verificar, como terminar | Todo agente que entra no repo |
 
@@ -56,11 +56,11 @@ Na primeira story deste projeto (A1 — setup do curso), o agente scaffoldou o V
 2. o test result registrado (`log-test PASSED`);
 3. a evidência documentada no comentário da story.
 
-Tudo isso virou **registro permanente** no banco do AgEnFK e no histórico do repo. A conversa teria sido esquecida; o registro não.
+Tudo isso virou **registro permanente** no histórico do repo e na trilha do workflow. A conversa teria sido esquecida; o registro não.
 
 ## Por que o repo e não o banco?
 
-O AgEnFK usa um banco SQLite para itens, mas o princípio continua: os arquivos de estado do harness vivem **no repo de cada projeto**, e o AgEnFK existe para gerenciar o fluxo em cima deles. A regra prática:
+Um workflow engine pode guardar itens num banco, e isso serve para agregação — mas não muda onde mora a verdade: os arquivos de estado do harness continuam **no repo de cada projeto**, e o engine gerencia o fluxo em cima deles. Se apagar o engine fizer o projeto perder informação sobre si mesmo, o estado está no lugar errado. A regra prática:
 
 - **Processo e fluxo** → framework de gestão (itens, gates, telemetria)
 - **Contexto e conhecimento** → arquivos no repo (docs, skills, policies)

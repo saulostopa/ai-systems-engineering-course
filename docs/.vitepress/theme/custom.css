@@ -194,3 +194,62 @@ html.dark .vp-doc a {
 html.dark .VPNavBarMenuLink.active {
   color: var(--ds-red-400);
 }
+
+/* ═══ Home hero: room for the HarnessGate visual ═══ */
+.VPHero .image-container {
+  width: 100%;
+  height: auto;
+  max-width: 540px;
+  transform: none;
+  padding: 0;
+}
+.VPHero .image-bg {
+  display: none;
+}
+/* Below the two-column breakpoint the visual is a garnish, not the headline. */
+@media (max-width: 639px) {
+  .VPHero .image {
+    margin: -48px -24px -16px;
+  }
+  .VPHero .image-container {
+    max-width: 268px;
+  }
+}
+@media (min-width: 640px) and (max-width: 959px) {
+  .VPHero .image {
+    margin: -64px -24px -24px;
+  }
+  .VPHero .image-container {
+    width: 100%;
+    height: auto;
+    max-width: 340px;
+  }
+}
+@media (min-width: 960px) {
+  .VPHero .image-container {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* ═══ Feature icons — Eleanor language, one brand colour, no emoji ═══ */
+.VPFeature .icon {
+  border-radius: 10px;
+  background-color: var(--vp-c-brand-soft);
+  color: var(--ds-red-500);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+html.dark .VPFeature .icon {
+  color: var(--ds-red-300);
+}
+.VPFeature .icon svg {
+  display: block;
+}
+.VPFeature:hover .icon {
+  background-color: var(--ds-red-500);
+  color: #ffffff;
+}
+html.dark .VPFeature:hover .icon {
+  background-color: var(--ds-red-400);
+  color: #ffffff;
+}

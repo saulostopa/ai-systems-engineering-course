@@ -46,6 +46,98 @@ REPORT_BODY = """\
     </section>
 """
 
+# One real trip, four stages. Four and not five: the track is a single row, and
+# the v1 demo put its fifth stage off-screen on load — a stage a reader never
+# sees is a stage that is not in the artifact.
+ANIMATION_BODY = """\
+    <section class="card" id="flow-root" aria-label="Flow">
+      <h2 data-i18n="flow-title" data-i18n-pt="Um commit atravessando os gates" data-i18n-en="One commit travelling through the gates">One commit travelling through the gates</h2>
+      <div class="flow-track" id="flow-track">
+        <div class="flow-packet" id="flow-packet" aria-hidden="true"></div>
+      <div class="flow-stage" data-caption-en="The developer stages a component change. Nothing has been verified yet — this is just intent." data-caption-pt="A pessoa prepara uma mudança de componente. Nada foi verificado ainda — isto é só intenção.">
+        <div class="stage-label">git commit</div>
+        <div class="stage-data">src/components/price-tag.tsx</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="The gatekeeper reads feature_list.json: exactly one feature in_progress, so the scope was declared before the edit." data-caption-pt="O gatekeeper lê o feature_list.json: exatamente uma feature in_progress, então o escopo foi declarado antes da edição.">
+        <div class="stage-label">gatekeeper.sh</div>
+        <div class="stage-data">1 in_progress &#10003;</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="A frontend file was staged, so the E2E gate looks for the test that covers it — and finds it in the same commit." data-caption-pt="Um arquivo de frontend foi preparado, então o gate de E2E procura o teste que o cobre — e acha no mesmo commit.">
+        <div class="stage-label">e2e-gate.sh</div>
+        <div class="stage-data">e2e/test_price.py &#10003;</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="Both gates agreed, so the commit exists. Nothing here trusted a promise: each step read a file." data-caption-pt="Os dois gates concordaram, então o commit existe. Nada aqui confiou numa promessa: cada passo leu um arquivo.">
+        <div class="stage-label">commit</div>
+        <div class="stage-data">a1b2c3d feature/OEM-123</div>
+      </div>
+      </div>
+      <div class="flow-controls">
+        <button type="button" class="flow-btn" id="flow-play">
+          <span data-i18n="flow-play" data-i18n-pt="Reproduzir" data-i18n-en="Play">Play</span>
+        </button>
+        <button type="button" class="flow-btn" id="flow-step">
+          <span data-i18n="flow-step" data-i18n-pt="Avan&ccedil;ar" data-i18n-en="Step">Step</span>
+        </button>
+        <p class="flow-caption" id="flow-caption" role="status" aria-live="polite">Step 1 of 4 &#8212; The developer stages a component change. Nothing has been verified yet — this is just intent.</p>
+      </div>
+    </section>
+"""
+
+# The consent-to-identity journey, as the Webmotors bridge actually implements
+# it — the Fuse CMP over IAB TCF v2, not the AdFixus sample banner. Grounded in
+# ignition-adfixus-tag-docs; the caveat card is the measured Brazilian result,
+# and it is the whole reason this artifact is worth having.
+CONSENT_BODY = """\
+    <section class="card" id="flow-root" aria-label="Flow">
+      <h2 data-i18n="flow-title" data-i18n-pt="Do consentimento &agrave; identidade" data-i18n-en="From consent to identity">From consent to identity</h2>
+      <div class="flow-track" id="flow-track">
+        <div class="flow-packet" id="flow-packet" aria-hidden="true"></div>
+      <div class="flow-stage" data-caption-en="The page registers a listener on the CMP. Nothing has been asked of the visitor yet — this is the bridge waiting." data-caption-pt="A página registra um listener no CMP. Nada foi perguntado ao visitante ainda — esta é a ponte esperando.">
+        <div class="stage-label">__tcfapi</div>
+        <div class="stage-data">addEventListener</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="The visitor answered the banner. The CMP fires with a TC string, and the bridge reads Purpose 1 from it." data-caption-pt="O visitante respondeu ao banner. O CMP dispara com uma TC string, e a ponte lê o Purpose 1 dela.">
+        <div class="stage-label">Fuse CMP</div>
+        <div class="stage-data">useractioncomplete</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="Purpose 1 is granted, so the bridge calls AfxIdentity. A Deny here would call doNotTrack() instead — the same branch, the other way." data-caption-pt="O Purpose 1 foi concedido, então a ponte chama o AfxIdentity. Um Deny aqui chamaria doNotTrack() — o mesmo ramo, para o outro lado.">
+        <div class="stage-label">anonymousLogin()</div>
+        <div class="stage-data">Purpose 1 granted</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="AdFixus issues the durable identifier and writes the profile cookie. From here the visitor is the same person across sessions." data-caption-pt="O AdFixus emite o identificador durável e grava o cookie de perfil. Daqui em diante o visitante é a mesma pessoa entre sessões.">
+        <div class="stage-label">afx_profile</div>
+        <div class="stage-data">acid issued</div>
+      </div>
+      <span class="flow-arrow" aria-hidden="true">&#8594;</span>
+      <div class="flow-stage" data-caption-en="enablePpid() pushes the acid into GAM as the PPID. That is the moment the identity stops being ours alone." data-caption-pt="O enablePpid() empurra o acid para o GAM como PPID. É o momento em que a identidade deixa de ser só nossa.">
+        <div class="stage-label">GAM</div>
+        <div class="stage-data">setPublisherProvidedId(acid)</div>
+      </div>
+      </div>
+      <div class="flow-controls">
+        <button type="button" class="flow-btn" id="flow-play">
+          <span data-i18n="flow-play" data-i18n-pt="Reproduzir" data-i18n-en="Play">Play</span>
+        </button>
+        <button type="button" class="flow-btn" id="flow-step">
+          <span data-i18n="flow-step" data-i18n-pt="Avan&ccedil;ar" data-i18n-en="Step">Step</span>
+        </button>
+        <p class="flow-caption" id="flow-caption" role="status" aria-live="polite">Step 1 of 5 &#8212; The page registers a listener on the CMP. Nothing has been asked of the visitor yet — this is the bridge waiting.</p>
+      </div>
+    </section>
+    <section class="card" aria-label="Where this stops today">
+      <h2 data-i18n="caveat-title" data-i18n-pt="Onde isso para hoje, no Brasil" data-i18n-en="Where this stops today, in Brazil">Where this stops today, in Brazil</h2>
+      <p data-i18n="caveat-1" data-i18n-pt="Medido em 15/09/2026, de S&atilde;o Paulo: o CMP invoca o listener exatamente uma vez, com gdprApplies: false, sem objeto de purposes e sem tcString. Nenhum banner &eacute; renderizado, porque o CMP decide corretamente que o GDPR est&aacute; fora de escopo para um visitante brasileiro." data-i18n-en="Measured on 2026-09-15 from S&atilde;o Paulo: the CMP invokes the listener exactly once, with gdprApplies: false, no purpose object and no tcString. No banner is rendered, because the CMP correctly decides GDPR is out of scope for a Brazilian visitor.">Measured on 2026-09-15 from S&atilde;o Paulo: the CMP invokes the listener exactly once, with gdprApplies: false, no purpose object and no tcString. No banner is rendered, because the CMP correctly decides GDPR is out of scope for a Brazilian visitor.</p>
+      <p data-i18n="caveat-2" data-i18n-pt="A ponte filtra por eventStatus 'tcloaded' ou 'useractioncomplete', e nenhum dos dois chega. A jornada acima nunca passa do passo 1 para a nossa maior audi&ecirc;ncia. N&atilde;o &eacute; defeito do c&oacute;digo: TCF &eacute; um instrumento de GDPR, e o Brasil &eacute; regido pela LGPD, que o TCF n&atilde;o modela." data-i18n-en="The bridge filters on eventStatus 'tcloaded' or 'useractioncomplete', and neither ever arrives. The journey above never gets past stage 1 for our largest audience. This is not a defect in the code: TCF is a GDPR instrument, and Brazil is governed by the LGPD, which TCF does not model.">The bridge filters on eventStatus 'tcloaded' or 'useractioncomplete', and neither ever arrives. The journey above never gets past stage 1 for our largest audience. This is not a defect in the code: TCF is a GDPR instrument, and Brazil is governed by the LGPD, which TCF does not model.</p>
+      <p><span class="badge badge-solid">OPEN</span> <span class="badge badge-soft" data-i18n="caveat-3" data-i18n-pt="pergunta em aberto com o AdFixus" data-i18n-en="open question with AdFixus">open question with AdFixus</span></p>
+    </section>
+"""
+
 QUIZ_BODY = """\
       <div id="quiz-levels">
       <div class="quiz-level" data-level="tier-1" data-level-label="Basic" data-level-hint="review what the feature does">
@@ -91,22 +183,77 @@ def build(kind: str, body: str) -> str:
     end = "<!-- Dynamic quiz:"
     start = html.index(marker)
     end_idx = html.index(end)
-    html = html[:start] + marker + "\n         (mechanically generated by build-demo.py)\n\n" + body + "\n\n    " + html[end_idx:]
+    # The marker is the OPENING of an HTML comment. Re-emitting it without
+    # closing it swallowed every generated section into that comment — the file
+    # looked fine (18 KB, "OK") and rendered an empty shell. Close it here.
+    html = (
+        html[:start]
+        + marker
+        + "\n         (mechanically generated by build-demo.py) -->\n\n"
+        + body
+        + "\n\n    "
+        + html[end_idx:]
+    )
     return html
 
 
+COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
+
+
+def verify(kind: str, html: str) -> None:
+    """Assert the content actually survives outside HTML comments.
+
+    Writing bytes is not evidence that a browser will show them. This checks
+    the rendered-visible portion, which is the only thing a reader gets.
+    """
+    if html.count("<!--") != html.count("-->"):
+        raise SystemExit(f"FAIL {kind}: unbalanced HTML comments — content would be swallowed")
+
+    visible = COMMENT.sub("", html)
+    expected = {
+        "report": [("section class=\"card\"", 5), ("<table", 1)],
+        "quiz": [("quiz-level\"", 4), ("quiz-opt", 12)],
+        "animation": [("flow-stage\"", 4), ("data-caption-en", 4), ("flow-arrow", 3)],
+        "consent": [("flow-stage\"", 5), ("data-caption-en", 5), ("flow-arrow", 4)],
+    }[kind]
+    for needle, minimum in expected:
+        found = visible.count(needle)
+        if found < minimum:
+            raise SystemExit(
+                f"FAIL {kind}: expected >= {minimum} of {needle!r} outside comments, found {found}"
+            )
+    print(f"   verified: {kind} content is visible (not inside a comment)")
+
+
 def main() -> None:
-    os.makedirs(os.path.join(ROOT, "reports"), exist_ok=True)
-    os.makedirs(os.path.join(ROOT, "quizzes"), exist_ok=True)
+    # The site serves docs/public/demos, so that is where a rendered demo
+    # lives — full stop. Keeping a second copy under skills-artifacts meant two
+    # byte-identical files in git and a guarantee they would drift.
+    out = os.path.join(os.path.dirname(ROOT), "docs", "public", "demos")
+    os.makedirs(out, exist_ok=True)
     report = build("report", REPORT_BODY)
     quiz = build("quiz", QUIZ_BODY)
-    report_path = os.path.join(ROOT, "reports", "demo-report.html")
-    quiz_path = os.path.join(ROOT, "quizzes", "demo-quiz.html")
+    animation = build("animation", ANIMATION_BODY)
+    consent = build("consent", CONSENT_BODY)
+    # Verify before writing: an artifact that fails the check must never reach
+    # disk, or the next reader inherits a file that looks delivered.
+    verify("report", report)
+    verify("quiz", quiz)
+    verify("animation", animation)
+    verify("consent", consent)
+    report_path = os.path.join(out, "demo-report.html")
+    quiz_path = os.path.join(out, "demo-quiz.html")
+    animation_path = os.path.join(out, "demo-animation.html")
+    consent_path = os.path.join(out, "demo-consent-journey.html")
     with open(report_path, "w", encoding="utf-8") as fh:
         fh.write(report)
     with open(quiz_path, "w", encoding="utf-8") as fh:
         fh.write(quiz)
-    for p in (report_path, quiz_path):
+    with open(animation_path, "w", encoding="utf-8") as fh:
+        fh.write(animation)
+    with open(consent_path, "w", encoding="utf-8") as fh:
+        fh.write(consent)
+    for p in (report_path, quiz_path, animation_path, consent_path):
         size = os.path.getsize(p)
         print(f"OK {p} ({size} bytes)")
 

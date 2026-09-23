@@ -43,15 +43,15 @@ The rule is: **if the process depends on the agent's goodwill, it won't happen**
 
 > "Completion requires recorded evidence (commands executed, expected vs. actual). Never claim 'done' without proof."
 
-## The AgEnFK gatekeeper as a living example
+## The gatekeeper as a living example
 
-AgEnFK takes this to the workflow level:
+A workflow engine takes this to the process level. The three rules that matter, whatever implements them:
 
 - **Mandatory active item**: edits outside an in-progress item are blocked by the gatekeeper.
-- **DONE unreachable by shortcut**: there is no direct transition to DONE — only via `validate_progress` in the final step of the flow, with evidence.
-- **Test as a step**: the item goes through a test state (`log-test PASSED/FAILED`) before completing.
+- **DONE unreachable by shortcut**: there is no direct transition to DONE — only through the final step of the flow, with evidence.
+- **Test as a step**: the item goes through a test state (recorded PASSED/FAILED) before completing.
 
-We saw this in practice in story A1: the agent tried to mark DONE and the workflow **violated the rule** — the response was to move to the correct flow, run the build, record the test and only then complete. The overreach ("I finished") was intercepted by the harness, not by common sense.
+We saw this in practice in story A1: the agent tried to mark DONE and the workflow **refused** — the response was to move to the correct flow, run the build, record the test and only then complete. The overreach ("I finished") was intercepted by the harness, not by common sense.
 
 ## Time scope counts too
 

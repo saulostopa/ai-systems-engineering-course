@@ -46,7 +46,7 @@ In the graph, the agent that **writes** is not the same one that **reviews**. Th
 - the reviewer breaks the self-deception;
 - the reviewer's evidence is recorded as a flow step.
 
-In AgEnFK, this is native: the `code` and `review` phases are separate steps, and the item only advances with each one's validation. The minimal "graph" of an AgEnFK item is already: plan → code → test → review → close.
+In a workflow engine this is native: the `code` and `review` phases are separate steps, and the item only advances with each one's validation. The minimal "graph" of a managed item is already: plan → code → test → review → close.
 
 ## How the harness governs the graph
 

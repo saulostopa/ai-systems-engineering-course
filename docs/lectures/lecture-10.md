@@ -55,7 +55,7 @@ The e2e asks "does the flow work?"; agentic navigation asks "is the app acceptab
 
 ## At Webmotors — the real case
 
-Our own ecosystem has the pattern in production: `webmotors-harness-factory` blocks frontend commits without E2E; `harness-agent-skills` delivers the skill that writes and reviews those tests; AgEnFK records the result as a flow step (test PASSED before DONE). The entire course is built on this same loop — every lesson ends with verification, and the site only goes up if the build passes.
+Our own ecosystem has the pattern in production: `webmotors-harness-factory` blocks frontend commits without E2E; `harness-agent-skills` delivers the skill that writes and reviews those tests; the workflow records the result as a flow step (test PASSED before DONE). The entire course is built on this same loop — every lesson ends with verification, and the site only goes up if the build passes.
 
 ## Key takeaways
 
