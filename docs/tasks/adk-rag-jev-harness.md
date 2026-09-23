@@ -28,7 +28,7 @@ Evaluate three decisions:
 
 Jev must not generate prose, replace semantic retrieval, or become the only safety boundary. Code retains a deterministic fallback for unavailable, low-confidence or contradictory decisions.
 
-The initial implementation is available in `adk-rag-harness/`. It provides the provider-neutral contracts, deterministic retrieval policy, a dependency-free Jev adapter for TypeSafe's `/v1/systemone` contract, an optional adapter for the official `typesafe-sdk` Python package, an allowlisted adapter for the existing `rag-harness`, provider-failure fallback and twelve offline tests. The optional Google ADK runtime adapter exposes the bounded workflow as a structured `LlmAgent` tool and an `App`; install `adk-rag-harness[adk,jev-sdk]` only when running it with Google ADK and the official SDK.
+The initial implementation is available in `adk-rag-harness/`. It provides the provider-neutral contracts, deterministic retrieval policy, a dependency-free Jev adapter for TypeSafe's `/v1/systemone` contract, an optional adapter for the official `typesafe-sdk` Python package, an allowlisted adapter for the existing `rag-harness`, provider-failure fallback and twelve offline tests. The optional Google ADK runtime adapter exposes the bounded workflow as a structured `LlmAgent` tool and an `App`; `adk-rag-harness/adk_app/agent.py` is now an executable ADK entrypoint with offline demo mode enabled by default. Install `adk-rag-harness[adk,jev-sdk]` only when running it with Google ADK and the official SDK.
 
 ## Contracts
 

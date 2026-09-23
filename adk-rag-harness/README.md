@@ -24,6 +24,20 @@ https://github.com/typesafe-ai/typesafe-sdk-python. This project depends on its
 package rather than copying its source. Jev is an API service; no model weights
 are downloaded.
 
+## Run the ADK app
+
+The `adk_app/agent.py` entrypoint runs in offline demo mode by default:
+
+```bash
+pip install -e '.[adk,jev-sdk]'
+adk web
+```
+
+Open `http://localhost:8000`, select `adk_app`, and try a request such as
+`find the deployment policy`. To opt into Jev for routing, set
+`HARNESS_OFFLINE=0` and `TYPESAFE_API_KEY` before starting ADK. The Gemini
+model still requires its own ADK authentication configuration.
+
 ## Test
 
 ```bash
