@@ -9,6 +9,7 @@ from typing import Any
 from .contracts import (
     DecisionQuestion,
     DecisionProvider,
+    DecisionProviderError,
     EvidenceChunk,
     RagAdapter,
     RetrievalRequest,
@@ -47,29 +48,35 @@ class AdkRagWorkflow:
         self.policy = policy or RetrievalPolicy()
 
     def run(self, request: str) -> WorkflowResult:
-        initial = self.decisions.decide(
-            {"request": request},
-            [
-                DecisionQuestion(
-                    "needs_retrieval",
-                    "Does this request require external knowledge or repository evidence?",
-                    "noul",
-                )
-            ],
-        )
+        try:
+            initial = self.decisions.decide(
+                {"request": request},
+                [
+                    DecisionQuestion(
+                        "needs_retrieval",
+                        "Does this request require external knowledge or repository evidence?",
+                        "noul",
+                    )
+                ],
+            )
+        except DecisionProviderError:
+            return WorkflowResult(WorkflowStatus.BLOCKED, "decision provider unavailable", 0.0)
         route = self.policy.choose_route(initial)
         if route.route is RetrievalRoute.DIRECT:
             return WorkflowResult(WorkflowStatus.DIRECT, route.reason, route.confidence)
         if route.route is RetrievalRoute.CLARIFY:
             return WorkflowResult(WorkflowStatus.CLARIFY, route.reason, route.confidence)
 
-        choices = self.decisions.decide(
-            {"request": request, "route": route.route.value},
-            [
-                DecisionQuestion("collection", "Which knowledge collection should be searched?", "choice", ("docs", "code", "area")),
-                DecisionQuestion("strategy", "Which retrieval strategy should be used?", "choice", ("hybrid", "semantic", "keyword")),
-            ],
-        )
+        try:
+            choices = self.decisions.decide(
+                {"request": request, "route": route.route.value},
+                [
+                    DecisionQuestion("collection", "Which knowledge collection should be searched?", "choice", ("docs", "code", "area")),
+                    DecisionQuestion("strategy", "Which retrieval strategy should be used?", "choice", ("hybrid", "semantic", "keyword")),
+                ],
+            )
+        except DecisionProviderError:
+            return WorkflowResult(WorkflowStatus.BLOCKED, "decision provider unavailable", route.confidence)
         collection = str(choices.answer("collection").value)
         strategy = str(choices.answer("strategy").value)
         if min(choices.answer("collection").confidence, choices.answer("strategy").confidence) < self.policy.config.review_threshold:

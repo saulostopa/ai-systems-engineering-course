@@ -10,11 +10,15 @@ The intended runtime flow is:
 request → decision provider → policy code → RAG adapter → evidence gate
 ```
 
-Google ADK will own the production workflow graph and session runtime in a
-following slice. The existing `rag-harness` remains an independent subsystem.
+The dependency-free Jev adapter now targets TypeSafe's `/v1/systemone` contract
+and accepts an injected transport for offline tests. Provider errors fail closed
+in the workflow. The `RagHarnessAdapter` loads the existing `rag-harness`
+controller by an allowlisted collection and returns typed evidence without
+controlling transitions. Google ADK will own the production workflow graph and
+session runtime in a following slice.
 
 ## Test
 
 ```bash
-python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s tests -v  # 7 tests
 ```

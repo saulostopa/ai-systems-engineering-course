@@ -36,6 +36,7 @@ class DecisionResult:
     answers: dict[str, DecisionAnswer]
     provider: str = "unknown"
     model: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def answer(self, name: str) -> DecisionAnswer:
         try:
@@ -51,6 +52,10 @@ class DecisionProvider(Protocol):
         questions: list[DecisionQuestion],
     ) -> DecisionResult:
         """Return typed answers without generating workflow prose."""
+
+
+class DecisionProviderError(RuntimeError):
+    """A provider failed; callers must use a safe deterministic fallback."""
 
 
 @dataclass(frozen=True)

@@ -28,7 +28,7 @@ Evaluate three decisions:
 
 Jev must not generate prose, replace semantic retrieval, or become the only safety boundary. Code retains a deterministic fallback for unavailable, low-confidence or contradictory decisions.
 
-The initial offline implementation is available in `adk-rag-harness/`. It currently provides the provider-neutral contracts, deterministic retrieval policy, RAG adapter boundary and four offline workflow tests. The Google ADK and live Jev adapters remain the next implementation slice.
+The initial implementation is available in `adk-rag-harness/`. It provides the provider-neutral contracts, deterministic retrieval policy, a dependency-free Jev adapter for TypeSafe's `/v1/systemone` contract, an allowlisted adapter for the existing `rag-harness`, provider-failure fallback and seven offline tests. The Google ADK runtime adapter remains the next implementation slice.
 
 ## Contracts
 

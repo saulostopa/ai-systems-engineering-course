@@ -28,7 +28,7 @@ Avaliar três decisões:
 
 O Jev não deve gerar prosa, substituir a busca semântica nem ser a única barreira de segurança. O código mantém um fallback determinístico para indisponibilidade, baixa confiança ou evidências contraditórias.
 
-A implementação offline inicial está em `adk-rag-harness/`. Ela já fornece os contratos independentes do provedor, a política determinística de recuperação, a fronteira do adapter RAG e quatro testes offline do workflow. Os adapters do Google ADK e do Jev ao vivo ficam para a próxima fatia.
+A implementação inicial está em `adk-rag-harness/`. Ela fornece os contratos independentes do provedor, a política determinística de recuperação, um adapter Jev sem dependências para o contrato `/v1/systemone` da TypeSafe, um adapter com coleções permitidas para o `rag-harness` existente, fallback para falha do provedor e sete testes offline. O adapter do runtime Google ADK fica para a próxima fatia.
 
 ## Guardrails e avaliação
 
