@@ -32,6 +32,15 @@ Usar as decisões tipadas Noul, Choice e Score do Jev. Aplicar limiares no códi
 
 ## Implementação atual
 
-A primeira fatia offline está em `adk-rag-harness/`. Execute seus quatro testes com `python3 -m unittest discover -s tests -v` a partir desse diretório. Ela ainda não exige chave de API nem Google ADK.
+A fatia offline está em `adk-rag-harness/` e inclui o entrypoint do Dev UI do
+ADK. Instale com `uv sync --extra adk --extra ollama --extra jev-sdk` e inicie
+com `OLLAMA_MODEL=llama3.1:8b uv run adk web`. O padrão `HARNESS_OFFLINE=1`
+mantém os provedores de decisão e recuperação determinísticos; use
+`HARNESS_OFFLINE=0` com `TYPESAFE_API_KEY` somente ao testar o provedor Jev real.
+A [aula do Dev UI com Ollama](/pt-BR/lectures/lecture-18) traz a sequência
+completa de prompts, screenshots e checklist de evidências.
+
+Execute a suíte offline completa com `python3 -m unittest discover -s tests -v`
+a partir desse diretório. Ela não exige chave de API em nuvem.
 
 Veja o [registro da feature](/pt-BR/tasks/adk-rag-jev-harness) para as decisões e guardrails adotados.

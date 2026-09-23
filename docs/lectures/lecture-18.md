@@ -1,0 +1,170 @@
+---
+title: Lesson 18 — Running the ADK harness with Ollama
+---
+
+# Lesson 18 — Running the ADK harness with Ollama
+
+> A practical lab for `adk-rag-harness`: run the ADK Dev UI against a local
+> Ollama model, use natural-language requests, and inspect the evidence that
+> proves the workflow ran.
+
+## What this lab teaches
+
+The Dev UI is a client for the harness. It is useful for sending requests,
+starting sessions and inspecting events. It does not replace the deterministic
+workflow. The model proposes when to call a tool; `run_workflow` still applies
+the typed decision, retrieval policy and fallback rules in code.
+
+The current offline demo has two guaranteed routes:
+
+- direct requests, which answer without retrieval;
+- retrieved requests, which return the demo evidence and source reference.
+
+The real Jev provider is enabled separately with `HARNESS_OFFLINE=0` and a
+`TYPESAFE_API_KEY`. That separation makes local UI experiments safe and
+repeatable.
+
+## Prerequisites
+
+- Python 3.10 or newer;
+- [`uv`](https://docs.astral.sh/uv/);
+- [Ollama](https://ollama.com/) running locally;
+- the `adk-rag-harness/` directory checked out.
+
+Check that the model is installed:
+
+```sh
+ollama list
+```
+
+If it is missing, install it once:
+
+```sh
+ollama pull llama3.1:8b
+```
+
+Ollama Desktop may already be serving the API. If it is not, start the local
+server in another terminal:
+
+```sh
+ollama serve
+```
+
+The default API is `http://localhost:11434`. A quick health check is:
+
+```sh
+curl -fsS http://127.0.0.1:11434/api/tags
+```
+
+## Install and start the harness
+
+Use `uv` for both installation and execution. This keeps the `adk` command in
+the project environment, so a global `pip` or `adk` installation is not needed.
+
+```sh
+cd adk-rag-harness
+uv sync --extra adk --extra ollama --extra jev-sdk
+OLLAMA_MODEL=llama3.1:8b uv run adk web
+```
+
+Open [http://127.0.0.1:8000/dev-ui/?app=adk_app](http://127.0.0.1:8000/dev-ui/?app=adk_app)
+and select `adk_app`. Keep the terminal running while using the UI. Restart
+`adk web` after changing Python code or environment variables.
+
+The ADK integration uses LiteLLM's `ollama_chat` provider. The model must be
+able to call tools; `llama3.1:8b` is the course default because it completed the
+tool-call path in this lab. A model answering text without calling
+`run_workflow` has not exercised the harness.
+
+## Natural-language prompts for the demonstration
+
+Paste one prompt at a time into the message box. No special command syntax is
+required.
+
+| Prompt | What it demonstrates | Expected route |
+|---|---|---|
+| `Write a short greeting for a course participant.` | A request that does not need repository evidence | Direct |
+| `Find the deployment policy in the course documentation and summarize the evidence.` | A request that needs retrieval and a source reference | Retrieved |
+| `Search the repository for the rule that controls whether a request needs external evidence.` | Retrieval-oriented language rather than a function name | Retrieved |
+| `I need an answer about the project architecture. Which collection should be searched and why?` | Asking for a retrieval policy in natural language | Retrieved |
+| `Answer only when the repository evidence is sufficient; otherwise explain what is missing.` | The desired contract for a guarded answer | Guarded answer |
+
+The first two prompts are the reliable smoke test for the current demo. The
+last prompt describes the low-confidence contract; its complete behavior is
+covered by the decision-policy tests and becomes meaningful when the real Jev
+and RAG providers are enabled.
+
+## How to read the Dev UI
+
+### Events
+
+The Events view shows the user message, the model's tool call, the
+`run_workflow` result and the final response. A successful retrieval example
+looks like:
+
+```text
+user request
+  → run_workflow("find the deployment policy")
+  → evidence, route and confidence
+  → final answer with the source reference
+```
+
+![ADK Dev UI events showing the retrieval workflow](/images/adk-rag-ollama-events.png)
+
+### Traces
+
+The Traces view proves which provider was used and where time was spent. For
+this setup, look for `generate_content ollama...`, `run_workflow`, latency and
+token counts. The expected shape is:
+
+```text
+adk_rag_router
+├── call_llm → generate_content ollama...
+├── run_workflow
+└── call_llm → generate_content ollama...
+```
+
+![ADK Dev UI traces showing Ollama calls and workflow execution](/images/adk-rag-ollama-traces.png)
+
+![ADK Dev UI first successful local run](/images/adk-rag-ollama-first-run.png)
+
+### State, Artifacts and Evals
+
+- **State** shows the session state passed between steps.
+- **Artifacts** is where a future implementation can expose generated files
+  or evidence bundles.
+- **Evals** is the place to add golden requests and compare routing, evidence
+  and answer quality. A green chat response alone is not an evaluation.
+
+## Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| `command not found: adk` | Run `uv run adk web` from `adk-rag-harness`. |
+| The model is not called | Confirm Ollama is reachable and use a tool-capable model. |
+| `ollama ps` is empty after the answer | The model may have been unloaded; inspect it during an active request or run `ollama list`. |
+| The UI opens but the app is missing | Start the server from the repository root with the app directory available, then refresh. |
+| The route is always a demo route | This is expected with the default `HARNESS_OFFLINE=1`. Set `HARNESS_OFFLINE=0` and provide `TYPESAFE_API_KEY` only when testing Jev. |
+| The trace does not show Ollama | Confirm `OLLAMA_MODEL` and `OLLAMA_API_BASE`, then restart `adk web`. |
+
+## Evidence checklist
+
+Before considering the lab complete, capture:
+
+1. the model present in `ollama list`;
+2. an Events view with a tool call and final answer;
+3. a Traces view containing `generate_content ollama` and `run_workflow`;
+4. the exact natural-language prompt used;
+5. the route, confidence and source reference returned by the workflow.
+
+## Check your learning
+
+```text
+"quiz me on Lesson 18"
+```
+
+**Back to theory**: [16 — ADK 2](/lectures/lecture-16) · [17 — Building a Hard Harness](/lectures/lecture-17)
+
+**Project lab**: [Project 06 — ADK + RAG + Jev harness](/projects/project-06)
+
+**Official references**: [ADK Ollama integration](https://adk.dev/agents/models/ollama/) · [ADK web interface](https://adk.dev/runtime/web-interface/)

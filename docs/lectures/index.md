@@ -25,6 +25,7 @@ harness engineering by consuming the artifacts the harness produces.
 | 15 | [From Markdown to an executable runtime](/lectures/lecture-15) | Instruction vs. contract vs. control; why the agent is not the authority. |
 | 16 | [ADK 2 and the three orchestration patterns](/lectures/lecture-16) | Graph, Collaborative and Dynamic — who decides the next step. |
 | 17 | [Building a Hard Harness](/lectures/lecture-17) | The `hard-harness/` component: graph, schemas, gates, persistence. |
+| 18 | [Running the ADK harness with Ollama](/lectures/lecture-18) | Local model setup, natural-language prompts, Dev UI events and traces. |
 
 ::: tip How to study
 Each lesson ends with the quiz instruction — ask your agent:

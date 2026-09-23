@@ -52,6 +52,15 @@ adk-rag-harness/
 
 ## Current implementation
 
-The first offline slice is available in `adk-rag-harness/`. Run its four tests with `python3 -m unittest discover -s tests -v` from that directory. It does not require an API key or Google ADK yet.
+The offline slice is available in `adk-rag-harness/` and includes the ADK Dev UI
+entrypoint. Install it with `uv sync --extra adk --extra ollama --extra jev-sdk`
+and start it with `OLLAMA_MODEL=llama3.1:8b uv run adk web`. The default
+`HARNESS_OFFLINE=1` keeps decision and retrieval providers deterministic; set
+`HARNESS_OFFLINE=0` with `TYPESAFE_API_KEY` only when testing the real Jev
+provider. The [Ollama Dev UI lesson](/lectures/lecture-18) contains the complete
+prompt sequence, screenshots and evidence checklist.
+
+Run the full offline suite with `python3 -m unittest discover -s tests -v` from
+that directory. It does not require a cloud API key.
 
 See the [feature record](/tasks/adk-rag-jev-harness) for the adopted decisions and guardrails.
