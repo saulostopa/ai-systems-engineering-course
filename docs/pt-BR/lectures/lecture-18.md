@@ -107,6 +107,16 @@ fonte da evidência e comportamento de bloqueio/solicitação de esclarecimento.
 Elas não comparam o texto gerado, evitando falhas falsas por uma pequena mudança
 de redação.
 
+Depois que o contrato offline passar, exercite o caminho do modelo real com
+Ollama:
+
+```sh
+HARNESS_OFFLINE=1 OLLAMA_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.py
+```
+
+Essa verificação opt-in falha se o modelo não chamar `run_workflow`, retornar a
+rota errada ou produzir uma recuperação sem evidência.
+
 ## Como ler o Dev UI
 
 ### Events

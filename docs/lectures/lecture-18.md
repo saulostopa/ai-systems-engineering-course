@@ -105,6 +105,15 @@ The evals compare route, RAG call count, collection, strategy, evidence source
 and blocked/clarification behavior. They do not compare generated prose, so a
 small wording change does not create a false failure.
 
+After the offline contract passes, exercise the real model path with Ollama:
+
+```sh
+HARNESS_OFFLINE=1 OLLAMA_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.py
+```
+
+This opt-in check fails if the model does not call `run_workflow`, returns the
+wrong route, or produces a retrieval result without evidence.
+
 ## How to read the Dev UI
 
 ### Events

@@ -57,6 +57,18 @@ These evals use scripted decision and RAG providers, so they do not require
 Ollama, Jev, Google ADK or network access. Provider-backed evals belong in a
 separate integration job after the offline contract is stable.
 
+To exercise the actual ADK, LiteLLM and Ollama path, run the opt-in integration
+check while Ollama is serving `llama3.1:8b`:
+
+```bash
+HARNESS_OFFLINE=1 OLLAMA_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.py
+```
+
+It fails if Ollama does not call `run_workflow`, if the tool result has the
+wrong route, or if a retrieved result has no evidence. It is intentionally
+separate from the default suite because it needs a running local model and can
+take several seconds per prompt.
+
 ## Test
 
 ```bash
