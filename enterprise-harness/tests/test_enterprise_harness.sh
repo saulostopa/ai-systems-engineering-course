@@ -11,6 +11,13 @@ PASS=0; FAIL=0
 _pass() { printf 'PASS %s\n' "$1"; PASS=$((PASS + 1)); }
 _fail() { printf 'FAIL %s — %s\n' "$1" "$2"; FAIL=$((FAIL + 1)); }
 
+# BSD sed (macOS) requires a backup suffix for in-place edits, while GNU sed
+# accepts an empty suffix. Use a temporary backup so the suite behaves the same
+# on both platforms.
+replace_in_place() {
+  sed -i.bak "$1" "$2" && rm -f "$2.bak"
+}
+
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -142,7 +149,7 @@ t_plan_new_refuses_to_overwrite() {
 
 t_plan_done_refuses_pending_evidence() {
   local p="$ROOT/alpha/docs/exec-plans/active/feature-OEM-123.md"
-  sed -i 's/^| | | |$/| npm test | green | _pending_ |/' "$p"
+  replace_in_place 's/^| | | |$/| npm test | green | _pending_ |/' "$p"
   if ( cd "$ROOT/alpha" && "$WM" plan done feature/OEM-123 >/dev/null 2>&1 ); then
     _fail "${FUNCNAME[0]}" "archived a plan whose evidence was still pending"
   else
@@ -154,7 +161,7 @@ t_plan_done_requires_the_artifacts_the_flow_declares() {
   # feature-default declares a diagram. Without it the delivery is incomplete,
   # and the harness says so instead of trusting anyone to remember.
   local p="$ROOT/alpha/docs/exec-plans/active/feature-OEM-123.md"
-  sed -i 's/| npm test | green | _pending_ |/| npm test | green | 4 passed |/' "$p"
+  replace_in_place 's/| npm test | green | _pending_ |/| npm test | green | 4 passed |/' "$p"
   if ( cd "$ROOT/alpha" && "$WM" plan done feature/OEM-123 >/dev/null 2>&1 ); then
     _fail "${FUNCNAME[0]}" "archived a plan with no delivery artifacts"
   else
@@ -178,7 +185,7 @@ t_plan_done_names_each_missing_artifact() {
 t_hotfix_flow_owes_no_artifact() {
   # An incident should not wait on a diagram — the flow declares artifacts: [].
   local p="$ROOT/beta/docs/exec-plans/active/hotfix-AC-455.md"
-  sed -i 's/^| | | |$/| pytest | regression red then green | 1 passed |/' "$p"
+  replace_in_place 's/^| | | |$/| pytest | regression red then green | 1 passed |/' "$p"
   if ( cd "$ROOT/beta" && "$WM" plan done hotfix/AC-455 >/dev/null 2>&1 ); then
     _pass "${FUNCNAME[0]}"
   else
@@ -227,13 +234,13 @@ t_check_surfaces_a_broken_repo() {
 }
 
 t_check_catches_a_flow_that_no_longer_exists() {
-  sed -i 's/^flow: .*/flow: retired-flow/' "$ROOT/beta/.harness/config.yaml"
+  replace_in_place 's/^flow: .*/flow: retired-flow/' "$ROOT/beta/.harness/config.yaml"
   if "$WM" check "$ROOT/beta" >/dev/null 2>&1; then
     _fail "${FUNCNAME[0]}" "accepted a config pointing at a flow the orchestrator does not have"
   else
     _pass "${FUNCNAME[0]}"
   fi
-  sed -i 's/^flow: .*/flow: hotfix/' "$ROOT/beta/.harness/config.yaml"
+  replace_in_place 's/^flow: .*/flow: hotfix/' "$ROOT/beta/.harness/config.yaml"
 }
 
 t_report_aggregates_across_projects() {

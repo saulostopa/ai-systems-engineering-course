@@ -23,6 +23,12 @@ HOME_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 VERSION="$(cat "$HOME_DIR/VERSION" 2>/dev/null || echo "0.0.0-dev")"
 
+# BSD sed (macOS) requires a backup suffix for in-place edits, while GNU sed
+# accepts an empty suffix. Keep the CLI portable without leaving backup files.
+replace_in_place() {
+  sed -i.bak "$1" "$2" && rm -f "$2.bak"
+}
+
 usage() { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; }
 
 # ── adopt ───────────────────────────────────────────────────────────────
@@ -228,7 +234,7 @@ cmd_plan() {
           esac
         done < <(flow_items "$(flow_file "$flow")" artifacts)
       fi
-      sed -i 's/^status:[[:space:]]*.*$/status: done/' "$src"
+      replace_in_place 's/^status:[[:space:]]*.*$/status: done/' "$src"
       mkdir -p "$repo/docs/exec-plans/done"
       mv "$src" "$repo/docs/exec-plans/done/${slug}.md"
       ok "archived to docs/exec-plans/done/${slug}.md"
