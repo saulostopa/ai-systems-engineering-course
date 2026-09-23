@@ -20,7 +20,7 @@ from adk_rag_harness.workflow import AdkRagWorkflow
 
 
 OLLAMA_API_BASE = os.getenv("OLLAMA_API_BASE", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma3:latest")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 os.environ.setdefault("OLLAMA_API_BASE", OLLAMA_API_BASE)
 
 

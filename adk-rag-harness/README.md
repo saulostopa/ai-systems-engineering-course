@@ -36,7 +36,7 @@ uv run adk web
 Open `http://localhost:8000`, select `adk_app`, and try a request such as
 `find the deployment policy`. The app uses Ollama by default through
 `http://localhost:11434` and the
-`gemma3:latest` model. Set `OLLAMA_MODEL` to another locally installed model
+`llama3.1:8b` model. Set `OLLAMA_MODEL` to another locally installed model
 when needed. `HARNESS_OFFLINE=0` and `TYPESAFE_API_KEY` enable Jev for routing.
 
 ```bash
