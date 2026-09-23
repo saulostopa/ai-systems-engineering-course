@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import urllib.error
 import urllib.request
 
 DIM = 256
@@ -61,18 +62,33 @@ class OllamaEmbedder:
     def embed(self, text: str) -> list[float]:
         if not self._available():
             raise RuntimeError("Ollama unavailable")
+        headers = {"Content-Type": "application/json"}
+
+        # `/api/embed` is the current Ollama endpoint and accepts `input`.
+        payload = json.dumps({"model": self.model, "input": text}).encode("utf-8")
+        req = urllib.request.Request(f"{self.api_url}/api/embed", data=payload, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                data = json.loads(res.read())
+            return data["embeddings"][0]
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (404, 405):
+                raise
+
+        # Keep compatibility with older Ollama releases.
         payload = json.dumps({"model": self.model, "prompt": text}).encode("utf-8")
-        req = urllib.request.Request(
-            f"{self.api_url}/api/embeddings", data=payload, headers={"Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=10) as res:
+        req = urllib.request.Request(f"{self.api_url}/api/embeddings", data=payload, headers=headers)
+        with urllib.request.urlopen(req, timeout=30) as res:
             data = json.loads(res.read())
         return data["embedding"]
 
 
 def make_embedder() -> NGramEmbedder | OllamaEmbedder:
-    if os.environ.get("RAG_EMBEDDER", "").lower() == "ngram":
+    provider = os.environ.get("RAG_EMBEDDER", "").lower()
+    if provider == "ngram":
         return NGramEmbedder()
+    if provider == "ollama":
+        return OllamaEmbedder()
     try:
         ollama = OllamaEmbedder()
         if ollama._available():

@@ -151,7 +151,9 @@ O provider de recuperação é independente do provider de decisões. Crie uma v
 o índice dos documentos do curso:
 
 ```sh
-RAG_EMBEDDER=ngram PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
+ollama pull nomic-embed-text
+RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
+PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
 ```
 
 Depois inicie o app com:
@@ -162,6 +164,9 @@ HARNESS_RAG_PROVIDER=rag-harness uv run adk web
 
 O índice é local e ignorado pelo Git. Um índice ausente ou falha de recuperação
 produz `blocked`, evitando que o assistente apresente evidências inventadas.
+O modelo `nomic-embed-text` fornece embeddings semânticos pela API local do
+Ollama. Para validar a arquitetura totalmente offline, use
+`RAG_EMBEDDER=ngram`; recrie o índice ao trocar o provider de embeddings.
 
 Combine com as decisões do OpenRouter ao testar o caminho completo:
 

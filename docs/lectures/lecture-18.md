@@ -148,7 +148,9 @@ The retrieval provider is independent from the decision provider. Build the
 course-document index once:
 
 ```sh
-RAG_EMBEDDER=ngram PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
+ollama pull nomic-embed-text
+RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
+PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
 ```
 
 Then start the app with:
@@ -159,6 +161,9 @@ HARNESS_RAG_PROVIDER=rag-harness uv run adk web
 
 The index is local and ignored by Git. A missing index or retrieval failure
 produces `blocked`, so the assistant cannot present invented evidence.
+The `nomic-embed-text` model supplies semantic embeddings through the local
+Ollama API. For a fully offline architecture check, use
+`RAG_EMBEDDER=ngram`; recreate the index when changing embedding providers.
 
 Combine it with OpenRouter decisions when testing the complete path:
 

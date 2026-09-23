@@ -39,12 +39,18 @@ HARNESS_RAG_PROVIDER=rag-harness uv run adk web
 Create the course-document index before using `rag-harness`:
 
 ```bash
-RAG_EMBEDDER=ngram PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
+ollama pull nomic-embed-text
+RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
+PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
 ```
 
 The generated `docs/.rag_index/` stays local and is ignored by Git. The real
 provider returns `blocked` when the index is missing or retrieval fails, rather
 than allowing the model to invent evidence.
+
+For an offline architecture check without Ollama, use
+`RAG_EMBEDDER=ngram`. It is deterministic but less semantically expressive;
+delete and recreate the index whenever the embedding model changes.
 
 To run the complete local-evidence test with OpenRouter decisions:
 
