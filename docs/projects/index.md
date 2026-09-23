@@ -11,6 +11,7 @@ you will have a complete harness in your own repository — or in your area's.
 | [04 · Domain harness](/projects/project-04) | Playbook for games, finance or sales. |
 | [05 · Area Copilot with RAG](/projects/project-05) | Your area's context available to the agent. |
 | [06 · ADK + RAG + Jev harness](/projects/project-06) | Typed decisions route retrieval inside a deterministic ADK workflow. |
+| [06B · ADK RAG with PostgreSQL](/projects/project-06-postgres) | PostgreSQL + pgvector reference harness for larger teams. |
 | [07 · Enterprise harness](/projects/project-07) | One stateless orchestrator manages multiple adopted repositories. |
 
 ::: tip How to study
