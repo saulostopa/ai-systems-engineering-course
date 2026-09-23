@@ -50,4 +50,8 @@ adk-rag-harness/
 - Low confidence and provider errors take a tested safe path.
 - Evaluation reports routing accuracy, retrieval quality, citation completeness, latency, cost and fallback rate.
 
+## Current implementation
+
+The first offline slice is available in `adk-rag-harness/`. Run its four tests with `python3 -m unittest discover -s tests -v` from that directory. It does not require an API key or Google ADK yet.
+
 See the [feature record](/tasks/adk-rag-jev-harness) for the adopted decisions and guardrails.

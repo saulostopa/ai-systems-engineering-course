@@ -4,7 +4,7 @@ title: Feature — ADK + RAG + Jev harness
 
 # Feature — ADK + RAG + Jev harness
 
-Status: **planned** · Owner: Harness Foundation Course · Target: Project 06
+Status: **active** · Owner: Harness Foundation Course · Target: Project 06
 
 ## Decision
 
@@ -27,6 +27,8 @@ Evaluate three decisions:
 3. Is the returned evidence sufficient to answer?
 
 Jev must not generate prose, replace semantic retrieval, or become the only safety boundary. Code retains a deterministic fallback for unavailable, low-confidence or contradictory decisions.
+
+The initial offline implementation is available in `adk-rag-harness/`. It currently provides the provider-neutral contracts, deterministic retrieval policy, RAG adapter boundary and four offline workflow tests. The Google ADK and live Jev adapters remain the next implementation slice.
 
 ## Contracts
 

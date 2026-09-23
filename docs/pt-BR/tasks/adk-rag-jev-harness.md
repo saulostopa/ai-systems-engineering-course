@@ -4,7 +4,7 @@ title: Feature — harness ADK + RAG + Jev
 
 # Feature — harness ADK + RAG + Jev
 
-Statuso: **planejado** · Responsável: Harness Foundation Course · Alvo: Projeto 06
+Statuso: **ativo** · Responsável: Harness Foundation Course · Alvo: Projeto 06
 
 ## Decisão
 
@@ -27,6 +27,8 @@ Avaliar três decisões:
 3. As evidências retornadas são suficientes para responder?
 
 O Jev não deve gerar prosa, substituir a busca semântica nem ser a única barreira de segurança. O código mantém um fallback determinístico para indisponibilidade, baixa confiança ou evidências contraditórias.
+
+A implementação offline inicial está em `adk-rag-harness/`. Ela já fornece os contratos independentes do provedor, a política determinística de recuperação, a fronteira do adapter RAG e quatro testes offline do workflow. Os adapters do Google ADK e do Jev ao vivo ficam para a próxima fatia.
 
 ## Guardrails e avaliação
 

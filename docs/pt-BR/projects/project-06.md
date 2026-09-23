@@ -30,4 +30,8 @@ Usar as decisões tipadas Noul, Choice e Score do Jev. Aplicar limiares no códi
 - Baixa confiança e erros do provedor seguem um caminho seguro testado.
 - A avaliação informa precisão do roteamento, qualidade da recuperação, citações, latência, custo e fallback.
 
+## Implementação atual
+
+A primeira fatia offline está em `adk-rag-harness/`. Execute seus quatro testes com `python3 -m unittest discover -s tests -v` a partir desse diretório. Ela ainda não exige chave de API nem Google ADK.
+
 Veja o [registro da feature](/pt-BR/tasks/adk-rag-jev-harness) para as decisões e guardrails adotados.
