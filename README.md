@@ -62,40 +62,29 @@ preserved fixture data, historical examples, or source quotations.
 - Localized learner content was originally tracked in
   [docs/tasks/course-internationalization.md](docs/tasks/course-internationalization.md).
 
-## Extra environments
+## Runnable harness projects
 
-### 3. Artifacts intranet (RAG search)
+The executable harnesses are maintained in the separate
+[standalone catalog](https://github.com/saulostopa/harnesses). Clone that
+repository when you want to install or run a harness without the course site.
+Each project has its own README with dependencies, configuration and tests.
 
-```sh
-cd artifacts-intranet
-python3 -m artifacts_intranet.server --port 8765 --reindex
-# → http://localhost:8765
-```
-
-### 4. Pilots / live demo
+### 3. Pilots / live demo
 
 Follow `pilots/g4-metrics/DEMO.md` — 6 blocks of 2-3 minutes with the real
 commands (basic harness, app, Area Copilot, intranet, skills, RAG).
 
-### 5. Tests and evaluations
-
-```sh
-cd rag-harness && python3 tests/test_rag.py          # 7 RAG engine tests
-cd area-copilot && python3 tests/test_area.py        # 3 Area Copilot tests
-cd artifacts-intranet && python3 tests/test_intranet.py  # 3 intranet tests
-cd rag-harness && python3 -m rag_harness eval ../harness-basic   # precision@k
-cd hard-harness && PYTHONPATH=. python3 tests/test_hard_harness.py   # 19 core tests
-harness-basic/tests/test_skill_guard.sh              # 13 skill gate tests
-```
-
-### 6. Installing an external skill
+### 4. Installing an external skill
 
 No third-party skill gets in without passing the scanner
 ([SkillSpector](https://github.com/NVIDIA/SkillSpector), NVIDIA):
 
+After cloning the standalone catalog beside this repository, run the scanner
+from the course root:
+
 ```sh
-harness-basic/scripts/gate-skill-scan.sh https://github.com/user/skill   # scan BEFORE downloading
-harness-basic/scripts/gate-skill-scan.sh --all                          # all skills in the repo
+../harnesses/harness-basic/scripts/gate-skill-scan.sh https://github.com/user/skill   # scan BEFORE downloading
+../harnesses/harness-basic/scripts/gate-skill-scan.sh --all                          # all skills in the repo
 ```
 
 Blocks score > 50 (exit 1). Requires Docker — the image is built on the
@@ -107,16 +96,10 @@ first run. See `docs/skills/skill-guard.md` and
 | Folder | What it is |
 |---|---|
 | `docs/` | The course site (lessons, projects, library, designs) |
-| `harness-basic/` | Installable basic harness (templates + gates) |
-| `app-harness/` | App harness: E2E gate + agentic navigation skill |
-| `rag-harness/` | Hybrid RAG engine (AST chunks, cache, RRF, agent) |
-| `area-copilot/` | Business-context RAG (cited sources) |
-| `domains/` | Multi-domain playbooks (games, finance, commercial) |
 | `skills-artifacts/` | v2 artifact skills + quiz (Eleanor, a11y, adaptive) |
-| `artifacts-intranet/` | Intranet with RAG search over the artifacts |
 | `templates/` | Template package for the basic harness |
 | `pilots/` | Evidence from pilots G1–G4 + final demo |
-| `hard-harness/` | Executable orchestration: graph, schemas, gates, persistence (19 tests) |
+| [Standalone harness catalog](https://github.com/saulostopa/harnesses) | Runnable basic, App, RAG, domain, ADK, PostgreSQL and enterprise harnesses |
 
 ## Workflow
 

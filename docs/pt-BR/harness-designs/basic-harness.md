@@ -5,7 +5,7 @@ title: Harness básico (download)
 # Harness básico (download)
 
 > O pacote que qualquer projeto pequeno baixa e roda em minutos. Versionado em
-> `harness-basic/` na raiz deste repositório.
+> A implementação executável está publicada no [catálogo standalone de harnesses](https://github.com/saulostopa/harnesses/tree/main/harness-basic).
 
 ## Para quem é
 
@@ -38,7 +38,8 @@ harness-basic/
 ## Instalação
 
 ```sh
-git clone <este repo>              # ou copie a pasta harness-basic/
+git clone https://github.com/saulostopa/harnesses.git
+cd harnesses
 cd <seu-projeto>                   # repo git existente
 ./harness-basic/install.sh <seu-projeto>
 ./init.sh                          # valida o ambiente e imprime próximos passos

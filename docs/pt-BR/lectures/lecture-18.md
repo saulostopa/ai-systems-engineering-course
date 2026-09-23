@@ -35,7 +35,7 @@ repetíveis.
 - Python 3.10 ou mais recente;
 - [`uv`](https://docs.astral.sh/uv/);
 - [Ollama](https://ollama.com/) rodando localmente;
-- o diretório `adk-rag-harness/` disponível.
+- o [projeto standalone `adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) disponível.
 
 Confira se o modelo está instalado:
 
@@ -68,6 +68,7 @@ Use `uv` tanto para instalar quanto para executar. Assim o comando `adk` fica
 no ambiente do projeto, sem depender de uma instalação global de `pip` ou `adk`.
 
 ```sh
+git clone https://github.com/saulostopa/harnesses.git
 cd adk-rag-harness
 uv sync --extra adk --extra ollama --extra jev-sdk
 OLLAMA_MODEL=llama3.1:8b uv run adk web

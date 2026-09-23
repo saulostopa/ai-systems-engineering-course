@@ -32,8 +32,8 @@ Usar as decisões tipadas Noul, Choice e Score do Jev. Aplicar limiares no códi
 
 ## Implementação atual
 
-A fatia local está em `adk-rag-harness/` e inclui o entrypoint do Dev UI do
-ADK. Instale com `uv sync --extra adk --extra ollama --extra jev-sdk` e inicie
+A fatia local está no [projeto standalone `adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) e inclui o entrypoint do Dev UI do
+ADK. Depois de clonar o catálogo standalone, instale com `uv sync --extra adk --extra ollama --extra jev-sdk` e inicie
 com `uv run adk web`. O modelo de conversa padrão é `llama3.1:8b`; o provider
 de decisão tipada é o `ollama-system-one` local usando `qwen2.5:14b`.
 Defina `HARNESS_RAG_PROVIDER=rag-harness` depois de criar o índice local do

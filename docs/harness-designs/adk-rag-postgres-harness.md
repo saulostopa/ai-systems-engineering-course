@@ -35,7 +35,7 @@ allowed collections and strategies, stable ordering, thresholds and `blocked`.
 ## Reference project
 
 The implementation is available in
-[`adk-rag-postgres-harness`](https://github.com/svslwm/harness-plannig/tree/develop/adk-rag-postgres-harness).
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-postgres-harness).
 See [Project 06B](/projects/project-06-postgres) for Docker, migrations,
 ingestion and local Ollama embedding commands.
 

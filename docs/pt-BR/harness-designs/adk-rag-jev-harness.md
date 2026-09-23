@@ -32,7 +32,7 @@ evidência é insuficiente, impedindo uma resposta sem suporte.
 ## Projeto de referência
 
 A implementação está disponível em
-[`adk-rag-harness`](https://github.com/svslwm/harness-plannig/tree/develop/adk-rag-harness).
+[`adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness).
 O [projeto ADK + RAG + Jev](/pt-BR/projects/project-06) explica instalação,
 providers, prompts e avaliações.
 

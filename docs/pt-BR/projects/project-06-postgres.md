@@ -18,9 +18,10 @@ implementação recomendada para o curso e projetos pequenos.
 ## Baixar e executar
 
 O projeto de referência está disponível no repositório em
-[`adk-rag-postgres-harness`](https://github.com/svslwm/harness-plannig/tree/develop/adk-rag-postgres-harness).
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-postgres-harness).
 
 ```bash
+git clone https://github.com/saulostopa/harnesses.git
 cd adk-rag-postgres-harness
 uv sync --extra postgres
 docker compose up -d postgres
@@ -33,7 +34,7 @@ Ingira uma coleção usando embeddings semânticos locais:
 ollama pull nomic-embed-text
 RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
 PYTHONPATH=.:../rag-harness \
-uv run python -m adk_rag_postgres_harness.cli ingest ../docs --collection docs
+uv run python -m adk_rag_postgres_harness.cli ingest /caminho/para/seu-repositorio --collection docs
 ```
 
 O banco armazena a fonte, os limites do chunk, os metadados e o embedding. A

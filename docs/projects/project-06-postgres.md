@@ -18,9 +18,10 @@ small projects.
 ## Download and run
 
 The reference project is available in the repository under
-[`adk-rag-postgres-harness`](https://github.com/svslwm/harness-plannig/tree/develop/adk-rag-postgres-harness).
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-postgres-harness).
 
 ```bash
+git clone https://github.com/saulostopa/harnesses.git
 cd adk-rag-postgres-harness
 uv sync --extra postgres
 docker compose up -d postgres
@@ -33,7 +34,7 @@ Ingest a collection with local semantic embeddings:
 ollama pull nomic-embed-text
 RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
 PYTHONPATH=.:../rag-harness \
-uv run python -m adk_rag_postgres_harness.cli ingest ../docs --collection docs
+uv run python -m adk_rag_postgres_harness.cli ingest /path/to/your-repository --collection docs
 ```
 
 The database stores the source, chunk boundaries, metadata and embedding. The

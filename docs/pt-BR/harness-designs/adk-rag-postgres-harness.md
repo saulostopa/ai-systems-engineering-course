@@ -36,7 +36,7 @@ estado `blocked`.
 ## Projeto de referência
 
 A implementação está disponível em
-[`adk-rag-postgres-harness`](https://github.com/svslwm/harness-plannig/tree/develop/adk-rag-postgres-harness).
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-postgres-harness).
 Veja o [Projeto 06B](/pt-BR/projects/project-06-postgres) para Docker,
 migrations, ingestão e comandos de embeddings locais com Ollama.
 

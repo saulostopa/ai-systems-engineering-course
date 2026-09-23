@@ -31,7 +31,7 @@ is insufficient, so the model cannot turn an unsupported answer into success.
 ## Reference project
 
 The implementation is available in
-[`adk-rag-harness`](https://github.com/svslwm/harness-plannig/tree/develop/adk-rag-harness).
+[`adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness).
 The [ADK + RAG + Jev project](/projects/project-06) explains installation,
 providers, prompts and evaluations.
 

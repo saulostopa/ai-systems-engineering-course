@@ -52,9 +52,10 @@ adk-rag-harness/
 
 ## Current implementation
 
-The local slice is available in `adk-rag-harness/` and includes the ADK Dev UI
+The local slice is available in the [standalone `adk-rag-harness` project](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) and includes the ADK Dev UI
 entrypoint. Install it with `uv sync --extra adk --extra ollama --extra jev-sdk`
-and start it with `uv run adk web`. The default conversation model is
+from the cloned standalone repository and start it with `uv run adk web`. The
+default conversation model is
 `llama3.1:8b`; the typed decision provider is local `ollama-system-one` using
 `qwen2.5:14b`. The [Ollama Dev UI lesson](/lectures/lecture-18) contains the
 complete prompt sequence, screenshots and evidence checklist.
