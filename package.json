@@ -12,7 +12,11 @@
   "devDependencies": {
     "vitepress": "^1.6.3"
   },
+  "overrides": {
+    "vite": "6.4.3",
+    "esbuild": "0.25.12"
+  },
   "allowScripts": {
-    "esbuild@0.21.5": true
+    "esbuild@0.25.12": true
   }
 }
