@@ -1,80 +1,85 @@
 ---
-title: Aula 08 — Feature lists como primitivas de harness
+title: Lesson 08 — Feature lists as harness primitives
 ---
 
-# Aula 08 — Feature lists como primitivas de harness
+# Lesson 08 — Feature lists as harness primitives
 
-> O que o agente deve fazer é a pergunta mais básica do harness. A resposta é uma lista com estado.
+> What the agent should do is the most basic question of the harness. The answer is a list with state.
 
-## Por que uma lista com estado
+## Why a list with state
 
-Um prompt diz "implemente a feature X". Mas o mundo real tem 40 features, 12 em andamento, 5 bloqueadas e uma fila de bugs. O agente precisa de uma estrutura que responda, a qualquer momento:
+A prompt says "implement feature X". But the real world has 40 features, 12 in progress, 5 blocked and a queue of bugs. The agent needs a structure that answers, at any moment:
 
-- O que existe para fazer?
-- Qual é o estado de cada uma?
-- Qual é a prioridade?
-- O que está bloqueado e por quê?
+- What is there to do?
+- What is the state of each one?
+- What is the priority?
+- What is blocked and why?
 
-Essa estrutura é a **feature list**: um arquivo versionado (tipicamente JSON) onde cada feature tem identificador, título, descrição, estado e prioridade.
+That structure is the **feature list**: a versioned file (typically JSON) where each feature has an identifier, title, description, state and priority.
 
-## O `feature_list.json` do factory
+## The factory's `feature_list.json`
 
-O `webmotors-harness-factory` usa exatamente esse padrão:
+The `webmotors-harness-factory` uses exactly this pattern:
 
 ```json
 {
   "status": "not_started",
-  "id": "feature-001",
-  "title": "Landing page do grupo de carros",
+  "id": "feature/OEM-123",
+  "title": "Car group landing page",
   "description": "..."
 }
 ```
 
-Estados do ciclo: `not_started` → `in_progress` → `blocked` → `passing`.
+States of the cycle: `not_started` → `in_progress` → `blocked` → `passing`.
 
-E a regra de operação (que já vimos na Aula 06):
+The id follows the branch convention already in use — `feature/OEM-123`,
+`bugfix/AC-455`, `release/EST-3445` — so scope, branch and ticket are the same
+name. One less translation for a human to do, and one less place to get it
+wrong.
 
-> "Apenas uma feature pode estar `in_progress` por vez. Escolha a de maior prioridade entre as `not_started`."
+And the operating rule (which we already saw in Lesson 06):
 
-## Por que é uma *primitiva* de harness
+> "Only one feature can be `in_progress` at a time. Pick the highest-priority one among the `not_started`."
 
-"Primitiva" no sentido de bloco fundamental: a feature list é para o harness o que a lista de itens é para o fluxo de trabalho humano — **a fonte de verdade do escopo**. Dela derivam:
+## Why it is a harness *primitive*
 
-- o que a inicialização lê (Aula 06);
-- o que a verificação compara (Aula 09 — "pronto" = feature em `passing`);
-- o que o handoff resume (Aula 05);
-- o que a telemetria mede (Aula 11 — quanto tempo cada feature levou).
+"Primitive" in the sense of fundamental building block: the feature list is to the harness what the item list is to the human workflow — **the source of truth of the scope**. From it derive:
 
-A feature list conecta o harness ao **produto**: sem ela, o harness é um processo que roda vazio.
+- what initialization reads (Lesson 06);
+- what verification compares against (Lesson 09 — "done" = feature in `passing`);
+- what the handoff summarizes (Lesson 05);
+- what telemetry measures (Lesson 11 — how long each feature took).
 
-## No AgEnFK: a mesma ideia, com fluxo
+The feature list connects the harness to the **product**: without it, the harness is a process running empty.
 
-O AgEnFK generaliza a feature list para itens com tipo (EPIC, STORY, TASK, BUG), hierarquia (parent/children), status por fluxo configurável e trilha de evidência. O `feature_list.json` do factory é a versão "arquivo"; os itens do AgEnFK são a versão "sistema" — com gates, comentários e testes atrelados.
+## The same idea, with flow
 
-A lição que conecta os dois: **a forma não importa (arquivo, banco, planilha); o contrato importa** — existe uma estrutura consultável que diz o que fazer, em que estado e com que prioridade, e o harness inteiro opera em cima dela.
+At scale the feature list generalizes into items with type (EPIC, STORY, TASK, BUG), hierarchy (parent/children), configurable per-flow status and an evidence trail. The factory's `feature_list.json` is the "file" version; a [workflow engine](/harness-designs/enterprise-harness) is the "system" version — with gates, comments and tests attached.
 
-## Feature lists para áreas não-técnicas
+The lesson connecting the two: **the form doesn't matter (file, database, spreadsheet); the contract matters** — there is a queryable structure that says what to do, in what state and with what priority, and the whole harness operates on top of it.
 
-Esta aula se estende ao modelo multi-team do curso (EPIC E):
+## Feature lists for non-technical areas
 
-- **Finanças**: a feature list é a lista de relatórios a gerar — cada um com estado, fonte de dados e prazo; o harness de madrugada processa `in_progress` e publica `passing` até o café.
-- **Games**: a feature list é o backlog do jogo — personagens, narrativas, mecânicas; cada um com estado até a publicação na plataforma.
-- **Comercial**: a feature list são as entregas de proposta/deck — com data, cliente e aprovação.
+This lesson extends to the course's multi-team model (EPIC E):
 
-A estrutura é a mesma; o domínio muda. É por isso que a feature list é uma primitiva: ela é **agnóstica de domínio**.
+- **Finance**: the feature list is the list of reports to generate — each with state, data source and deadline; the overnight harness processes `in_progress` and publishes `passing` before the coffee.
+- **Games**: the feature list is the game backlog — characters, narratives, mechanics; each with state up to publication on the platform.
+- **Sales**: the feature list is the proposal/deck deliverables — with date, client and approval.
 
-## Principais aprendizados
+The structure is the same; the domain changes. That is why the feature list is a primitive: it is **domain-agnostic**.
 
-1. Feature list = fonte de verdade consultável do escopo: o quê, estado, prioridade.
-2. Estados explícitos (not_started → in_progress → blocked → passing) dão semântica ao trabalho.
-3. Uma feature in_progress por vez é a regra de foco.
-4. A forma (JSON, banco, planilha) é detalhe; o contrato é o que importa.
-5. A primitiva escala para qualquer domínio — é a base do harness multi-team.
+## Key takeaways
 
-## Verifique seu aprendizado
+1. Feature list = queryable source of truth of the scope: what, state, priority.
+2. Explicit states (not_started → in_progress → blocked → passing) give semantics to the work.
+3. One in_progress feature at a time is the focus rule.
+4. The form (JSON, database, spreadsheet) is a detail; the contract is what matters.
+5. The primitive scales to any domain — it is the foundation of the multi-team harness.
+
+## Check your learning
 
 ```
-"quiz me on a Aula 08"
+"quiz me on Lesson 08"
 ```
 
-**Próxima aula**: [09 — Declarar vitória cedo demais](/lectures/lecture-09).
+**Next lesson**: [09 — Declaring victory too early](/lectures/lecture-09).

@@ -1,25 +1,25 @@
-# Referências externas
+# External references
 
-Os materiais que fundamentam este curso.
+The materials that underpin this course.
 
-## Oficiais
+## Official
 
 - [OpenAI — Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/)
 - [Anthropic — Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [Anthropic — Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps)
 
-## Comunidade
+## Community
 
-- [Learn Harness Engineering (walkinglabs)](https://walkinglabs.github.io/learn-harness-engineering/en/) — o formato que inspirou este curso.
+- [Learn Harness Engineering (walkinglabs)](https://walkinglabs.github.io/learn-harness-engineering/en/) — the format that inspired this course.
 - [Awesome Harness Engineering](https://github.com/walkinglabs/awesome-harness-engineering)
 
-## Internas (Webmotors)
+## Internal (Webmotors)
 
-- `webmotors-harness-factory` — o "SO" de agentes: policies, hooks e skills de processo.
-- `harness-agent-skills` — o catálogo de skills compartilháveis.
-- `agenfk` — o framework de engenharia agêntica com itens, flows e telemetria.
+- `webmotors-harness-factory` — the agent "OS": policies, hooks and process skills.
+- `harness-agent-skills` — the catalog of shareable skills.
+- `agenfk` — the agentic engineering framework with items, flows and telemetry.
 
 ::: tip Status
-Novas referências serão adicionadas conforme o time compartilha ideias e vídeos
-(Youtube etc.) — acompanhe o repo `harness-plannig` para updates.
+New references will be added as the team shares ideas and videos
+(YouTube etc.) — follow the `harness-plannig` repo for updates.
 :::

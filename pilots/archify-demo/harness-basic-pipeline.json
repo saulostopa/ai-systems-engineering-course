@@ -2,14 +2,14 @@
   "schema_version": 2,
   "diagram_type": "workflow",
   "meta": {
-    "title": "Harness Básico — pipeline de feature com gates",
+    "title": "Basic Harness — feature pipeline with gates",
     "animation": "trace",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
     "views": [
       {
         "id": "happy-path",
-        "label": "Feature entregue com evidência",
+        "label": "Feature delivered with evidence",
         "focus": [
           "dev",
           "init",
@@ -20,16 +20,16 @@
           "harness_ok",
           "commit_push"
         ],
-        "note": "O caminho feliz: declaração de escopo até a feature passing."
+        "note": "The happy path: from scope declaration to a passing feature."
       },
       {
         "id": "gates",
-        "label": "Gates mecânicos",
+        "label": "Mechanical gates",
         "focus": [
           "gatekeeper",
           "harness_ok"
         ],
-        "note": "Onde o harness bloqueia: sem feature in_progress, sem validação."
+        "note": "Where the harness blocks: no feature in_progress, no validation."
       }
     ],
     "output": "pilots/archify-demo/harness-basic-pipeline.html"
@@ -37,11 +37,11 @@
   "lanes": [
     {
       "id": "dev",
-      "label": "Desenvolvedor"
+      "label": "Developer"
     },
     {
       "id": "system",
-      "label": "Harness + Repositório"
+      "label": "Harness + Repository"
     }
   ],
   "phases": [
@@ -53,14 +53,14 @@
     },
     {
       "id": "work",
-      "label": "Implementação",
+      "label": "Implementation",
       "fromCol": 2,
       "toCol": 3,
       "variant": "emphasis"
     },
     {
       "id": "close",
-      "label": "Gates + encerramento",
+      "label": "Gates + closing",
       "fromCol": 4,
       "toCol": 5
     }
@@ -68,7 +68,7 @@
   "groups": [
     {
       "id": "gate_zone",
-      "label": "Zona de gates",
+      "label": "Gate zone",
       "lane": "system",
       "fromCol": 3,
       "toCol": 3,
@@ -91,8 +91,8 @@
       "lane": "dev",
       "col": 0,
       "type": "external",
-      "label": "Pessoa ou Agente",
-      "sublabel": "pede a feature",
+      "label": "Person or Agent",
+      "sublabel": "requests the feature",
       "width": 132
     },
     {
@@ -101,7 +101,7 @@
       "col": 1,
       "type": "frontend",
       "label": "init.sh",
-      "sublabel": "boot do harness",
+      "sublabel": "harness boot",
       "width": 132
     },
     {
@@ -111,7 +111,7 @@
       "type": "database",
       "label": "feature_list.json",
       "sublabel": "1 feature in_progress",
-      "tag": "fonte de verdade",
+      "tag": "source of truth",
       "width": 132
     },
     {
@@ -119,8 +119,8 @@
       "lane": "dev",
       "col": 3,
       "type": "frontend",
-      "label": "Implementação",
-      "sublabel": "escopo declarado",
+      "label": "Implementation",
+      "sublabel": "declared scope",
       "width": 132
     },
     {
@@ -128,8 +128,8 @@
       "lane": "dev",
       "col": 4,
       "type": "backend",
-      "label": "Build + Testes",
-      "sublabel": "evidência anexada",
+      "label": "Build + Tests",
+      "sublabel": "evidence attached",
       "width": 132
     },
     {
@@ -139,7 +139,7 @@
       "type": "security",
       "label": "Gatekeeper",
       "sublabel": "pre-commit",
-      "tag": "bloqueia sem feature",
+      "tag": "blocks without a feature",
       "width": 132
     },
     {
@@ -149,7 +149,7 @@
       "type": "security",
       "label": "validate-harness",
       "sublabel": "HARNESS OK",
-      "tag": "pré-push",
+      "tag": "pre-push",
       "width": 132
     },
     {
@@ -158,7 +158,7 @@
       "col": 5,
       "type": "cloud",
       "label": "Commit + Push",
-      "sublabel": "feature passing — report + quiz gerados",
+      "sublabel": "feature passing",
       "width": 170
     }
   ],
@@ -173,7 +173,7 @@
       "id": "init-list",
       "from": "init",
       "to": "feature_list",
-      "label": "declara",
+      "label": "declares",
       "variant": "emphasis"
     },
     {
@@ -193,7 +193,7 @@
       "id": "gate-back",
       "from": "gatekeeper",
       "to": "feature_list",
-      "label": "sem feature — declare",
+      "label": "no feature — declare it",
       "variant": "dashed",
       "role": "branch"
     },
@@ -201,14 +201,14 @@
       "id": "gate-test",
       "from": "gatekeeper",
       "to": "test",
-      "label": "liberado",
+      "label": "released",
       "variant": "emphasis"
     },
     {
       "id": "test-harness",
       "from": "test",
       "to": "harness_ok",
-      "label": "pré-push",
+      "label": "pre-push",
       "variant": "default"
     },
     {
@@ -222,26 +222,26 @@
   "cards": [
     {
       "dot": "rose",
-      "title": "Regras dos gates (Aulas 07-09)",
+      "title": "Gate rules (Lessons 07-09)",
       "items": [
-        "Uma feature in_progress por vez — escopo declarado antes de editar",
-        "Nada de 'done' sem evidência: build, testes e validate-harness executados"
+        "One feature in_progress at a time — scope declared before editing",
+        "No 'done' without evidence: build, tests and validate-harness executed"
       ]
     },
     {
       "dot": "cyan",
-      "title": "Ao concluir — artefatos de aprendizado",
+      "title": "When done — learning artifacts",
       "items": [
-        "feature-report (o que foi entregue) + feature-quiz (o que aprender)",
-        "Diagrama Archify do fluxo/arquitetura da mudança — como este"
+        "feature-report (what was delivered) + feature-quiz (what to learn)",
+        "Archify diagram of the change flow/architecture — like this one"
       ]
     },
     {
       "dot": "emerald",
-      "title": "Achado do piloto G1",
+      "title": "Pilot G1 finding",
       "items": [
-        "O gatekeeper bloqueia até a atualização da própria feature_list",
-        "Melhoria recomendada: permitir commits só-de-estado"
+        "The gatekeeper blocks even the update of its own feature_list",
+        "Recommended improvement: allow state-only commits"
       ]
     }
   ]

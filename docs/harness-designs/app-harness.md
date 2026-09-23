@@ -1,88 +1,88 @@
 ---
-title: App Harness — QA + navegação agêntica
+title: App Harness — QA + agentic navigation
 ---
 
-# App Harness — QA + navegação agêntica
+# App Harness — QA + agentic navigation
 
-> O harness que combina o teste E2E determinístico (camada QA) com a
-> exploração agêntica com visão (camada de navegação). Duas camadas, um app.
+> The harness that combines the deterministic E2E test (QA layer) with
+> vision-based agentic exploration (navigation layer). Two layers, one app.
 
-## As duas camadas
+## The two layers
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│ Camada 2 — Navegação agêntica (C2)                     │
-│ Agente sobe o app, navega, valida com visão,           │
-│ produz veredito + screenshots como evidência           │
+│ Layer 2 — Agentic navigation (C2)                      │
+│ Agent starts the app, navigates, validates with vision,│
+│ produces verdict + screenshots as evidence             │
 ├────────────────────────────────────────────────────────┤
-│ Camada 1 — QA (C1)                                     │
-│ E2E Playwright como gate mecânico de commit            │
-│ (e2e-gate.sh) + triagem de flaky via trace viewer      │
+│ Layer 1 — QA (C1)                                      │
+│ E2E Playwright as a mechanical commit gate             │
+│ (e2e-gate.sh) + flaky triage via trace viewer          │
 ├────────────────────────────────────────────────────────┤
-│ Esqueleto — harness básico (B1)                        │
+│ Skeleton — basic harness (B1)                          │
 └────────────────────────────────────────────────────────┘
 ```
 
-## Camada 1 — QA (E2E como gate)
+## Layer 1 — QA (E2E as a gate)
 
-Entregue em `app-harness/` (Scripts + templates):
+Delivered in `app-harness/` (Scripts + templates):
 
-- `scripts/e2e-gate.sh` — pre-commit gate: frontend staged sem teste E2E correspondente → **bloqueia** (fail-open sem config).
-- `templates/.harness/config.yaml` — declaração de `frontend_paths` / `frontend_extensions` / `e2e_test_path`.
-- `templates/e2e/` — Page Object Model + teste com rede interceptada (padrão determinístico).
-- Protocolo de triagem: `--trace=retain-on-failure` + `playwright show-trace` — flaky é bug, não sorte.
+- `scripts/e2e-gate.sh` — pre-commit gate: staged frontend without a corresponding E2E test → **blocks** (fail-open without config).
+- `templates/.harness/config.yaml` — declaration of `frontend_paths` / `frontend_extensions` / `e2e_test_path`.
+- `templates/e2e/` — Page Object Model + test with intercepted network (deterministic pattern).
+- Triage protocol: `--trace=retain-on-failure` + `playwright show-trace` — flaky is a bug, not luck.
 
-Padrões exigidos (da skill `qa-playwright-e2e`): locators semânticos, POM,
-interceptação de rede, zero CSS/XPath frágil.
+Required patterns (from the `qa-playwright-e2e` skill): semantic locators, POM,
+network interception, zero fragile CSS/XPath.
 
-## Camada 2 — Navegação agêntica com visão
+## Layer 2 — Agentic navigation with vision
 
-A camada que distingue o app harness de um "repo com testes". O agente:
+The layer that distinguishes the app harness from "a repo with tests". The agent:
 
-1. **Sobe o app** — build + dev server (ou preview do build).
-2. **Navega como usuário** — via browser automation (Playwright/agente).
-3. **Valida com visão** — o modelo *vê* os screenshots: layout, sobreposição,
-   loading infinito, estados vazios e de erro.
-4. **Produz veredito por critério** — aceito/rejeitado + screenshots como
-   evidência (Aula 09: prova, não opinião).
-5. **Fecha o loop** — cada achado da exploração vira teste E2E novo na camada 1
-   (o exploratório encontra; o determinístico imortaliza).
+1. **Starts the app** — build + dev server (or build preview).
+2. **Navigates like a user** — via browser automation (Playwright/agent).
+3. **Validates with vision** — the model *sees* the screenshots: layout, overlap,
+   infinite loading, empty and error states.
+4. **Produces a verdict per criterion** — accepted/rejected + screenshots as
+   evidence (Lesson 09: proof, not opinion).
+5. **Closes the loop** — each exploration finding becomes a new E2E test in layer 1
+   (the exploratory finds; the deterministic immortalizes).
 
-A skill que implementa este protocolo está em
-`app-harness/skills/agentic-navigation/SKILL.md` — instale-a em
-`.claude/skills/` (ou `.agents/skills/`) do projeto do app e acione com:
-
-```
-"valida a tela de busca que a gente acabou de implementar"
-```
-
-O protocolo da skill: Gather (diff + testes + critérios de aceite) → subir o
-app → estado determinístico (interceptação) → percorrer fluxos e estados de
-borda → screenshots por passo → **veredito por critério** (ACEITO/REJEITADO
-com screenshot). O formato do veredito é tabela + achados com causa provável
-— pronto para virar teste E2E na camada 1.
+The skill that implements this protocol is in
+`app-harness/skills/agentic-navigation/SKILL.md` — install it in
+`.claude/skills/` (or `.agents/skills/`) of the app project and trigger it with:
 
 ```
-build → E2E (gate) → navegação agêntica (visão) → achados → novos testes E2E → ...
+"validate the search screen we just implemented"
 ```
 
-## Por que as duas camadas
+The skill's protocol: Gather (diff + tests + acceptance criteria) → start the
+app → deterministic state (interception) → walk flows and edge
+states → screenshot per step → **verdict per criterion** (ACCEPTED/REJECTED
+with screenshot). The verdict format is a table + findings with probable cause
+— ready to become an E2E test in layer 1.
 
-| | E2E (QA) | Navegação agêntica |
+```
+build → E2E (gate) → agentic navigation (vision) → findings → new E2E tests → ...
+```
+
+## Why the two layers
+
+| | E2E (QA) | Agentic navigation |
 |---|---|---|
-| Natureza | Determinística, barata, rápida | Exploratória, cara, lenta |
-| Pega | Regressões conhecidas | O que ninguém previu |
-| Quando | Todo commit (gate) | Antes de aceitar/entregar |
-| Evidência | Exit code + output | Screenshots + veredito por critério |
+| Nature | Deterministic, cheap, fast | Exploratory, expensive, slow |
+| Catches | Known regressions | What nobody predicted |
+| When | Every commit (gate) | Before accepting/delivering |
+| Evidence | Exit code + output | Screenshots + verdict per criterion |
 
-Uma não substitui a outra: o E2E protege a cada commit; a navegação agêntica
-valida o que o teste não previu — incluindo o que *parece* certo no teste e
-está quebrado de verdade na tela.
+One doesn't replace the other: E2E protects at every commit; agentic navigation
+validates what the test didn't predict — including what *looks* right in the test
+and is genuinely broken on the screen.
 
-## Uso no curso
+## Use in the course
 
-- **[Projeto 03](/projects/project-03)** constrói o app harness do zero — este
-  blueprint é a solução de referência.
-- **EPIC G** (pilotos) roda as duas camadas num app Webmotors real.
+- **[Project 03](/projects/project-03)** builds the app harness from scratch — this
+  blueprint is the reference solution.
+- **Pilot G2** ran both layers on a real app: the E2E gate blocked and allowed correctly, and the agentic navigation returned HTTP 200. Evidence in `pilots/g2-app-harness/evidence/`.
 
-**Relacionados**: [Harness básico](/harness-designs/basic-harness) · [Harness grande](/harness-designs/enterprise-harness)
+**Related**: [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness)

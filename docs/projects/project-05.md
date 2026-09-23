@@ -1,95 +1,95 @@
 ---
-title: Projeto 05 — Area Copilot com RAG
+title: Project 05 — Area Copilot with RAG
 ---
 
-# Projeto 05 — Area Copilot com RAG
+# Project 05 — Area Copilot with RAG
 
-> O harness que dá contexto da sua área ao agente: planilhas, documentos, imagens e dados — para times não-técnicos gerenciarem features com IA.
+> The harness that gives the agent your area's context: spreadsheets, documents, images and data — for non-technical teams to manage features with AI.
 
-## Objetivo
+## Objective
 
-Montar um **Area Copilot**: um harness onde pessoas de qualquer área (finanças, comercial, operação, games) guardam o contexto do próprio trabalho — arquivos de negócio, planilhas, imagens, dados — e usam um agente com **recuperação (RAG)** para gerenciar features e produzir artefatos.
+Assemble an **Area Copilot**: a harness where people from any area (finance, sales, operations, games) keep the context of their own work — business files, spreadsheets, images, data — and use an agent with **retrieval (RAG)** to manage features and produce artifacts.
 
-É a Story **D3** do curso (RAG de negócio) em versão prática.
+It is Story **D3** of the course (business RAG) in practical form.
 
-## O que é diferente de tudo até aqui
+## What is different from everything so far
 
-Nos projetos anteriores, o contexto era **código** (repo, AGENTS.md, testes). Aqui o contexto é **conhecimento da área**:
+In the previous projects, the context was **code** (repo, AGENTS.md, tests). Here the context is **area knowledge**:
 
-- planilhas de precificação, metas, histórico;
-- documentos de briefing, regras de negócio;
-- imagens (prints de tela, anúncios, peças);
-- dados exportados (CSV, JSON).
+- pricing spreadsheets, targets, history;
+- briefing documents, business rules;
+- images (screen captures, listings, creative assets);
+- exported data (CSV, JSON).
 
-O agente precisa achar o contexto certo **quando a tarefa pede** — é isso que o RAG resolve.
+The agent needs to find the right context **when the task asks for it** — that is what RAG solves.
 
-## Arquitetura mínima (sem banco, começando)
+## Minimal architecture (no database, to start)
 
-Você não precisa de pgvector no primeiro dia. A versão mínima é **RAG por convenção**:
-
-```
-area-context/                    # a "memória" da área (versionada!)
-├── planilhas/                   # fontes de dados
-├── documentos/                  # briefings, regras
-├── imagens/                     # evidência visual
-└── index.md                     # mapa: o que existe e onde
-```
-
-E o `index.md` é o truque: um **índice semântico escrito pelo agente** que mapeia cada contexto com tags e resumos. O agente lê o índice (barato) e abre só o arquivo que a tarefa pede (caro sob demanda) — o mesmo padrão roteador da Aula 04.
-
-## Passo a passo
-
-### 1. Monte a pasta `area-context`
-
-Coloque 5-10 arquivos reais da sua área (mesmo que anonimizados). Anonimize antes — o repo é versionado.
-
-### 2. Gere o `index.md`
-
-Peça ao agente:
+You don't need pgvector on day one. The minimal version is **RAG by convention**:
 
 ```
-"gera um índice da pasta area-context: para cada arquivo, tags, resumo em 1
-linha e quando vale a pena abrir. Salva em area-context/index.md"
+area-context/                    # the area's "memory" (versioned!)
+├── planilhas/                   # data sources
+├── documentos/                  # briefings, rules
+├── imagens/                     # visual evidence
+└── index.md                     # map: what exists and where
 ```
 
-### 3. Escreva o `AGENTS.md` da área
+And `index.md` is the trick: a **semantic index written by the agent** that maps each context with tags and summaries. The agent reads the index (cheap) and opens only the file the task asks for (expensive, on demand) — the same router pattern from Lesson 04.
+
+## Step by step
+
+### 1. Set up the `area-context` folder
+
+Put 5-10 real files from your area (even anonymized). Anonymize first — the repo is versioned.
+
+### 2. Generate the `index.md`
+
+Ask the agent:
+
+```
+"generate an index of the area-context folder: for each file, tags, a 1-line
+summary and when it's worth opening. Save it to area-context/index.md"
+```
+
+### 3. Write the area's `AGENTS.md`
 
 ```markdown
-# AGENTS.md — Harness da área de [nome]
+# AGENTS.md — Harness for the [name] area
 
-## 1. Como trabalhar
-- Antes de qualquer tarefa, leia area-context/index.md.
-- Contexto específico? Abra o arquivo apontado pelo índice (não adivinhe).
-- Nunca invente número: todo dado citado vem de um arquivo lido.
+## 1. How to work
+- Before any task, read area-context/index.md.
+- Specific context? Open the file pointed by the index (don't guess).
+- Never invent numbers: every cited datum comes from a read file.
 
-## 2. Como verificar
-- Todo artefato cita a fonte (arquivo + linha/aba quando aplicável).
-- "Não sei" é resposta válida; número inventado não é.
+## 2. How to verify
+- Every artifact cites its source (file + line/tab when applicable).
+- "I don't know" is a valid answer; an invented number is not.
 
-## 3. Estado
-- As features da área vivem em feature_list.json.
+## 3. State
+- The area's features live in feature_list.json.
 ```
 
-### 4. Rode uma feature da área
+### 4. Run an area feature
 
-Exemplo finanças: *"analisa a planilha de metas do mês passado e gera o resumo para a reunião"*. O agente deve: consultar o índice → abrir a planilha → validar → gerar o artefato com fontes citadas.
+Finance example: *"analyze last month's targets spreadsheet and generate the summary for the meeting"*. The agent must: consult the index → open the spreadsheet → validate → generate the artifact with cited sources.
 
-### 5. (Opcional) Evolua para RAG real
+### 5. (Optional) Evolve into real RAG
 
-Quando o volume crescer, migre o índice manual para **RAG híbrido** (vetores + busca textual) — a arquitetura está no `rag-harness.md` do `webmotors-harness-factory`: chunking por estrutura, pgvector + full-text com fusão RRF, e recuperação agêntica (o agente decide qual ferramenta de busca usar). O gatilho para migrar: o índice manual começou a falhar (Aula 11 — decida por evidência).
+When volume grows, migrate the manual index to **hybrid RAG** (vectors + text search) — the architecture is in the `webmotors-harness-factory`'s `rag-harness.md`: structure-based chunking, pgvector + full-text with RRF fusion, and agentic retrieval (the agent decides which search tool to use). The trigger to migrate: the manual index started failing (Lesson 11 — decide by evidence).
 
-## Verificação
+## Verification
 
-- Uma tarefa da área é concluída com **todas as fontes citadas** e nenhum número inventado.
-- Um contexto novo (arquivo adicionado) aparece no índice após regerá-lo.
-- Você consegue responder: "onde o agente achou isso?" para qualquer afirmação do artefato.
+- An area task is completed with **all sources cited** and no invented numbers.
+- A new context (added file) shows up in the index after regenerating it.
+- You can answer: "where did the agent find that?" for any claim in the artifact.
 
-## Entregável
+## Deliverable
 
-O `area-context/` + `index.md` + `AGENTS.md` da área versionados + 1 artefato de exemplo com fontes citadas.
+The versioned `area-context/` + `index.md` + area `AGENTS.md` + 1 example artifact with cited sources.
 
 ::: tip Status
-A versão com banco de vetores, OCR de imagens e execução agendada é o **EPIC D** do curso.
+The version with vector database, image OCR and scheduled execution is **EPIC D** of the course.
 :::
 
-**Você terminou os projetos!** Revise as [Aulas](/lectures/) ou explore os [Designs de Harnesses](/harness-designs/) para ver onde cada peça se encaixa no plano completo.
+**Next project**: [06 — Enterprise harness (multi-team)](/projects/project-06) — the step out of a single repository into many.

@@ -1,15 +1,21 @@
-# Design de Harnesses
+# Harness Designs
 
-Blueprints dos harnesses que este projeto entrega. Cada blueprint descreve a
-arquitetura, os componentes e o que o torna funcional na prática.
+Blueprints of the harnesses this project delivers. Each blueprint describes the
+architecture, the components and what makes it functional in practice.
 
-- [Harness básico (download)](/harness-designs/basic-harness) — para projetos pequenos; baixa e roda.
-- [Harness grande (multi-time)](/harness-designs/enterprise-harness) — gatekeepers, políticas e observabilidade para muitas equipes.
-- [App Harness](/harness-designs/app-harness) — QA (E2E) + navegação agêntica com visão: build → abrir → validar.
-- [RAG Harness & Area Copilots](/harness-designs/rag-harness) — contexto de código e de negócio (planilhas, imagens, docs).
-- [Harnesses de domínio](/harness-designs/domain-harnesses) — o mesmo esqueleto, skill packs por área: games, finanças, comercial.
-- [Hard Harness (orquestração executável)](/harness-designs/hard-harness) — grafo executável, contratos tipados, gates determinísticos e agentes especializados (ADK 2 como referência).
+- [Basic harness (download)](/harness-designs/basic-harness) — for small projects; download and run.
+- [Enterprise harness (multi-team)](/harness-designs/enterprise-harness) — gatekeepers, policies and observability for many teams.
+- [App Harness](/harness-designs/app-harness) — QA (E2E) + agentic navigation with vision: build → open → validate.
+- [RAG Harness & Area Copilots](/harness-designs/rag-harness) — code and business context (spreadsheets, images, docs).
+- [ADK + RAG + Jev Harness](/harness-designs/adk-rag-jev-harness) — typed decisions, evidence and blocked workflow paths.
+- [ADK RAG PostgreSQL Harness](/harness-designs/adk-rag-postgres-harness) — shared PostgreSQL + pgvector retrieval for larger teams.
+- [Domain harnesses](/harness-designs/domain-harnesses) — the same skeleton, skill packs per area: games, finance, sales.
+- [Hard Harness (executable orchestration)](/harness-designs/hard-harness) — executable graph, typed contracts, deterministic gates and specialized agents (ADK 2 as reference).
 
 ::: tip Status
-Os blueprints detalhados são entregues pelos EPICs B, C, D e E do projeto.
+The blueprints cover the local, shared-storage and executable-orchestration variants of the course harnesses.
+:::
+
+::: tip Download the runnable projects
+The complete standalone catalog is available at [github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses). It contains the runnable harness directories and their installation instructions without requiring a clone of this course repository.
 :::

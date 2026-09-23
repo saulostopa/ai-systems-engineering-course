@@ -1,35 +1,34 @@
 # Skills
 
-O catálogo de skills do ecossistema Webmotors. Skills são pacotes de instrução
-(`SKILL.md`) que o harness carrega quando a tarefa combina com a descrição —
-versionados, revisáveis em PR e instaláveis em qualquer harness que leia
+The Webmotors ecosystem skill catalog. Skills are instruction packages
+(`SKILL.md`) that the harness loads when the task matches the description —
+versioned, reviewable in PR and installable in any harness that reads
 `SKILL.md` (Claude Code, Cursor, Codex, Gemini, OpenCode...).
 
-| Skill | O que faz |
+| Skill | What it does |
 |-------|-----------|
-| [feature-report](/skills/feature-report) | Relatório HTML autocontido do que foi entregue numa feature. |
-| [feature-quiz](/skills/feature-quiz) | Quiz graduado em 4 níveis sobre a feature — a "peça de ouro". |
-| [feature-flowchart](/skills/feature-flowchart) | Flowchart HTML do processo da feature. |
-| [feature-animation](/skills/feature-animation) | Animação HTML de um dado atravessando a feature. |
-| [qa-playwright-e2e](/skills/qa-playwright-e2e) | Testes E2E com Playwright (Python), locators semânticos. |
-| [qa-perf-triage](/skills/qa-perf-triage) | Diagnóstico de regressões de latência sob carga. |
-| [feature-archify](/skills/feature-archify) | Diagramas verificáveis (Archify) da feature concluída — o mapa que ensina o fluxo. |
-| [skill-guard](/skills/skill-guard) | **Escaneia uma skill antes de instalar** (SkillSpector) — o gate de supply chain do catálogo. |
-| [Criar uma skill nova](/skills/how-to-create) | O pipeline: ideia → SKILL.md → teste → publicação. |
+| [feature-report](/skills/feature-report) | Self-contained HTML report of what was delivered in a feature. |
+| [feature-quiz](/skills/feature-quiz) | Quiz graded in 4 levels about the feature — the "golden piece". |
+| [feature-animation](/skills/feature-animation) | HTML animation of a datum flowing through the feature. |
+| [qa-playwright-e2e](/skills/qa-playwright-e2e) | E2E tests with Playwright (Python), semantic locators. |
+| [qa-perf-triage](/skills/qa-perf-triage) | Diagnosis of latency regressions under load. |
+| [feature-archify](/skills/feature-archify) | Verifiable diagrams (Archify) of the completed feature — the map that teaches the flow. |
+| [skill-guard](/skills/skill-guard) | **Scans a skill before installing it** (SkillSpector) — the catalog's supply-chain gate. |
+| [Create a new skill](/skills/how-to-create) | The pipeline: idea → SKILL.md → test → publication. |
 
 ::: tip Status
-A evolução destas skills (design system Eleanor, acessibilidade, quiz adaptativo)
-é o **EPIC F** do projeto. A página de cada skill descreve seu design atual.
+The evolution of these skills (Eleanor design system, accessibility, adaptive quiz)
+is **EPIC F** of the project. Each skill's page describes its current design.
 :::
 
-::: warning Antes de instalar qualquer skill de fora
-Skill é instrução que o agente executa com confiança implícita — 26,1% das
-skills analisadas pela NVIDIA têm vulnerabilidade e 5,2% têm sinal de intenção
-maliciosa. Passe pelo gate primeiro:
+::: warning Before installing any skill from outside
+A skill is instruction that the agent executes with implicit trust — 26.1% of
+the skills analyzed by NVIDIA have vulnerabilities and 5.2% show signs of
+malicious intent. Go through the gate first:
 
 ```sh
-harness-basic/scripts/gate-skill-scan.sh <dir-ou-url>
+harness-basic/scripts/gate-skill-scan.sh <dir-or-url>
 ```
 
-Veja [skill-guard](/skills/skill-guard).
+See [skill-guard](/skills/skill-guard).
 :::

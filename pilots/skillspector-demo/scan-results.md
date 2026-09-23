@@ -1,224 +1,230 @@
-# Scan de todas as skills do repositório
+# Scan of all repository skills
 
-`gate-skill-scan.sh --all` · SkillSpector `v2.11.2` · estático (`--no-llm`) ·
+`gate-skill-scan.sh --all` · SkillSpector `v2.11.2` · static (`--no-llm`) ·
 2026-09-17
 
-**41 alvos** varridos — as skills aparecem em cópias (`.claude/skills/`,
+**41 targets** scanned — skills appear in copies (`.claude/skills/`,
 `.agents/skills/`, `skills-artifacts/`, `app-harness/`, `area-copilot/`,
-`domains/`), e cada cópia é escaneada por si, porque cópias divergem.
+`domains/`), and each copy is scanned on its own, because copies diverge.
 
 ```
 SKILL GUARD OK — 40 aprovada(s), 1 com aviso, 0 bloqueada(s)   (exit 0)
 ```
 
-## Resultado
+## Result
 
-| Alvo | Score | Severidade | Achados |
+| Target | Score | Severity | Findings |
 |---|---|---|---|
-| `.agents/skills/archify` (vendorada, com baseline) | 22/100 | MEDIUM | 2 |
+| `.agents/skills/archify` (vendored, with baseline) | 22/100 | MEDIUM | 2 |
 | `.agents/skills/agenfk` · `.claude/skills/agenfk` | 11/100 | LOW | 2 |
 | `.agents/skills/agenfk-test` · `.claude/skills/agenfk-test` | 7/100 | LOW | 1 |
 | `skills-artifacts/feature-archify` | 7/100 | LOW | 1 |
 | `.agents/skills/agenfk-pr` · `.claude/skills/agenfk-pr` | 6/100 | LOW | 1 |
 | `.claude/skills/agenfk-flow` | 6/100 | LOW | 1 |
-| outros 32 alvos | 0/100 | LOW | 0 |
+| other 32 targets | 0/100 | LOW | 0 |
 
-Uma única acima do limiar de aviso — e é a **única de terceiro** do
-repositório. Não é coincidência: as outras nasceram aqui, em PR revisado.
+Only one is above the warning threshold — and it is the **only third-party**
+skill in the repository. That is not a coincidence: the others were born here,
+in reviewed PRs.
 
-### De brinde: as cópias divergiram
+### Bonus: the copies diverged
 
-`.claude/skills/agenfk-flow` dá 6/100 e `.agents/skills/agenfk-flow` dá 0/100.
-Não é ruído do scanner — os arquivos **são diferentes**:
+`.claude/skills/agenfk-flow` scores 6/100 and `.agents/skills/agenfk-flow`
+scores 0/100. It is not scanner noise — the files **are different**:
 
 ```
-- compatibility: all            (.agents — versão CLI-only, atual)
-+ compatibility: claude-code    (.claude — versão antiga, orientada a MCP)
+- compatibility: all            (.agents — CLI-only version, current)
++ compatibility: claude-code    (.claude — old version, MCP-oriented)
 ```
 
-A cópia antiga documenta `list_projects()` via MCP e o `curl
-http://localhost:3000` que a nova proíbe — daí o achado `E1`.
+The old copy documents `list_projects()` via MCP and the `curl
+http://localhost:3000` that the new one forbids — hence the `E1` finding.
 
-Isso só apareceu porque o gate nomeia o relatório pelo **caminho**. Na primeira
-versão ele usava o basename, e `.claude/skills/agenfk-flow` sobrescrevia
-`.agents/skills/agenfk-flow`: metade dos resultados sumia silenciosamente e a
-deriva entre as duas árvores continuaria invisível.
+This only surfaced because the gate names the report by **path**. In the first
+version it used the basename, and `.claude/skills/agenfk-flow` overwrote
+`.agents/skills/agenfk-flow`: half of the results silently disappeared and the
+drift between the two trees would have stayed invisible.
 
-## Os achados LOW — todos triados
+## The LOW findings — all triaged
 
-| Skill | Regra | O que casou | Veredito |
+| Skill | Rule | What matched | Verdict |
 |---|---|---|---|
-| `agenfk` | `EA2` Autonomous Decision Making ×2 | a expressão *"without asking"* no `SKILL.md` | Observação legítima sobre autonomia, não defeito. A skill de fato descreve quando o agente age sem perguntar. |
-| `agenfk-flow` | `E1` External Transmission | `curl http://localhost:3000` | **Falso positivo com ironia**: a linha casada é a que **proíbe** essa rota de bypass. O scanner marca o exemplo dentro da proibição. |
-| `agenfk-pr` | `RA2` Session Persistence | o texto da própria `description` | Falso positivo — colisão com o vocabulário da descrição. |
-| `agenfk-test`, `feature-archify` | `RP1` MCP Rug Pull | — (sem trecho, confiança 0.7) | Falso positivo: nenhuma das duas declara ferramenta MCP. |
+| `agenfk` | `EA2` Autonomous Decision Making x2 | the expression *"without asking"* in the `SKILL.md` | Legitimate observation about autonomy, not a defect. The skill does describe when the agent acts without asking. |
+| `agenfk-flow` | `E1` External Transmission | `curl http://localhost:3000` | **False positive with irony**: the matched line is the one that **forbids** that bypass route. The scanner flags the example inside the prohibition. |
+| `agenfk-pr` | `RA2` Session Persistence | the text of the `description` itself | False positive — collision with the description's vocabulary. |
+| `agenfk-test`, `feature-archify` | `RP1` MCP Rug Pull | — (no snippet, confidence 0.7) | False positive: neither declares an MCP tool. |
 
-Nenhum exigiu ação. Todos abaixo do limiar de aviso (20).
+None required action. All below the warning threshold (20).
 
-## `archify` — 100/100 CRITICAL, e o que isso realmente significa
+## `archify` — 100/100 CRITICAL, and what that really means
 
-O gate reprovou uma skill **que já estava instalada neste repositório** desde o
-commit `5a485aa`. Essa é a demonstração mais útil do piloto: o gate chegou
-depois da skill, e encontrou o que ninguém tinha olhado.
+The gate rejected a skill **that was already installed in this repository**
+since commit `5a485aa`. That is the pilot's most useful demonstration: the
+gate arrived after the skill and found what no one had looked at.
 
-Mas 100/100 não quer dizer "malicioso". Abrindo os 59 achados um a um:
+But 100/100 does not mean "malicious". Opening the 59 findings one by one:
 
-| Regra | Qtd | O que realmente casou | Veredito |
+| Rule | Count | What really matched | Verdict |
 |---|---|---|---|
-| `AE1` analysis-evasion | 13 | `bin/archify.mjs` (2101 linhas), `assets/template.html` (14934 linhas) acima do limite de inspeção por arquivo | **Sinal de cobertura**, não evasão |
-| `RA2` Session Persistence | 8 | o identificador JavaScript `pList` | Falso positivo |
-| `PE3` Credential Access | 7 | `/etc/passwd`, `secret.txt`, `access tokens` — **dentro de `test/`** | Falso positivo (fixtures) |
-| `EA3` Scope Creep | 7 | a frase **`NOT LIMITED TO`** do texto da licença SIL Open Font | Falso positivo |
-| `P2` Hidden Instructions | 6 | comentários HTML/SVG (`<!-- Toolbar -->`, `<!-- Legend -->`) | Falso positivo |
-| `YR4` YARA MCP tool poisoning | 6 | o base64 da fonte WOFF2 embutida (`d09GMg` = magic `wOF2`) + `description =` do CSS | Falso positivo |
-| `RP1` MCP Rug Pull | 6 | arquivos de teste; archify não é servidor MCP | Falso positivo |
-| `TM1`, `MP3`, `OH3`, `LP3` | 4 | `"remove"`, `"reset state"`, `"without cutting"` em testes | Falso positivo |
-| `SC1` Unpinned Dependencies | 1 | `"ajv": "^8.17.1"` sem pin exato | **Verdadeiro**, menor |
-| `SC4` Known Vulnerable Dependency | 1 | **`fast-uri@3.1.5`, 4 advisories** (via `ajv@8.20.0`) | **VERDADEIRO E ACIONÁVEL** |
+| `AE1` analysis-evasion | 13 | `bin/archify.mjs` (2101 lines), `assets/template.html` (14934 lines) above the per-file inspection limit | **Coverage signal**, not evasion |
+| `RA2` Session Persistence | 8 | the JavaScript identifier `pList` | False positive |
+| `PE3` Credential Access | 7 | `/etc/passwd`, `secret.txt`, `access tokens` — **inside `test/`** | False positive (fixtures) |
+| `EA3` Scope Creep | 7 | the **`NOT LIMITED TO`** phrase from the SIL Open Font license text | False positive |
+| `P2` Hidden Instructions | 6 | HTML/SVG comments (`<!-- Toolbar -->`, `<!-- Legend -->`) | False positive |
+| `YR4` YARA MCP tool poisoning | 6 | the base64 of the embedded WOFF2 font (`d09GMg` = magic `wOF2`) + `description =` from the CSS | False positive |
+| `RP1` MCP Rug Pull | 6 | test files; archify is not an MCP server | False positive |
+| `TM1`, `MP3`, `OH3`, `LP3` | 4 | `"remove"`, `"reset state"`, `"without cutting"` in tests | False positive |
+| `SC1` Unpinned Dependencies | 1 | `"ajv": "^8.17.1"` without an exact pin | **True**, minor |
+| `SC4` Known Vulnerable Dependency | 1 | **`fast-uri@3.1.5`, 4 advisories** (via `ajv@8.20.0`) | **TRUE AND ACTIONABLE** |
 
-**58 de 59 eram ruído. 1 era real.**
+**58 of 59 were noise. 1 was real.**
 
-O achado real, verificado em `.agents/skills/archify/package-lock.json:41`:
+The real finding, verified in `.agents/skills/archify/package-lock.json:41`:
 
 ```
-node_modules/ajv           -> 8.20.0   (dependência: fast-uri ^3.0.1)
+node_modules/ajv           -> 8.20.0   (dependency: fast-uri ^3.0.1)
 node_modules/ajv/node_modules/fast-uri -> 3.1.5
 ```
 
-`fast-uri@3.1.5` carrega CVE-2026-75931 (host confusion por canonicalização
-IDN pulada), CVE-2026-75975 e CVE-2026-75899 (SSRF por normalização de IPv6
-malformado e por hostname com percent repetido), mais uma quarta advisory.
-Chega via `ajv`, que o archify usa para validar os schemas de diagrama.
+`fast-uri@3.1.5` carries CVE-2026-75931 (host confusion from skipped IDN
+canonicalization), CVE-2026-75975 and CVE-2026-75899 (SSRF from malformed IPv6
+normalization and from a hostname with repeated percent), plus a fourth
+advisory. It arrives via `ajv`, which archify uses to validate the diagram
+schemas.
 
-### O que foi feito com isso
+### What was done about it
 
-`.harness/baselines/agents-skills-archify.yaml` suprime **apenas os
-falsos positivos verificados**, com o motivo de cada um escrito por extenso.
-`SC4` e `SC1` ficam de fora do baseline de propósito — continuam visíveis a
-cada scan até serem corrigidos upstream.
+`.harness/baselines/agents-skills-archify.yaml` suppresses **only the
+verified false positives**, with the reason for each written out in full.
+`SC4` and `SC1` are intentionally left out of the baseline — they stay visible
+on every scan until fixed upstream.
 
-Re-scan com o baseline aplicado:
+Re-scan with the baseline applied:
 
 ```
 [warn]  archify — score 22/100 (MEDIUM), 2 achado(s), cobertura partial
 ```
 
-| | Sem baseline | Com baseline |
+| | Without baseline | With baseline |
 |---|---|---|
 | Score | 100/100 CRITICAL | **22/100 MEDIUM** |
-| Achados | 59 | **2** |
-| Suprimidos | 0 | **57** |
-| Gate | bloqueia (exit 1) | **avisa** (exit 0) |
+| Findings | 59 | **2** |
+| Suppressed | 0 | **57** |
+| Gate | blocks (exit 1) | **warns** (exit 0) |
 
-Os 2 que restaram são exatamente `SC4` e `SC1` — os verdadeiros. O veredito
-foi registrado em `skills-lock.json` como `ACEITO_COM_RESSALVA`, com o score
-bruto (100) preservado ao lado do triado (22): quem abrir o arquivo vê as duas
-coisas, não só a confortável.
+The 2 that remain are exactly `SC4` and `SC1` — the true ones. The verdict was
+recorded in `skills-lock.json` as `ACEITO_COM_RESSALVA`, with the raw score
+(100) preserved next to the triaged one (22): whoever opens the file sees both
+numbers, not only the comfortable one.
 
-O baseline fica **fora da árvore escaneada**, em `.harness/baselines/`, um por
-skill. Ele já esteve dentro do diretório da skill — a revisão externa mostrou
-que era um bypass, e a correção está descrita em `REVISAO-EXTERNA.md`.
+The baseline lives **outside the scanned tree**, in `.harness/baselines/`,
+one per skill. It used to live inside the skill directory — the external
+review showed that was a bypass, and the fix is described in
+`REVISAO-EXTERNA.md`.
 
-## O desfecho do `SC4` — o ciclo completo
+## The `SC4` outcome — the full cycle
 
-O achado real virou correção, e o caminho até ela é o que o gate existe para
-provocar.
+The real finding became a fix, and the path to it is what the gate exists to
+provoke.
 
-**Primeiro, medir a exposição em vez de reagir ao rótulo.** "2 CVEs HIGH" não
-diz se alguém está exposto. O que diz:
+**First, measure the exposure instead of reacting to the label.** "2 HIGH
+CVEs" does not say whether anyone is exposed. What does:
 
-| Pergunta | Resposta |
+| Question | Answer |
 |---|---|
-| `ajv` é dependência de runtime? | Não — `devDependencies` |
-| Quem usa `ajv`? | Só `scripts/generate-validators.mjs`, gerador de build que lê schemas **locais** |
-| A saída dele está versionada? | Sim — `renderers/shared/generated-validators.mjs`, que é o que `bin/archify.mjs` carrega |
-| Existe `node_modules`? | Não |
-| O `SKILL.md` manda instalar? | Não |
+| Is `ajv` a runtime dependency? | No — `devDependencies` |
+| Who uses `ajv`? | Only `scripts/generate-validators.mjs`, a build generator that reads **local** schemas |
+| Is its output versioned? | Yes — `renderers/shared/generated-validators.mjs`, which is what `bin/archify.mjs` loads |
+| Does `node_modules` exist? | No |
+| Does the `SKILL.md` tell you to install? | No |
 
-Os CVEs são SSRF e host confusion **no parse de URI**. O único consumidor lê
-JSON do disco. **Exposição real: nenhuma.**
+The CVEs are SSRF and host confusion **in URI parsing**. The only consumer
+reads JSON from disk. **Real exposure: none.**
 
-**Mesmo assim, corrigir.** As advisories estão resolvidas na `3.1.6`; o `ajv`
-pede `^3.0.1`, então a `3.1.8` entra sem conflito — uma entrada do lockfile, sem
-tocar em código. Dois motivos, nenhum deles "estamos vulneráveis":
+**Still, fix it.** The advisories are resolved in `3.1.6`; `ajv` asks for
+`^3.0.1`, so `3.1.8` fits without conflict — one lockfile entry, no code
+touched. Two reasons, neither of them "we are vulnerable":
 
-1. Protege quem um dia rodar `npm install` ali para regenerar os validadores.
-   Hoje ninguém roda; a cópia vendorada é permanente e essa suposição não é.
-2. Mantém o aviso do gate significando alguma coisa. Um `SC4` conhecido e nunca
-   resolvido ensina o time a ignorar o aviso do archify — e o próximo achado,
-   que pode ser real, chega no meio desse ruído.
+1. Protects whoever someday runs `npm install` there to regenerate the
+   validators. Today nobody runs it; the vendored copy is permanent and that
+   assumption is not.
+2. Keeps the gate's warning meaning something. A known and never-resolved
+   `SC4` teaches the team to ignore archify's warning — and the next finding,
+   which could be real, arrives inside that noise.
 
-O que **não** foi feito: subir o limiar nem suprimir o `SC4` no baseline.
-Suprimir achado verdadeiro para ficar verde é exatamente o que a skill proíbe.
+What was **not** done: raising the threshold or suppressing `SC4` in the
+baseline. Suppressing a true finding to turn green is exactly what the skill
+prohibits.
 
-**O `integrity` foi verificado contra o tarball real** (`sha512` calculado do
-`.tgz` baixado), não copiado da resposta do registry. Numa correção de supply
-chain, confiar no hash que alguém te passou é repetir o problema.
+**The `integrity` was verified against the real tarball** (`sha512` computed
+from the downloaded `.tgz`), not copied from the registry response. In a
+supply chain fix, trusting a hash someone handed you is repeating the problem.
 
-**E o patch precisa sobreviver.** Corrigir um lockfile vendorado cria
-divergência silenciosa com o upstream: a próxima atualização do archify apaga o
-patch sem avisar. Então:
+**And the patch needs to survive.** Fixing a vendored lockfile creates silent
+divergence from upstream: the next archify update would erase the patch
+without warning. So:
 
-- `skills-lock.json` ganhou `localPatches`, com uma asserção **verificável**
+- `skills-lock.json` gained `localPatches`, with a **verifiable** assertion
   (`verifyContains: fast-uri-3.1.8.tgz`, `verifyAbsent: fast-uri-3.1.5.tgz`).
-- `validate-harness.sh` passou a conferir isso a cada health check. Revertendo o
-  patch, ele falha com *"patch perdido — falta fast-uri-3.1.8.tgz"*.
-- Issue upstream: [tt-a1i/archify#463](https://github.com/tt-a1i/archify/issues/463),
-  para o patch deixar de ser nosso.
+- `validate-harness.sh` now checks that on every health check. If the patch is
+  reverted, it fails with *"patch perdido — falta fast-uri-3.1.8.tgz"*.
+- Upstream issue: [tt-a1i/archify#463](https://github.com/tt-a1i/archify/issues/463),
+  so the patch stops being ours.
 
-**Resultado, re-escaneado:**
+**Result, re-scanned:**
 
-| | Antes do bump | Depois |
+| | Before the bump | After |
 |---|---|---|
 | Score | 22/100 MEDIUM | **2/100 LOW** |
-| Achados | 2 (`SC4` + `SC1`) | **1 (`SC1`)** |
-| Gate | avisa | **aprova** |
+| Findings | 2 (`SC4` + `SC1`) | **1 (`SC1`)** |
+| Gate | warns | **approves** |
 
-O `SC4` sumiu porque a causa foi corrigida, não porque foi suprimido. O `SC1`
-que resta é o range `"ajv": "^8.17.1"` sem pin exato — verdadeiro, menor, e
-upstream: fica visível.
+The `SC4` disappeared because the cause was fixed, not because it was
+suppressed. The remaining `SC1` is the `"ajv": "^8.17.1"` range without an
+exact pin — true, minor, and upstream: it stays visible.
 
-Um campo que ninguém verifica é uma anotação, não um controle — a mesma lição
-do `scanVerdict`, que só passou a valer quando o `validate-harness` começou a
-conferir o score gravado em vez da mera presença do campo.
+A field nobody verifies is an annotation, not a control — the same lesson as
+`scanVerdict`, which only started to count when `validate-harness` began
+checking the recorded score instead of the mere presence of the field.
 
-## O gate reprovou a si mesmo
+## The gate rejected itself
 
-Na primeira varredura completa depois de pronta, a **própria `skill-guard`**
-saiu com **33/100 MEDIUM, 2 achados** — ambos `SC2` (External Script
-Fetching), casando com o texto `curl | bash` nas linhas em que a skill
-**nomeia o padrão** para quem vai ler o relatório do scanner.
+On the first full sweep after it was ready, **`skill-guard` itself** came out
+at **33/100 MEDIUM, 2 findings** — both `SC2` (External Script Fetching),
+matching the text `curl | bash` in the lines where the skill **names the
+pattern** for whoever reads the scanner report.
 
-É a mesma ironia do `agenfk-flow`, marcado por documentar o `curl
-http://localhost:3000` que ele proíbe: **o scanner estático não distingue
-mencionar de fazer.**
+It is the same irony as `agenfk-flow`, flagged for documenting the `curl
+http://localhost:3000` it forbids: **the static scanner does not distinguish
+mentioning from doing.**
 
-A saída não foi reescrever o texto. Documentação de segurança precisa poder
-citar a string que descreve — quem lê o relatório tem de achar no texto o mesmo
-`curl | bash` que viu no achado. Foi para o baseline, com o motivo escrito.
+The answer was not to rewrite the text. Security documentation must be able to
+quote the string it describes — whoever reads the report has to find in the
+text the same `curl | bash` they saw in the finding. It went to the baseline,
+with the reason written out.
 
-E aí apareceu o caso circular: suprimir os dois `SC2` fez nascer um `AE1` novo,
-porque a `SKILL.md` passou a citar `.skillspector-baseline.yaml` — arquivo que
-o SkillSpector **exclui de propósito** da análise de conteúdo (para que o texto
-das supressões não vire achado). A referência fica `out_of_scope` e sai como
-sinal de cobertura.
+And then the circular case appeared: suppressing the two `SC2` gave birth to a
+new `AE1`, because the `SKILL.md` now cites `.skillspector-baseline.yaml` — a
+file SkillSpector **deliberately excludes** from content analysis (so the text
+of the suppressions does not become a finding). The reference stays
+`out_of_scope` and comes out as a coverage signal.
 
-| | Sem baseline | Só com SC2 | Com SC2 + AE1 |
+| | Without baseline | SC2 only | SC2 + AE1 |
 |---|---|---|---|
 | Score | 33/100 | 25/100 | **0/100** |
-| Achados | 2 | 1 | **0** |
+| Findings | 2 | 1 | **0** |
 
-Três iterações para uma skill de 114 linhas que não faz nada perigoso. É o
-custo real de operar um gate — e a razão de ele precisar de um dono, não só de
-uma instalação.
+Three iterations for a 114-line skill that does nothing dangerous. That is the
+real cost of operating a gate — and the reason it needs an owner, not just an
+installation.
 
-## A lição do piloto
+## The pilot's lesson
 
-Um scanner de segurança entrega **ruído com sinal dentro**, não um veredito.
-O valor não está no número: está em alguém abrir os 59 achados, verificar cada
-um contra o código e escrever por que 58 não contam. O gate automatiza a
-pergunta; a resposta ainda é trabalho de gente.
+A security scanner delivers **noise with signal inside**, not a verdict. The
+value is not in the number: it is in someone opening the 59 findings,
+checking each one against the code, and writing down why 58 do not count. The
+gate automates the question; the answer is still human work.
 
-E o inverso também vale: **score 0 não é aprovação.** Vinte skills pontuaram 0
-neste scan. Isso significa "nenhum padrão conhecido casou em modo estático" —
-não que sejam seguras.
+And the inverse also holds: **score 0 is not approval.** Twenty skills scored
+0 in this scan. That means "no known pattern matched in static mode" — not
+that they are safe.

@@ -1,129 +1,136 @@
 ---
-title: Hard Harness — orquestração executável
+title: Hard Harness — executable orchestration
 ---
 
-# Hard Harness — orquestração executável
+# Hard Harness — executable orchestration
 
-> O componente `hard-harness/` deste curso: grafo executável, contratos
-> tipados, gates determinísticos e agentes especializados — framework-
-> agnóstico, com o ADK 2 como referência conceitual (não como dependência).
+> The `hard-harness/` component of this course: executable graph, typed
+> contracts, deterministic gates and specialized agents — framework-
+> agnostic, with ADK 2 as a conceptual reference (not a dependency).
 
-## O núcleo em uma frase
+## The core in one sentence
 
-**Agente propõe → runner decide → gate bloqueia → store registra.**
+**Agent proposes → runner decides → gate blocks → store records.**
 
 ```
 hard-harness/
 ├── core/          # schemas, graph, runner, gates, events
-├── stores/        # FileStateStore (sem banco) + AgEnFKStore (adapter)
-├── adapters/      # adk2 (inspiração), rag (provedor de contexto)
-├── agents/        # planner, coder, reviewer, evidence (só raciocínio)
+├── stores/        # FileStateStore — all state stays in the repo
+├── adapters/      # adk2 (inspiration), rag (context provider)
+├── agents/        # planner, coder, reviewer, evidence (reasoning only)
 ├── examples/
-│   ├── basic_workflow/    # pipeline completo (o 1º consumidor)
-│   └── app_harness/       # fan-out de QA + join (integração C)
-└── tests/         # 19 testes unitários
+│   ├── basic_workflow/    # complete pipeline (the 1st consumer)
+│   └── app_harness/       # QA fan-out + join (C integration)
+└── tests/         # 19 unit tests
 ```
 
-Aulas: [15](/lectures/lecture-15) · [16](/lectures/lecture-16) · [17](/lectures/lecture-17).
+Lessons: [15](/lectures/lecture-15) · [16](/lectures/lecture-16) · [17](/lectures/lecture-17).
 
-## Executando
+## Running
 
 ```sh
 cd hard-harness
-PYTHONPATH=. python3 examples/basic_workflow/workflow.py   # pipeline completo
+PYTHONPATH=. python3 examples/basic_workflow/workflow.py   # complete pipeline
 PYTHONPATH=. python3 tests/test_hard_harness.py            # 19/19
 ```
 
-## Integração com os cinco harnesses
+## Integration with the five harnesses
 
-### 1 · Harness básico (B) — o primeiro consumidor real
+### 1 · Basic harness (B) — the first real consumer
 
-O `examples/basic_workflow` é o workflow `plan → code → test → review → close`
-que o harness básico sempre documentou — agora **executável**:
+The `examples/basic_workflow` is the `plan → code → test → review → close` workflow
+that the basic harness always documented — now **executable**:
 
 ```
 boot → load_scope → planner_agent → validate_plan (gate) → coder_agent
   → fan-out [build, tests, e2e, lint] → join → router
       ├─ passed → reviewer_agent → evidence → close
-      └─ failed → correction_agent → coder_agent (retry limitado)
+      └─ failed → correction_agent → coder_agent (limited retry)
 ```
 
-Os gates do B1 (`gatekeeper.sh`, `validate-harness.sh`) continuam nos hooks;
-o que mudou é que a **ordem e o estado** agora são do grafo, não da instrução.
+The B1 gates (`gatekeeper.sh`, `validate-harness.sh`) remain in the hooks;
+what changed is that **order and state** now belong to the graph, not the instruction.
 
-### 2 · Harness enterprise (B2) — adapter AgEnFK
+### 2 · Enterprise harness (B2) — the store is an interface
 
-`stores/agenfk_store.py` implementa a interface `StateStore` contra o AgEnFK:
-lê item/status, registra avanço (`verify`) e evidências (`log-test`) quando
-disponível. Se o AgEnFK estiver indisponível, o store **para e informa** —
-nunca contorna. Hierarquia, evidência, gatekeeper e telemetria continuam
-sendo do AgEnFK; o runner apenas fala com ele via interface.
+The runner never touches persistence directly: it talks to `StateStore`, and the
+only implementation shipped is `FileStateStore` — every byte of state in the repo,
+which is what the [enterprise harness](/harness-designs/enterprise-harness) requires
+of layer B.
 
-### 3 · App harness (C) — fan-out de QA + join
+That interface is the extension point. An organization that already runs a
+management system can put it behind the same four methods and the runner will not
+notice. `examples/adapters/agenfk_store.py` is one worked example: it reads
+item/status from an external CLI, records progress and evidence, and **stops and
+informs** when the system is unavailable — never bypasses. Nothing in
+`hard_harness/` imports it; it is a demonstration that the seam is real, not a
+dependency.
 
-`examples/app_harness/` demonstra o padrão do App Harness: um nó dispara em
-paralelo **testes unitários, E2E, acessibilidade e navegação exploratória**,
-e o `join` consolida os resultados antes do router decidir. Um só núcleo,
-quatro verificações — nada de engine por verificação.
+### 3 · App harness (C) — QA fan-out + join
 
-### 4 · RAG / Area Copilot (D) — RAG como nó de contexto
+`examples/app_harness/` demonstrates the App Harness pattern: one node fires in
+parallel **unit tests, E2E, accessibility and exploratory navigation**,
+and the `join` consolidates the results before the router decides. One core,
+four verifications — no engine per verification.
 
-`adapters/rag.py` envolve o `AgentController` do rag-harness com contrato
-mínimo: `provide_context(question) → contexto tipado`. O workflow *pede*
-contexto (nó `context`), o RAG **não decide transições** — não recebe o
-runner e nunca propõe próximo nó. Recuperação separada da orquestração.
+### 4 · RAG / Area Copilot (D) — RAG as a context node
+
+`adapters/rag.py` wraps the rag-harness `AgentController` with a minimal
+contract: `provide_context(question) → typed context`. The workflow *asks* for
+context (`context` node), RAG **doesn't decide transitions** — it doesn't receive the
+runner and never proposes the next node. Retrieval separated from orchestration.
 
 ```python
 rag = RagContextProvider(rag_harness_root=".../rag-harness", index_dir=".../.rag_index")
 g.add_node(Node("context", NodeKind.DETERMINISTIC, rag.as_node()))
 ```
 
-### 5 · Harnesses de domínio (E) — skills e schemas no mesmo núcleo
+### 5 · Domain harnesses (E) — skills and schemas on the same core
 
-Finance, Games e Commercial **não criam engines próprios**: fornecem ao núcleo
-1) skills (o conhecimento do domínio), 2) schemas (contratos tipados dos seus
-artefatos) e 3) gates (suas verificações — reconciliação, playteste,
-proposal-check). O `domains/` continua sendo a biblioteca de conhecimento; o
-`hard-harness` é o único motor.
+Finance, Games and Commercial **don't create their own engines**: they provide the core with
+1) skills (the domain knowledge), 2) schemas (typed contracts of their
+artifacts) and 3) gates (their verifications — reconciliation, playtest,
+proposal-check). The `domains/` remains the knowledge library; the
+`hard-harness` is the only engine.
 
-## LLM providers — OpenRouter (padrão), Ollama (opcional)
+## LLM providers — OpenRouter (default), Ollama (optional)
 
-Os agentes do núcleo recebem um provider injetável
-(`hard_harness/llm/providers.py`). Seleção por ambiente, sem surpresa de rede:
+The core agents receive an injectable provider
+(`hard_harness/llm/providers.py`). Selection by environment, no network surprises:
 
 ```sh
-# padrão (mesmo fluxo desta sessão):
+# default (same flow as this session):
 OPENROUTER_API_KEY=... PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
-# opcional — local:
+# optional — local:
 OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
-# sem env: stub determinístico (aviso claro), perfeito para testes/offline
+# no env: deterministic stub (clear warning), perfect for tests/offline
 ```
 
-- **OpenRouterProvider** — API compatível com OpenAI (stdlib urllib), modelo
-  padrão `deepseek/deepseek-v4-flash-0731` (o mesmo desta sessão), usage capturado.
-- **OllamaProvider** — endpoint local `/v1/chat/completions`, probe de disponibilidade.
-- **Custo no runner** — o provider anexa `llm_cost` (usage em k-tokens) ao
-  payload do agente; o runner aplica `Limits.llm_budget` em cima do custo real.
-- **Evidência viva**: o workflow completo rodou com OpenRouter real — planner
-  gerou plano (1.157 k-tokens), reviewer pediu changes no diff do stub
-  (raciocínio real), evidence sintetizou; 4 chamadas, 19 eventos, status closed.
+- **OpenRouterProvider** — OpenAI-compatible API (stdlib urllib), default
+  model `deepseek/deepseek-v4-flash-0731` (the same as this session), usage captured.
+- **OllamaProvider** — local `/v1/chat/completions` endpoint, availability probe.
+- **Cost in the runner** — the provider attaches `llm_cost` (usage in k-tokens) to
+  the agent payload; the runner applies `Limits.llm_budget` on top of the real cost.
+- **Living evidence**: the complete workflow ran with real OpenRouter — the planner
+  generated a plan (1.157 k-tokens), the reviewer asked for changes on the stub diff
+  (real reasoning), evidence synthesized; 4 calls, 19 events, status closed.
 
-## Decisões de arquitetura (e limites honestos)
+## Architecture decisions (and honest limits)
 
-| Decisão | Por quê |
+| Decision | Why |
 |---|---|
-| Núcleo framework-agnóstico | ADK 2 é inspiração/adapter; orquestração própria não depende de provedor |
-| Agentes só raciocinam | autoridade de estado nunca é delegada (testado) |
-| Router com default obrigatório | rota inexistente nunca encerra em silêncio (lição ADK L2b) |
-| Persistência em arquivo primeiro | `.harness/` (state.json + events.jsonl + artifacts + locks) — banco depois |
-| Limites em código | MAX_DEPTH/CHILDREN/RETRIES/LLM_CALLS/timeout/budget no runner |
-| RAG = contexto, nunca orquestrador | recuperação separada da orquestração (requisito do curso) |
-| Sem banco nesta versão | `FileStateStore` hoje; `AgEnFKStore`/SQLite via mesma interface |
+| Framework-agnostic core | ADK 2 is inspiration/adapter; own orchestration doesn't depend on a provider |
+| Agents only reason | state authority is never delegated (tested) |
+| Router with mandatory default | unknown route never ends silently (ADK L2b lesson) |
+| File-first persistence | `.harness/` (state.json + events.jsonl + artifacts + locks) — database later |
+| Limits in code | MAX_DEPTH/CHILDREN/RETRIES/LLM_CALLS/timeout/budget in the runner |
+| RAG = context, never orchestrator | retrieval separated from orchestration (course requirement) |
+| No database in this version | `FileStateStore` today; SQLite or an external system later, via the same interface |
 
-**Limitações**: agentes são stubs (provider LLM a injetar); Collaborative e
-Dynamic (ADK 2) são evolução declarada, não implementados no núcleo — o grafo
-já suporta fan-out runtime via `run_fanout` com `MAX_CHILDREN`.
+**Limitations**: agents are stubs (LLM provider to inject); Collaborative and
+Dynamic (ADK 2) are declared evolution, not implemented in the core — the graph
+already supports runtime fan-out via `run_fanout` with `MAX_CHILDREN`.
 
-**Relacionados**: [Aula 16 (ADK 2)](/lectures/lecture-16) · [Harness básico](/harness-designs/basic-harness) · [Harness enterprise](/harness-designs/enterprise-harness) · [App Harness](/harness-designs/app-harness) · [RAG](/harness-designs/rag-harness)
+**Related**: [Lesson 16 (ADK 2)](/lectures/lecture-16) · [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness) · [App Harness](/harness-designs/app-harness) · [RAG](/harness-designs/rag-harness) · [ADK + RAG + Jev](/harness-designs/adk-rag-jev-harness) · [ADK RAG PostgreSQL](/harness-designs/adk-rag-postgres-harness)

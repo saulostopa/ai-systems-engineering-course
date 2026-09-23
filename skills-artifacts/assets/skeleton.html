@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light dark" />
 <title data-i18n="title">Harness artifact</title>
 <style>
-/* system.css é injetado AQUI inteiro — nunca via template engine */
+/* system.css is injected HERE whole — never via template engine */
 </style>
 </head>
 <body>
@@ -17,56 +17,76 @@
       <span data-i18n="brand">Harness · Webmotors</span>
     </div>
     <div class="toolbar">
-      <button type="button" id="lang-toggle" aria-label="Alternar idioma / Toggle language">EN</button>
-      <button type="button" id="theme-toggle" aria-label="Alternar tema / Toggle theme">◐</button>
+      <button type="button" id="lang-toggle" aria-label="Toggle language / Alternar idioma">EN</button>
+      <button type="button" id="theme-toggle" aria-label="Toggle theme">◐</button>
     </div>
   </header>
 
   <main>
-    <!-- ═══ CONTEÚDO DO ARTEFATO ═══
-         O gerador insere aqui: título, cards, tabelas, quiz.
-         O quiz usa: .quiz-level > .quiz-stem + .quiz-opt + .quiz-why.
-         Cada pergunta: 3 .quiz-opt, exatamente uma com data-correct="true".
-         Níveis: data-level="tier-1..4", data-level-label, data-level-hint. -->
+    <!-- ═══ ARTIFACT CONTENT ═══
+         The generator inserts here: title, cards, tables, quiz.
+         The quiz uses: .quiz-level > .quiz-stem + .quiz-opt + .quiz-why.
+         Each question: 3 .quiz-opt, exactly one with data-correct="true".
+         Levels: data-level="tier-1..4", data-level-label, data-level-hint. -->
 
-    <section class="card" aria-label="Conteúdo">
-      <h1 data-i18n="heading">Título do artefato</h1>
-      <p data-i18n="lede">Resumo em uma frase.</p>
+    <section class="card" aria-label="Content">
+      <h1 data-i18n="heading" data-i18n-pt="Título do artefato" data-i18n-en="Artifact title">Artifact title</h1>
+      <p data-i18n="lede" data-i18n-pt="Resumo em uma frase." data-i18n-en="One-sentence summary.">One-sentence summary.</p>
     </section>
 
-    <!-- Quiz dinâmico: as seções .quiz-level são geradas aqui.
-         O script abaixo pontua, anuncia por aria-live e oferece
-         modo de revisão (itens errados repetidos) quando habilitado. -->
+
+    <!-- Flow animation (feature-animation). One .flow-stage per real stage,
+         3 to 6 of them. data-caption-pt/en feed #flow-caption when the stage
+         is active — the DOM is the source of truth, the script only reads it. -->
+    <section class="card" id="flow-root" hidden aria-label="Flow">
+      <h2 data-i18n="flow-title" data-i18n-pt="Um dado real atravessando a feature" data-i18n-en="One real trip through the feature">One real trip through the feature</h2>
+      <div class="flow-track" id="flow-track">
+        <div class="flow-packet" id="flow-packet" aria-hidden="true"></div>
+      </div>
+      <div class="flow-controls">
+        <button type="button" class="flow-btn" id="flow-play">
+          <span data-i18n="flow-play" data-i18n-pt="Reproduzir" data-i18n-en="Play">Play</span>
+        </button>
+        <button type="button" class="flow-btn" id="flow-step">
+          <span data-i18n="flow-step" data-i18n-pt="Avançar" data-i18n-en="Step">Step</span>
+        </button>
+        <p class="flow-caption" id="flow-caption" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- Dynamic quiz: the .quiz-level sections are generated here.
+         The script below scores, announces via aria-live and offers
+         review mode (wrong items repeated) when enabled. -->
     <section class="card" id="quiz-root" aria-label="Quiz">
-      <h2 data-i18n="quiz-title">Verifique seu aprendizado</h2>
+      <h2 data-i18n="quiz-title" data-i18n-pt="Verifique seu aprendizado" data-i18n-en="Check your learning">Check your learning</h2>
       <div class="progress" aria-hidden="true">
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
         <span class="progress-label" id="progress-label">0%</span>
       </div>
-      <div id="quiz-levels"><!-- .quiz-level gerados aqui --></div>
+      <div id="quiz-levels"><!-- .quiz-level generated here --></div>
       <button type="button" class="quiz-opt" id="submit-quiz" style="font-weight:600;text-align:center" hidden>
-        <span data-i18n="submit">Conferir respostas</span>
+        <span data-i18n="submit" data-i18n-pt="Conferir respostas" data-i18n-en="Check answers">Check answers</span>
       </button>
       <div class="result" id="quiz-result" role="status" aria-live="polite" hidden></div>
       <div id="review-root" hidden>
-        <h3 data-i18n="review-title">Revisão (questões para reforçar)</h3>
+        <h3 data-i18n="review-title" data-i18n-pt="Revisão (questões para reforçar)" data-i18n-en="Review (questions to reinforce)">Review (questions to reinforce)</h3>
         <div id="review-items"></div>
         <button type="button" class="quiz-opt" id="review-submit" style="font-weight:600;text-align:center">
-          <span data-i18n="review-submit">Conferir revisão</span>
+          <span data-i18n="review-submit" data-i18n-pt="Conferir revisão" data-i18n-en="Check review">Check review</span>
         </button>
       </div>
     </section>
   </main>
 
   <footer style="margin-top:var(--space-7);color:var(--color-text-muted);font-size:var(--text-sm)">
-    <span data-i18n="footer">Gerado por skill de harness · Webmotors</span>
+    <span data-i18n="footer" data-i18n-pt="Gerado por skill de harness · Webmotors" data-i18n-en="Generated by harness skill · Webmotors">Generated by harness skill · Webmotors</span>
   </footer>
 </div>
 
 <script>
-/* ═══ Skeleton scripts — copiar inteiros, nunca reescrever (skill-design.md) ═══ */
+/* ═══ Skeleton scripts — copy whole, never rewrite (skill-design.md) ═══ */
 
-/* Tema */
+/* Theme */
 (function () {
   const btn = document.getElementById("theme-toggle");
   const root = document.documentElement;
@@ -78,11 +98,12 @@
   });
 })();
 
-/* Idioma: os atributos data-i18n são trocados por pares data-i18n-pt/en.
-   Ex.: <h1 data-i18n="heading" data-i18n-pt="Título" data-i18n-en="Title"> */
+/* Language: data-i18n attributes are swapped by data-i18n-pt/en pairs.
+   Ex.: an element with data-i18n="heading" carries data-i18n-pt and
+   data-i18n-en attributes with each translation. */
 (function () {
   const btn = document.getElementById("lang-toggle");
-  let lang = localStorage.getItem("hsk-lang") || "pt";
+  let lang = localStorage.getItem("hsk-lang") || "en";
   const apply = () => {
     document.documentElement.lang = lang === "pt" ? "pt-BR" : "en";
     document.querySelectorAll("[data-i18n]").forEach((el) => {
@@ -95,7 +116,7 @@
   apply();
 })();
 
-/* Pontuação por nível + progresso + resultado (aria-live) */
+/* Per-level scoring + progress + result (aria-live) */
 function updateLevelScore(level) {
   const opts = level.querySelectorAll(".quiz-opt");
   const correct = level.querySelectorAll('.quiz-opt[data-correct="true"]').length;
@@ -130,14 +151,15 @@ function revealResult() {
       if (isCorrect && picked) correct++;
       if (picked && !isCorrect) wrong.push({ level: l.dataset.levelLabel, text: l.querySelector(".quiz-stem").textContent, why: l.querySelector(".quiz-why") });
     });
+    l.dataset.checked = "true";
     l.querySelectorAll(".quiz-why").forEach((w) => w.dataset.visible = "true");
   });
   const result = document.getElementById("quiz-result");
   const pct = total ? Math.round((correct / total) * 100) : 0;
-  const verdict = pct >= 80 ? "Ótimo" : pct >= 50 ? "Bom, mas revise" : "Revise as fontes e refaça";
-  result.innerHTML = "<h2>Resultado: " + verdict + "</h2><p>" + correct + " de " + total + " (" + pct + "%)</p>";
+  const verdict = pct >= 80 ? "Excellent" : pct >= 50 ? "Good, but review" : "Review the sources and redo";
+  result.innerHTML = "<h2>Result: " + verdict + "</h2><p>" + correct + " of " + total + " (" + pct + "%)</p>";
   result.hidden = false;
-  /* Modo revisão adaptativo: erradas entram na revisão */
+  /* Adaptive review mode: wrong answers enter review */
   if (wrong.length) {
     const review = document.getElementById("review-root");
     const items = document.getElementById("review-items");
@@ -162,6 +184,65 @@ document.addEventListener("click", (e) => {
   }
   if (e.target.closest("#submit-quiz")) revealResult();
 });
+
+/* Flow playback (feature-animation).
+ * Autoplay is opt-out by preference, never forced: prefers-reduced-motion stops
+ * it before it starts. The caption is aria-live, so a screen reader is told
+ * which stage is active instead of watching a border change colour. */
+/* The skeleton ships a quiz shell for the generator to fill. An artifact that
+ * is not a quiz was still rendering the empty card, complete with a 0% bar. */
+(function () {
+  // Count levels document-wide: the generator emits them into the content area,
+  // not inside #quiz-root, so scoping the check to the card hid the submit
+  // button on the one artifact that needed it.
+  const root = document.getElementById("quiz-root");
+  if (root && !document.querySelectorAll(".quiz-level").length) root.hidden = true;
+})();
+
+(function () {
+  const track = document.getElementById("flow-track");
+  if (!track) return;
+  const stages = Array.prototype.slice.call(track.querySelectorAll(".flow-stage"));
+  if (!stages.length) return;
+  const root = document.getElementById("flow-root");
+  if (root) root.hidden = false;
+
+  const packet = document.getElementById("flow-packet");
+  const caption = document.getElementById("flow-caption");
+  const playBtn = document.getElementById("flow-play");
+  const stepBtn = document.getElementById("flow-step");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+  let timer = null;
+
+  const lang = () => (localStorage.getItem("hsk-lang") || "en");
+  const label = (key, pt, en) => (lang() === "pt" ? pt : en);
+
+  function render() {
+    stages.forEach((stage, i) => stage.classList.toggle("active", i === current));
+    const stage = stages[current];
+    packet.style.left = stage.offsetLeft + stage.offsetWidth / 2 + "px";
+    const text = stage.getAttribute("data-caption-" + lang()) || stage.dataset.caption || "";
+    caption.textContent =
+      label("step", "Passo ", "Step ") + (current + 1) +
+      label("of", " de ", " of ") + stages.length + " — " + text;
+    playBtn.querySelector("span").textContent = timer
+      ? label("pause", "Pausar", "Pause")
+      : label("play", "Reproduzir", "Play");
+  }
+  function step() { current = (current + 1) % stages.length; render(); }
+  function play() { if (timer) return; timer = setInterval(step, 1800); render(); }
+  function pause() { clearInterval(timer); timer = null; render(); }
+
+  playBtn.addEventListener("click", () => (timer ? pause() : play()));
+  stepBtn.addEventListener("click", () => { pause(); step(); });
+  window.addEventListener("resize", render);
+  document.getElementById("lang-toggle").addEventListener("click", () => setTimeout(render, 0));
+
+  render();
+  if (!reduced) play();
+})();
+
 </script>
 </body>
 </html>

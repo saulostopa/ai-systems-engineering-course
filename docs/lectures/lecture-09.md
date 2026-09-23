@@ -1,87 +1,87 @@
 ---
-title: Aula 09 — Declarar vitória cedo demais
+title: Lesson 09 — Declaring victory too early
 ---
 
-# Aula 09 — Declarar vitória cedo demais
+# Lesson 09 — Declaring victory too early
 
-> O agente diz "pronto". O harness responde: "prove".
+> The agent says "done". The harness answers: "prove it".
 
-## O padrão que se repete
+## The pattern that repeats
 
-O agente implementa a feature, roda uma vez, vê que "funciona" e declara vitória. O que ele não verificou:
+The agent implements the feature, runs it once, sees that it "works" and declares victory. What it didn't verify:
 
-- os casos de borda (empty state, dados duplicados, payload inválido);
-- os testes existentes (e os que ele quebrou);
-- o build completo (não só o trecho que ele tocou);
-- o efeito em componentes vizinhos (o factory chama isso de *neighbor effects*);
-- a integração ponta a ponta (Aula 10);
-- o contrato com hooks/gates (lint, format, e2e gate).
+- the edge cases (empty state, duplicate data, invalid payload);
+- the existing tests (and the ones it broke);
+- the full build (not just the snippet it touched);
+- the effect on neighboring components (the factory calls this *neighbor effects*);
+- the end-to-end integration (Lesson 10);
+- the contract with hooks/gates (lint, format, e2e gate).
 
-"Parece que funciona" é a forma mais cara de "pronto" que existe: o custo de descobrir depois é 10x o de verificar agora.
+"It seems to work" is the most expensive form of "done" there is: the cost of finding out later is 10x the cost of verifying now.
 
-## A mecânica do auto-engano
+## The mechanics of self-deception
 
-O agente não mente de propósito — ele **completa o raciocínio na cabeça** e confunde intenção com resultado. A escrita do código *produz* a sensação de que o código funciona (o viés de fluência). Contra isso, o harness oferece uma única arma confiável: **evidência externa obrigatória**.
+The agent doesn't lie on purpose — it **completes the reasoning in its head** and confuses intention with result. Writing the code *produces* the feeling that the code works (the fluency bias). Against this, the harness offers a single reliable weapon: **mandatory external evidence**.
 
-## Evidência antes de "done"
+## Evidence before "done"
 
-O `webmotors-harness-factory` transforma isso em política (`policies/evidence-required.md`):
+The `webmotors-harness-factory` turns this into policy (`policies/evidence-required.md`):
 
-> "A conclusão requer evidência registrada: comandos executados, esperado vs. real. Nunca afirme 'done' sem prova."
+> "Completion requires recorded evidence: commands executed, expected vs. actual. Never claim 'done' without proof."
 
-Na prática, evidência é:
+In practice, evidence is:
 
 ```
-✓ build passou            (output do comando, não "deve passar")
-✓ testes rodaram          (nome dos testes + contagem, não "testei")
-✓ diff revisado           (git diff: só o escopo declarado)
-✓ gates passaram          (pre-commit/pre-push hooks)
-✓ artefato gerado         (report/quiz/flowchart salvos)
+✓ build passed            (command output, not "it should pass")
+✓ tests ran               (test names + counts, not "I tested")
+✓ diff reviewed           (git diff: only the declared scope)
+✓ gates passed            (pre-commit/pre-push hooks)
+✓ artifacts generated     (report/quiz/diagram saved)
 ```
 
-E o requisito sutil do factory:
+And the factory's subtle requirement:
 
-> "Compare os nomes dos testes antes e depois e confirme que nenhum foi deletado, renomeado, pulado ou enfraquecido — uma suíte verde com menos testes do que você começou é uma regressão, não um passe."
+> "Compare the test names before and after and confirm none were deleted, renamed, skipped or weakened — a green suite with fewer tests than you started with is a regression, not a pass."
 
-## O fluxo do AgEnFK como professor
+## The flow as a teacher
 
-O workflow do AgEnFK encarna a aula:
+A workflow that embodies this lesson has three properties:
 
-1. `verify` exige evidência com **critérios de saída obrigatórios** por passo;
-2. o teste é uma etapa separada (`log-test PASSED/FAILED`);
-3. **DONE só é alcançável via `validate_progress` no passo final** — não existe "marcar como done".
+1. advancing requires evidence with **mandatory exit criteria** per step;
+2. the test is a separate step, recorded PASSED/FAILED;
+3. **DONE is only reachable through the final step** — there is no "mark as done".
 
-A story A1 passou por isso: o gate recusou o DONE direto; o caminho foi rodar o build, registrar o teste com o comando real, e avançar com evidência. O "declarei vitória" foi convertido em "provei a vitória".
+Story A1 went through this: the gate refused the direct DONE; the path was to run the build, record the test with the real command, and advance with evidence. "I declared victory" was converted into "I proved victory".
 
-## A pergunta que desarma o auto-engano
+## The question that disarms self-deception
 
-Antes de qualquer "pronto", o harness faz quatro perguntas — e a resposta é sempre um comando executado, nunca uma frase:
+Before any "done", the harness asks four questions — and the answer is always an executed command, never a sentence:
 
-| Pergunta | Resposta exigida |
+| Question | Required answer |
 |---|---|
-| Está construído? | `build` com exit 0 (output anexado) |
-| Está coberto? | testes novos + suíte completa passando, sem redução |
-| Está no escopo? | `git diff` mostrando só o declarado |
-| Está integrado? | E2E/gates/hooks passando |
+| Is it built? | `build` with exit 0 (output attached) |
+| Is it covered? | new tests + full suite passing, with no reduction |
+| Is it in scope? | `git diff` showing only what was declared |
+| Is it integrated? | E2E/gates/hooks passing |
 
-## Na Webmotors
+## At Webmotors
 
-- **Dev**: o "pronto" de uma tela inclui o e2e do `qa-playwright-e2e` passando no gate — não a opinião do agente.
-- **QA**: a triagem de flaky não aceita "deve ser flaky da rede" — exige trace viewer e evidência do teste.
-- **Finanças**: o relatório de madrugada não vale sem a validação das planilhas (esperado vs. real reconciliado).
-- **Games**: o build para a plataforma não sobe sem a validação de publish.
+- **Dev**: the "done" of a screen includes the `qa-playwright-e2e` e2e passing in the gate — not the agent's opinion.
+- **QA**: flaky triage doesn't accept "must be the network flakiness" — it requires the trace viewer and test evidence.
+- **Finance**: the overnight report is worthless without spreadsheet validation (expected vs. actual reconciled).
+- **Games**: the platform build doesn't go up without publish validation.
 
-## Principais aprendizados
+## Key takeaways
 
-1. "Parece que funciona" é o custo mais caro de "pronto".
-2. Intenção ≠ resultado: evidência externa obrigatória quebra o auto-engano.
-3. Suíte verde com menos testes é regressão, não passe.
-4. "Done" é um estado alcançado por fluxo com prova, não uma palavra.
+1. "It seems to work" is the most expensive form of "done".
+2. Intention ≠ result: mandatory external evidence breaks self-deception.
+3. A green suite with fewer tests is a regression, not a pass.
+4. "Done" is a state achieved through a flow with proof, not a word.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 09"
+"quiz me on Lesson 09"
 ```
 
-**Próxima aula**: [10 — Testes de ponta a ponta mudam o resultado](/lectures/lecture-10).
+**Next lesson**: [10 — End-to-end tests change the outcome](/lectures/lecture-10).

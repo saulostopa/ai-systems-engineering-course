@@ -1,82 +1,82 @@
 ---
-title: Aula 07 — Excesso de autonomia e entrega incompleta
+title: Lesson 07 — Excessive autonomy and incomplete delivery
 ---
 
-# Aula 07 — Excesso de autonomia e entrega incompleta
+# Lesson 07 — Excessive autonomy and incomplete delivery
 
-> O agente faz demais, entrega de menos e não percebe nenhum dos dois.
+> The agent does too much, delivers too little, and notices neither.
 
-## O paradoxo do agente
+## The agent paradox
 
-Dê autonomia total a um agente e observe o padrão que se repete:
+Give an agent total autonomy and watch the pattern that repeats:
 
-- **Overreach**: ele melhora o que não foi pedido, refatora o que não precisava, "aproveita para" corrigir dez coisas.
-- **Under-finish**: ele considera pronto o que está pela metade — faltou o teste, faltou o doc, faltou rodar o build, faltou o e2e.
+- **Overreach**: it improves what wasn't asked, refactors what didn't need it, "takes the chance" to fix ten things.
+- **Under-finish**: it considers done what is half-finished — the test is missing, the doc is missing, the build wasn't run, the e2e is missing.
 
-Os dois lados são o mesmo erro: **a autonomia sem limites não é poder, é descontrole**. O agente decide o escopo e decide o "pronto" — e ele é péssimo nos dois julgamentos.
+Both sides are the same mistake: **autonomy without limits is not power, it is loss of control**. The agent decides the scope and decides "done" — and it is terrible at both judgments.
 
-## O antídoto: escopo declarado e verificação mecânica
+## The antidote: declared scope and mechanical verification
 
-### 1. Declare o escopo antes de editar
+### 1. Declare the scope before editing
 
-O `webmotors-harness-factory` exige (via `policies/scope-control.md`):
+The `webmotors-harness-factory` requires (via `policies/scope-control.md`):
 
-> "Registre seu escopo antes de implementar: **O que estou mudando? Por quê? Quais arquivos são esperados? O que está explicitamente fora do escopo? Como o sucesso será verificado?**"
+> "Record your scope before implementing: **What am I changing? Why? Which files are expected? What is explicitly out of scope? How will success be verified?**"
 
-Declarar o escopo antes não é formalidade: é o **contrato** entre o agente e o gate. Com o escopo escrito, o "pronto" deixa de ser opinião e vira comparação: entregou o que declarou?
+Declaring the scope beforehand is not formality: it is the **contract** between the agent and the gate. With the scope written down, "done" stops being an opinion and becomes a comparison: did it deliver what it declared?
 
-### 2. Imponha gates mecânicos, não intenções
+### 2. Enforce mechanical gates, not intentions
 
-O factory mecaniza:
+The factory mechanizes:
 
-| Gate | Mecanismo | Quando bloqueia |
+| Gate | Mechanism | When it blocks |
 |---|---|---|
-| Check de gate | `scripts/gatekeeper.sh` (pre-commit hook) | Qualquer edição fora do fluxo permitido |
-| QA de frontend | `scripts/frontend-qa-gate.sh` (pre-commit) | Mudança de frontend sem cobertura E2E |
-| PR | `scripts/pr-hook.sh` (pre-push) | Push sem relatório de PR |
+| Gate check | `scripts/gatekeeper.sh` (pre-commit hook) | Any edit outside the allowed flow |
+| Frontend QA | `scripts/frontend-qa-gate.sh` (pre-commit) | Frontend change without E2E coverage |
+| PR | `scripts/pr-hook.sh` (pre-push) | Push without PR report |
 
-A regra é: **se o processo depende da boa vontade do agente, ele não vai acontecer**. O que existe como script e hook acontece sempre.
+The rule is: **if the process depends on the agent's goodwill, it won't happen**. What exists as a script and hook always happens.
 
-### 3. Defina "pronto" como critério verificável
+### 3. Define "done" as a verifiable criterion
 
 `policies/definition-of-done.md` + `policies/evidence-required.md`:
 
-> "A conclusão exige evidência registrada (comandos executados, esperado vs. real). Nunca afirme 'done' sem prova."
+> "Completion requires recorded evidence (commands executed, expected vs. actual). Never claim 'done' without proof."
 
-## O gatekeeper do AgEnFK como exemplo vivo
+## The gatekeeper as a living example
 
-O AgEnFK leva isso ao nível de workflow:
+A workflow engine takes this to the process level. The three rules that matter, whatever implements them:
 
-- **Item ativo obrigatório**: edições fora de um item em andamento são bloqueadas pelo gatekeeper.
-- **DONE inalcançável por atalho**: não existe transição direta para DONE — só via `validate_progress` no passo final do fluxo, com evidência.
-- **Teste como etapa**: o item passa por um estado de teste (`log-test PASSED/FAILED`) antes de concluir.
+- **Mandatory active item**: edits outside an in-progress item are blocked by the gatekeeper.
+- **DONE unreachable by shortcut**: there is no direct transition to DONE — only through the final step of the flow, with evidence.
+- **Test as a step**: the item goes through a test state (recorded PASSED/FAILED) before completing.
 
-Vimos isso na prática na story A1: o agente tentou marcar DONE e o workflow **violou a regra** — a resposta foi mover para o fluxo correto, rodar o build, registrar o teste e só então concluir. O overreach ("eu terminei") foi interceptado pelo harness, não pelo bom senso.
+We saw this in practice in story A1: the agent tried to mark DONE and the workflow **refused** — the response was to move to the correct flow, run the build, record the test and only then complete. The overreach ("I finished") was intercepted by the harness, not by common sense.
 
-## Escopo de tempo também conta
+## Time scope counts too
 
-Autonomia excessiva também é **quando** o agente age. Por isso o harness define:
+Excessive autonomy is also **when** the agent acts. That is why the harness defines:
 
-- em que estágio ele pode agir (flow steps);
-- o que pode fazer sem pedir (ferramentas permitidas, arquivos esperados);
-- o que exige aprovação humana (deploys, merges, mudanças de escopo);
-- o que é proibido (fora do escopo declarado, editar arquivos alheios à feature).
+- at which stage it can act (flow steps);
+- what it can do without asking (allowed tools, expected files);
+- what requires human approval (deploys, merges, scope changes);
+- what is forbidden (outside the declared scope, editing files unrelated to the feature).
 
-## Na Webmotors — o espírito, não a letra
+## At Webmotors — the spirit, not the letter
 
-O objetivo do harness não é engessar — é dar **liberdade dentro de limites conhecidos**. O time de QA ganha gates de E2E que protegem o app; o time de finanças ganha validação de planilha antes do relatório subir; o time de games ganha validação de publish antes de subir o build para a plataforma. Cada área declara o que é "demais" e o que é "pela metade" — e o harness impede os dois.
+The goal of the harness is not to stiffen — it is to give **freedom within known limits**. The QA team gains E2E gates that protect the app; the finance team gains spreadsheet validation before the report goes up; the games team gains publish validation before shipping the build to the platform. Each area declares what is "too much" and what is "half-finished" — and the harness prevents both.
 
-## Principais aprendizados
+## Key takeaways
 
-1. Overreach e under-finish são o mesmo defeito: escopo e "pronto" sem contrato.
-2. Escopo declarado antes de editar = contrato verificável de entrega.
-3. Gate mecânico > intenção: se não é script/hook, não acontece.
-4. "Done" é um estado do fluxo, não uma palavra na conversa.
+1. Overreach and under-finish are the same defect: scope and "done" without a contract.
+2. Scope declared before editing = verifiable delivery contract.
+3. Mechanical gate > intention: if it's not a script/hook, it doesn't happen.
+4. "Done" is a flow state, not a word in the conversation.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 07"
+"quiz me on Lesson 07"
 ```
 
-**Próxima aula**: [08 — Feature lists como primitivas de harness](/lectures/lecture-08).
+**Next lesson**: [08 — Feature lists as harness primitives](/lectures/lecture-08).

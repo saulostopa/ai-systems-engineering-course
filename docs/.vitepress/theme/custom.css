@@ -1,11 +1,11 @@
 /**
- * Tema do curso — tokens do design system Eleanor (Webmotors)
- * Fonte: webmotors.ds.eleanor.tokens (Color Mode Light/Dark + primitives)
- * Estrutura: :root = tema CLARO · html.dark = tema ESCURO
+ * Course theme — tokens from the Eleanor design system (Webmotors)
+ * Source: webmotors.ds.eleanor.tokens (Color Mode Light/Dark + primitives)
+ * Structure: :root = LIGHT theme · html.dark = DARK theme
  */
 
 :root {
-  /* ── Primitives Eleanor ── */
+  /* ── Eleanor Primitives ── */
   --ds-red-500: #d81f41;
   --ds-red-400: #e53858;
   --ds-red-300: #e45770;
@@ -38,7 +38,7 @@
   --vp-c-brand-soft: rgba(216, 31, 65, 0.12);
 }
 
-/* ═══ Tema CLARO (default) — Eleanor Color Mode Light ═══ */
+/* ═══ LIGHT theme (default) — Eleanor Color Mode Light ═══ */
 :root {
   --vp-c-bg: var(--ds-gray-50);
   --vp-c-bg-alt: var(--ds-gray-100);
@@ -83,7 +83,7 @@
   --vp-shadow-3: 0 12px 32px rgba(10, 10, 12, 0.16);
 }
 
-/* ═══ Tema ESCURO — Eleanor Color Mode Dark ═══ */
+/* ═══ DARK theme — Eleanor Color Mode Dark ═══ */
 html.dark {
   --vp-c-bg: var(--ds-gray-950);
   --vp-c-bg-alt: var(--ds-gray-900);
@@ -127,18 +127,18 @@ html.dark {
   --vp-shadow-3: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
 
-/* Figtree por padrão, com fallback visual consistente */
+/* Figtree by default, with consistent visual fallback */
 body {
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
 }
 
-/* Brand mark no header */
+/* Brand mark in the header */
 .VPNavBarTitle .title {
   font-weight: 700;
 }
 
-/* Links com o vermelho Eleanor */
+/* Links with Eleanor red */
 .vp-doc a {
   color: var(--ds-red-500);
 }
@@ -149,19 +149,19 @@ html.dark .vp-doc a {
   color: var(--ds-red-400);
 }
 
-/* Badges e destaques de código */
+/* Badges and code highlights */
 .vp-doc .badge {
   border: 1px solid var(--vp-c-border);
   color: var(--vp-c-text-2);
 }
 
-/* Callouts alinhados aos tokens semânticos Eleanor */
+/* Callouts aligned with Eleanor semantic tokens */
 .custom-block.tip {
   border-color: var(--ds-indigo-400);
   background-color: rgba(76, 76, 160, 0.08);
 }
 
-/* Home hero com a identidade Eleanor */
+/* Home hero with Eleanor identity */
 .VPHero .name,
 .VPHero .text {
   color: var(--vp-c-text-1);
@@ -175,7 +175,7 @@ html.dark .vp-doc a {
   border-color: var(--ds-red-400);
 }
 
-/* Botões de feature alinhados */
+/* Aligned feature buttons */
 .VPFeature {
   background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-border);
@@ -187,10 +187,69 @@ html.dark .vp-doc a {
   color: var(--vp-c-text-1);
 }
 
-/* Nav ativa */
+/* Active nav */
 .VPNavBarMenuLink.active {
   color: var(--ds-red-500);
 }
 html.dark .VPNavBarMenuLink.active {
   color: var(--ds-red-400);
+}
+
+/* ═══ Home hero: room for the HarnessGate visual ═══ */
+.VPHero .image-container {
+  width: 100%;
+  height: auto;
+  max-width: 540px;
+  transform: none;
+  padding: 0;
+}
+.VPHero .image-bg {
+  display: none;
+}
+/* Below the two-column breakpoint the visual is a garnish, not the headline. */
+@media (max-width: 639px) {
+  .VPHero .image {
+    margin: -48px -24px -16px;
+  }
+  .VPHero .image-container {
+    max-width: 268px;
+  }
+}
+@media (min-width: 640px) and (max-width: 959px) {
+  .VPHero .image {
+    margin: -64px -24px -24px;
+  }
+  .VPHero .image-container {
+    width: 100%;
+    height: auto;
+    max-width: 340px;
+  }
+}
+@media (min-width: 960px) {
+  .VPHero .image-container {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* ═══ Feature icons — Eleanor language, one brand colour, no emoji ═══ */
+.VPFeature .icon {
+  border-radius: 10px;
+  background-color: var(--vp-c-brand-soft);
+  color: var(--ds-red-500);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+html.dark .VPFeature .icon {
+  color: var(--ds-red-300);
+}
+.VPFeature .icon svg {
+  display: block;
+}
+.VPFeature:hover .icon {
+  background-color: var(--ds-red-500);
+  color: #ffffff;
+}
+html.dark .VPFeature:hover .icon {
+  background-color: var(--ds-red-400);
+  color: #ffffff;
 }

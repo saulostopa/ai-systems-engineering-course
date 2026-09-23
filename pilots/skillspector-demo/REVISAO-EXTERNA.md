@@ -1,148 +1,148 @@
-# Revisão adversarial independente — gate de instalação de skills (SkillSpector)
+# Independent adversarial review — skill installation gate (SkillSpector)
 
-> Resposta ao `PROMPT-REVISAO-EXTERNA.md`. Revisor: agente independente.
-> Método: análise do código + verificação empírica (docker falso em `/tmp`, suíte real com a imagem docker presente, 16/16 testes).
-> Data: 2026-09-17.
+> Response to `PROMPT-REVISAO-EXTERNA.md`. Reviewer: independent agent.
+> Method: code analysis + empirical verification (fake docker in `/tmp`, real suite with the docker image present, 16/16 tests).
+> Date: 2026-09-17.
 
-## Resumo executivo
+## Executive summary
 
-O gate está **estruturalmente correto nos caminhos de falha convencionais** (JSON vazio/ilegível/sem score bloqueiam; timeout bloqueia; códigos de saída 0/1/2 conforme contrato). Porém há **duas brechas de bypass reais** — o baseline e o marcador de fixture são lidos de dentro do próprio alvo não confiável — e **um fail-open demonstrado** por variável de ambiente malformada. Nada disso exige explorar o scanner: é a configuração do gate que entrega o veredito ao atacante.
+The gate is **structurally correct on the conventional failure paths** (empty/unreadable/no-score JSON blocks; timeout blocks; exit codes 0/1/2 per contract). However there are **two real bypass gaps** — the baseline and the fixture marker are read from inside the very untrusted target — and **one demonstrated fail-open** via a malformed environment variable. None of this requires exploiting the scanner: it is the gate's configuration that hands the verdict to the attacker.
 
 ---
 
-## Achados (do mais grave para o menos grave)
+## Findings (most to least severe)
 
-### 1. CRÍTICO — Baseline lido de dentro do próprio alvo = reescrita do veredito pelo atacante
+### 1. CRITICAL — Baseline read from inside the target itself = attacker rewrites the verdict
 
 `harness-basic/scripts/gate-skill-scan.sh:95-97`
 
-O `--baseline` aponta para `.skillspector-baseline.yaml` **dentro do diretório da skill** — exatamente a entidade não confiável que o gate deveria medir. Como o scanner exclui o baseline da análise, uma skill hostil traz um baseline que suprime todos os próprios achados (o autor itera o scanner localmente até o scan sair limpo).
+The `--baseline` points to `.skillspector-baseline.yaml` **inside the skill directory** — exactly the untrusted entity the gate should be measuring. Since the scanner excludes the baseline from the analysis, a hostile skill ships a baseline that suppresses all of its own findings (the author iterates the scanner locally until the scan comes out clean).
 
-**Cenário de falha demonstrado** (docker falso retornando score 100 CRITICAL sem `--baseline` e score 5 com):
+**Demonstrated failure scenario** (fake docker returning score 100 CRITICAL without `--baseline` and score 5 with it):
 
 ```
-$ gate-skill-scan.sh .agents/skills/archify      # diretório COM baseline
-  [ok]     archify — score 5/100 (LOW) ... 
+$ gate-skill-scan.sh .agents/skills/archify      # directory WITH baseline
+  [ok]     archify — score 5/100 (LOW) ...
 SKILL GUARD OK — 1 aprovada(s) ...               # exit 0
 
-$ gate-skill-scan.sh skills-artifacts/feature-quiz  # SEM baseline
+$ gate-skill-scan.sh skills-artifacts/feature-quiz  # WITHOUT baseline
   [BLOCK]  feature-quiz — score 100/100 (CRITICAL) ...
 SKILL GUARD BLOQUEOU — ...                       # exit 1
 ```
 
-Um único arquivo controlado pelo alvo inverte o veredito da mesma skill.
+A single file controlled by the target inverts the verdict of the same skill.
 
-**Evidência real no repo**: `skills-lock.json` registra archify com `rawScore: 100/100 CRITICAL, 59 achados` → baseline suprime 57 → score final 22 → ACEITO. O mecanismo permite que os 59 sejam suprimidos, não só 57. A triagem honesta de hoje é cortesia do revisor, não propriedade do gate.
+**Real evidence in the repo**: `skills-lock.json` records archify with `rawScore: 100/100 CRITICAL, 59 findings` → baseline suppresses 57 → final score 22 → ACCEPTED. The mechanism allows all 59 to be suppressed, not just 57. Today's honest triage is courtesy of the reviewer, not a property of the gate.
 
-**Grau de gravidade**: é a falha mais grave — o gate passa a medir o que o atacante quer; "nenhuma skill entra sem passar pelo scanner" vira "entra qualquer skill que saiba escrever um YAML".
+**Severity**: it is the most serious flaw — the gate starts measuring what the attacker wants; "no skill enters without passing the scanner" becomes "any skill that knows how to write a YAML enters".
 
-**O que resolveria**: baselines fora da árvore escaneada (ex.: `$SCAN_ROOT/.harness/baselines/<slug>.yaml`, revisáveis em PR ao lado do gate, nunca dentro do alvo) e rejeitar (ou exigir registro prévio) qualquer baseline encontrado dentro do diretório da skill.
+**What would fix it**: baselines outside the scanned tree (e.g. `$SCAN_ROOT/.harness/baselines/<slug>.yaml`, reviewable in PR next to the gate, never inside the target) and rejecting (or requiring prior registration of) any baseline found inside the skill directory.
 
-### 2. ALTO — Marcador `.skill-guard-fixture` dentro da skill = bypass do `--all`
+### 2. HIGH — `.skill-guard-fixture` marker inside the skill = bypass of `--all`
 
 `harness-basic/scripts/gate-skill-scan.sh:161-174`
 
-`discover_skills` pula qualquer diretório que contenha o arquivo — e esse arquivo mora **dentro** do diretório que deveria ser escaneado. Uma skill de terceiros (ou uma skill corrompida no supply chain) chega com `SKILL.md` + `.skill-guard-fixture` → invisível ao `--all`, contada nem como aprovada nem como bloqueada, `exit 0`.
+`discover_skills` skips any directory that contains the file — and that file lives **inside** the directory that should be scanned. A third-party skill (or a supply-chain-corrupted skill) arrives with `SKILL.md` + `.skill-guard-fixture` → invisible to `--all`, counted neither as approved nor as blocked, `exit 0`.
 
-**Cenário de falha**: PR que adiciona `skills/evil/SKILL.md` + `skills/evil/.skill-guard-fixture` → `discover_skills` não lista `skills/evil` (confirmado: `fixture-reprovada` é excluída exatamente assim) → `--all` reporta 0 bloqueadas e sai 0.
+**Failure scenario**: a PR that adds `skills/evil/SKILL.md` + `skills/evil/.skill-guard-fixture` → `discover_skills` does not list `skills/evil` (confirmed: `fixture-reprovada` is excluded exactly this way) → `--all` reports 0 blocked and exits 0.
 
-O argumento "arquivo versionado e revisável em PR" é circular: o mesmo PR que introduz a skill introduz o marcador.
+The "versioned file, reviewable in PR" argument is circular: the same PR that introduces the skill introduces the marker.
 
-**O que resolveria**: allowlist fora da árvore (ex.: `.harness/skill-guard-fixtures` na raiz, listando caminhos relativos), ou fixtures confinadas a um diretório dedicado excluído por caminho.
+**What would fix it**: an allowlist outside the tree (e.g. `.harness/skill-guard-fixtures` at the root, listing relative paths), or fixtures confined to a dedicated directory excluded by path.
 
-### 3. ALTO — `SKILL_GUARD_MAX_SCORE` não-numérico desarma o gate silenciosamente
+### 3. HIGH — Non-numeric `SKILL_GUARD_MAX_SCORE` silently disarms the gate
 
 `harness-basic/scripts/gate-skill-scan.sh:34-35, 241-252`
 
-`[ "$score" -gt "$MAX_SCORE" ]` com `MAX_SCORE="abc"` retorna 2 (erro) → if e elif falsos → cai no `else` → `ok`, `exit 0`.
+`[ "$score" -gt "$MAX_SCORE" ]` with `MAX_SCORE="abc"` returns 2 (error) → if and elif both false → falls to the `else` → `ok`, `exit 0`.
 
-**Cenário de falha demonstrado**:
+**Demonstrated failure scenario**:
 
 ```
-$ SKILL_GUARD_MAX_SCORE=abc SKILL_GUARD_WARN_SCORE=abc gate-skill-scan.sh <skill-com-score-70>
+$ SKILL_GUARD_MAX_SCORE=abc SKILL_GUARD_WARN_SCORE=abc gate-skill-scan.sh <skill-with-score-70>
   [ok]     feature-quiz — score 70/100 (HIGH) ...
-SKILL GUARD OK — 1 aprovada(s) ...               # exit 0  ← deveria BLOQUEAR
+SKILL GUARD OK — 1 aprovada(s) ...               # exit 0  ← should BLOCK
 ```
 
-Sem a variável (default 50): o mesmo alvo → `[BLOCK]`, `exit 1`. O próprio comentário das linhas 229-231 descreve esse fall-through para o campo `score` e o corrige — mas a mesma guarda não existe para `MAX_SCORE`/`WARN_SCORE`. (`MAX_SCORE=""` é seguro por causa do `:-`; valores como `"50.0"` também falham aberto — bash só tolera espaços e zeros à esquerda em `[ ] -gt`.)
+Without the variable (default 50): the same target → `[BLOCK]`, `exit 1`. The comment on lines 229-231 itself describes this fall-through into the `score` field and guards it — but the same guard does not exist for `MAX_SCORE`/`WARN_SCORE`. (`MAX_SCORE=""` is safe because of the `:-`; values like `"50.0"` also fail open — bash only tolerates spaces and leading zeros in `[ ] -gt`.)
 
-**O que resolveria**: validar `MAX_SCORE` e `WARN_SCORE` como inteiros antes do loop e `fail` se não forem.
+**What would fix it**: validate `MAX_SCORE` and `WARN_SCORE` as integers before the loop and `fail` if they are not.
 
-### 4. MÉDIO — O pin não cobre a imagem local; tag certa com conteúdo errado passa
+### 4. MEDIUM — The pin does not cover the local image; right tag with wrong content passes
 
 `harness-basic/scripts/gate-skill-scan.sh:51-60, 64-80`
 
-`verify_pin` confere apenas a tag **remota**. Se existir localmente uma imagem `skillspector:v2.11.2` com conteúdo divergente (cache de CI envenenado, imagem antiga construída de tag reescrita), `ensure_image` a usa sem nenhuma verificação e o pin imprime "pin confirmado" — o scanner que roda pode ser qualquer coisa. Offline com imagem local → aviso e segue (linhas 71-74), zero verificação.
+`verify_pin` checks only the **remote** tag. If a local image `skillspector:v2.11.2` with divergent content exists (poisoned CI cache, old image built from a rewritten tag), `ensure_image` uses it with no verification at all and the pin prints "pin confirmed" — the scanner that runs can be anything. Offline with a local image → warning and continue (lines 71-74), zero verification.
 
-**Cenário de falha**: CI com cache docker populado por um build de `skillspector:v2.11.2` modificado (scanner que reporta score 0 para tudo) → `docker image inspect` passa → `verify_pin` confirma a tag remota (que realmente aponta para o SHA fixado) → gate aprova tudo com "pin confirmado". O pin protege contra reescrita da tag, não contra o conteúdo local.
+**Failure scenario**: CI with a docker cache populated by a build of a modified `skillspector:v2.11.2` (a scanner that reports score 0 for everything) → `docker image inspect` passes → `verify_pin` confirms the remote tag (which really does point to the pinned SHA) → the gate approves everything with "pin confirmed". The pin protects against tag rewriting, not against local content.
 
-**O que resolveria**: fixar o digest esperado da imagem (ao lado do SHA) e conferir via `docker image inspect --format '{{.Id}}'`; divergiu → rebuild ou `fail`.
+**What would fix it**: pin the expected image digest (next to the SHA) and verify via `docker image inspect --format '{{.Id}}'`; if divergent → rebuild or `fail`.
 
-### 5. MÉDIO — `validate-harness.sh`: lock dependente de CWD + fluxo de "registrar veredito" inexistente
+### 5. MEDIUM — `validate-harness.sh`: CWD-dependent lock + nonexistent "register verdict" flow
 
 `harness-basic/scripts/validate-harness.sh:56-60, 77`
 
-- (a) A mensagem de erro manda "rode scripts/gate-skill-scan.sh e registre o veredito" — mas **nenhum script do repo escreve `scanVerdict` no `skills-lock.json`** (o gate não tem uma única referência ao lock; o lock atual foi editado à mão). O fluxo documentado não existe.
-- (b) `LOCK="skills-lock.json"` é relativo ao **CWD** do invocador, e o fallback usa `git rev-parse --show-toplevel` sem `-C "$ROOT"` (diferente do gate, linha 40).
+- (a) The error message says "run scripts/gate-skill-scan.sh and register the verdict" — but **no script in the repo writes `scanVerdict` into `skills-lock.json`** (the gate has not a single reference to the lock; the current lock was hand-edited). The documented flow does not exist.
+- (b) `LOCK="skills-lock.json"` is relative to the invoker's **CWD**, and the fallback uses `git rev-parse --show-toplevel` without `-C "$ROOT"` (unlike the gate, line 40).
 
-**Cenário de falha**: `bash /caminho/harness-basic/scripts/validate-harness.sh` rodado de fora do repo (CI de outro projeto) → `rev-parse` falha → `LOCK="/skills-lock.json"` → não existe → `ok "sem skills-lock.json (nenhuma skill de terceiro instalada)"` → `exit 0` — a checagem fica inerte justamente quando o pre-push deveria falhar. O comentário da linha 56 ("ao lado deste diretório") não descreve o que o código faz.
+**Failure scenario**: `bash /path/harness-basic/scripts/validate-harness.sh` run from outside the repo (another project's CI) → `rev-parse` fails → `LOCK="/skills-lock.json"` → does not exist → `ok "no skills-lock.json (no third-party skill installed)"` → `exit 0` — the check goes inert precisely when the pre-push should fail. The comment on line 56 ("next to this directory") does not describe what the code does.
 
-**O que resolveria**: `LOCK="$ROOT/skills-lock.json"` com fallback `git -C "$ROOT"`; e implementar o registro do veredito (ou corrigir a mensagem).
+**What would fix it**: `LOCK="$ROOT/skills-lock.json"` with a `git -C "$ROOT"` fallback; and implement the verdict registration (or fix the message).
 
-### 6. MÉDIO-BAIXO — Alvo `SKILL.md` (arquivo) ignora o baseline
+### 6. MEDIUM-LOW — `SKILL.md` (file) target ignores the baseline
 
 `harness-basic/scripts/gate-skill-scan.sh:95`
 
-`[ -f "$target/.skillspector-baseline.yaml" ]` só casa alvo-diretorio.
+`[ -f "$target/.skillspector-baseline.yaml" ]` only matches a directory target.
 
-**Cenário de falha demonstrado**: `gate .agents/skills/archify` → aprovado; `gate .agents/skills/archify/SKILL.md` → bloqueado, mesma skill, mesmo scanner. O contrato lista `SKILL.md` como alvo válido; o veredito passa a depender da forma como o alvo é passado.
+**Demonstrated failure scenario**: `gate .agents/skills/archify` → approved; `gate .agents/skills/archify/SKILL.md` → blocked, same skill, same scanner. The contract lists `SKILL.md` as a valid target; the verdict then depends on how the target is passed.
 
-### 7. MÉDIO-BAIXO — `realpath --relative-to` é GNU-only; falha → varre `./` (o repo inteiro)
+### 7. MEDIUM-LOW — `realpath --relative-to` is GNU-only; on failure it scans `./` (the whole repo)
 
 `harness-basic/scripts/gate-skill-scan.sh:108-110`
 
-Em macOS/BSD e busybox, `realpath --relative-to` não existe → `rel=""` → `scan "./"` → o alvo específico não é escaneado isoladamente; o veredito é o do repo inteiro, que pode diluir a skill hostil. Funciona na máquina atual (uutils coreutils 0.8.0). **O que resolveria**: exigir GNU coreutils e `fail` se a flag não for suportada (ou reimplementar o relativo em shell puro).
+On macOS/BSD and busybox, `realpath --relative-to` does not exist → `rel=""` → `scan "./"` → the specific target is not scanned in isolation; the verdict is the whole repo's, which can dilute a hostile skill. Works on the current machine (uutils coreutils 0.8.0). **What would fix it**: require GNU coreutils and `fail` if the flag is unsupported (or reimplement the relative computation in pure shell).
 
-### 8. BAIXO — `t_timeout_falha_fechado` é corrida e não prova a semântica do timeout
+### 8. LOW — `t_timeout_falha_fechado` is a race and does not prove the timeout semantics
 
 `harness-basic/tests/test_skill_guard.sh:148-155`
 
-`TIMEOUT=1` contra scan real: em máquina rápida/daemon quente o scan pode terminar em <1s → `exit 0` → teste falha espúrio (hoje passou, mas por margem de segundos). E o teste só verifica `exit 1` — um gate que bloqueia por **qualquer** falha do docker passa sem nunca exercitar o prazo. Um docker falso que dorme para sempre + assert da mensagem "sem relatório (timeout" testaria o comportamento de verdade.
+`TIMEOUT=1` against a real scan: on a fast machine/hot daemon the scan can finish in <1s → `exit 0` → spurious test failure (it passed today, but by a margin of seconds). And the test only checks `exit 1` — a gate that blocks on **any** docker failure passes without ever exercising the deadline. A fake docker that sleeps forever + an assertion of the "no report (timeout" message would test the real behavior.
 
-### 9. BAIXO — Testes que passariam contra implementação quebrada
+### 9. LOW — Tests that would pass against a broken implementation
 
-`harness-basic/tests/test_skill_guard.sh:195-204` e `157-167`
+`harness-basic/tests/test_skill_guard.sh:195-204` and `157-167`
 
-- `t_pin_declarado_bate_com_a_tag_remota` **reimplementa** o `ls-remote`+`awk` do gate e nunca chama `verify_pin` — um gate sem verificação de pin passa no teste. O teste valida o pin do repo, não o gate.
-- `t_gate_grava_relatorio_json` não confere o exit do gate — um gate que grava `{}` (JSON válido) sempre, sem escanear nada, passa.
+- `t_pin_declarado_bate_com_a_tag_remota` **reimplements** the gate's `ls-remote`+`awk` and never calls `verify_pin` — a gate without pin verification passes the test. The test validates the repo's pin, not the gate.
+- `t_gate_grava_relatorio_json` does not check the gate's exit — a gate that always writes `{}` (valid JSON) without scanning anything passes.
 
-### 10. BAIXO — `fail()` do gate é sourced no runner de testes
+### 10. LOW — The gate's `fail()` is sourced into the test runner
 
 `harness-basic/tests/test_skill_guard.sh:21` + `harness-basic/scripts/gate-skill-scan.sh:46`
 
-Qualquer teste futuro que dispare `fail()` (ex.: chamar `ensure_image`) mata o runner inteiro com `exit 2` em vez de falhar um único teste. Latente hoje (nenhum teste chama função que pode falhar), frágil para evolução.
+Any future test that triggers `fail()` (e.g. calling `ensure_image`) kills the entire runner with `exit 2` instead of failing a single test. Latent today (no test calls a function that can fail), fragile for evolution.
 
-### 11. BAIXO — Menores
+### 11. LOW — Minor items
 
-- `gate-skill-scan.sh:185-191`: alvos iniciados em `-` são rejeitados e não há separador `--`.
-- `gate-skill-scan.sh:201, 218`: `mkdir -p "$REPORTS"` e a gravação do relatório não são checados — se falharem, o gate segue e pode aprovar sem gravar o artefato de auditoria (o veredito continua correto; é perda de evidência, não fail-open).
-- `read_verdict` (`gate-skill-scan.sh:128-146`): um score float (`"12.5"`) seria bloqueado como ilegível — fail-closed, mas quebraria o gate se o scanner um dia emitir float (contrato atual diz 0-100 inteiro).
+- `gate-skill-scan.sh:185-191`: targets starting with `-` are rejected and there is no `--` separator.
+- `gate-skill-scan.sh:201, 218`: `mkdir -p "$REPORTS"` and the report write are not checked — if they fail, the gate continues and can approve without writing the audit artifact (the verdict stays correct; it is loss of evidence, not fail-open).
+- `read_verdict` (`gate-skill-scan.sh:128-146`): a float score (`"12.5"`) would be blocked as unreadable — fail-closed, but it would break the gate if the scanner ever emits a float (current contract says 0-100 integer).
 
 ---
 
-## O que verifiquei e considerei correto (cobertura da revisão)
+## What I verified and considered correct (review coverage)
 
-- **Códigos de saída 0/1/2** conforme contrato, validados empiricamente (docker real: fixture ruim → 1, skill limpa → 0; docker falso em todos os ramos).
-- **Guarda do score não-numérico** (linhas 232-239) funciona e protege o fall-through que ela mesma descreve — o teste `t_score_nao_numerico_bloqueia` é sólido (usa docker falso, roda sem imagem).
-- **Fail-closed nos caminhos de falha**: JSON vazio → bloqueio; JSON ilegível (`ERRO*`) → bloqueio; `python3` ausente → veredito vazio → score `""` → guarda bloqueia; timeout estourado → saída vazia/truncada → bloqueio; `MAX_SCORE=""` é seguro (o `:-` aplica o default — confirmado por experimento).
-- **Timeout**: `-s KILL` + `rc ≥ 124` → `docker rm -f` do container órfão; `--sig-proxy=false`; o `rc=$?` é capturado antes de qualquer comando posterior — coerente.
-- **`${base[@]+"${base[@]}"}`** — idiomática correta para array vazio.
-- **`report_slug`** (linhas 155-157): sem path traversal — `tr` elimina separadores, `sed` corta pontos/dashes nas bordas; slug vazio cai em `.json` inócuo; alvos absolutos fora de `SCAN_ROOT` e URLs produzem slugs inertes.
-- **`discover_skills`**: o subshell do `while read` só imprime (não acumula estado) — sem risco de perda de estado; espaços em nomes sobrevivem (leitura `read -r` + citação em `TARGETS`); fixture excluída (confirmado por execução); `node_modules`/`.git` excluídos.
-- **Suíte de testes**: 16/16 passando na máquina atual com a imagem docker real.
-- **Sourcing para testes**: a guarda `${BASH_SOURCE[0]} != ${0}` (linhas 180-182) funciona; o source não dispara scan nem efeito colateral; nenhum helper colide destrutivamente com `fail()` hoje.
-- **`set -uo pipefail` sem `set -e`** é intencional e consistente: todos os retornos de `scan_target` e todos os pontos de cálculo do veredito foram mapeados; os que poderiam aprovar indevidamente bloqueiam.
-- **Pin remoto** bate com o commit declarado (`t_pin_declarado_bate_com_a_tag_remota` passou com rede OK).
-- **Divergência documentação × código** verificada: limiares (50/20), códigos de saída, flags e `SKILL_GUARD_REPORTS` estão consistentes; as divergências reais estão nos itens 5, 6 e 7 acima.
+- **Exit codes 0/1/2** per contract, empirically validated (real docker: bad fixture → 1, clean skill → 0; fake docker across all branches).
+- **Non-numeric score guard** (lines 232-239) works and protects the fall-through it describes — the `t_score_nao_numerico_bloqueia` test is solid (uses fake docker, runs without the image).
+- **Fail-closed on failure paths**: empty JSON → block; unreadable JSON (`ERRO*`) → block; missing `python3` → empty verdict → score `""` → guard blocks; timeout exceeded → empty/truncated output → block; `MAX_SCORE=""` is safe (the `:-` applies the default — confirmed by experiment).
+- **Timeout**: `-s KILL` + `rc ≥ 124` → `docker rm -f` of the orphan container; `--sig-proxy=false`; the `rc=$?` is captured before any later command — coherent.
+- **`${base[@]+"${base[@]}"}`** — correct idiom for an empty array.
+- **`report_slug`** (lines 155-157): no path traversal — `tr` removes separators, `sed` trims dots/dashes at the edges; an empty slug falls into an inert `.json`; absolute targets outside `SCAN_ROOT` and URLs produce inert slugs.
+- **`discover_skills`**: the `while read` subshell only prints (does not accumulate state) — no state-loss risk; spaces in names survive (`read -r` + quoting in `TARGETS`); fixture excluded (confirmed by execution); `node_modules`/`.git` excluded.
+- **Test suite**: 16/16 passing on the current machine with the real docker image.
+- **Sourcing for tests**: the `${BASH_SOURCE[0]} != ${0}` guard (lines 180-182) works; the source triggers neither scan nor side effects; no helper collides destructively with `fail()` today.
+- **`set -uo pipefail` without `set -e`** is intentional and consistent: all `scan_target` returns and all verdict computation points were mapped; those that could approve improperly block.
+- **Remote pin** matches the declared commit (`t_pin_declarado_bate_com_a_tag_remota` passed with network OK).
+- **Documentation vs. code divergence** checked: thresholds (50/20), exit codes, flags, and `SKILL_GUARD_REPORTS` are consistent; the real divergences are items 5, 6, and 7 above.
 
-**Limitação da revisão**: não testei a construção da imagem do zero (já presente localmente), nem o caminho do baseline dentro do container com o scanner real — o prompt marca esse comportamento como já verificado e foi tratado como dado.
+**Review limitation**: I did not test building the image from scratch (already present locally), nor the baseline path inside the container with the real scanner — the prompt marks that behavior as already verified and it was treated as given.

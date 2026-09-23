@@ -1,11 +1,12 @@
-# Repositórios do ecossistema
+# Ecosystem repositories
 
-| Repositório | Papel |
+| Repository | Role |
 |-------------|-------|
-| `webmotors-harness-factory` | O "SO" de agentes: policies, hooks mecânicos, skills de processo, scripts de validação. |
-| `harness-agent-skills` | Catálogo de skills compartilháveis (feature-report, feature-quiz, QA...). |
-| `agenfk` | Framework de engenharia agêntica: itens (epic/story/task), flows, gatekeeper, telemetria, UI. |
-| `agenfk-report` | Relatórios e explainers do uso do framework. |
-| `cargroup-skills` | Skills específicas do grupo de carros. |
-| `harness-plannig` | **Este repositório** — o curso. |
-| `webmotors.ds.eleanor.tokens` | Tokens do design system Eleanor (fonte deste tema). |
+| `webmotors-harness-factory` | The agent "OS": policies, mechanical hooks, process skills, validation scripts. |
+| `harness-agent-skills` | Catalog of shareable skills (feature-report, feature-quiz, QA...). |
+| `agenfk` | Agentic engineering framework: items (epic/story/task), flows, gatekeeper, telemetry, UI. |
+| `agenfk-report` | Reports and explainers of framework usage. |
+| `cargroup-skills` | Skills specific to the car group. |
+| `harness-plannig` | **This repository** — the course. |
+| [`harnesses`](https://github.com/saulostopa/harnesses) | Standalone distribution of the runnable harness projects, without the course site. |
+| `webmotors.ds.eleanor.tokens` | Eleanor design system tokens (source of this theme). |

@@ -2,81 +2,81 @@
 title: skill-guard
 ---
 
-# skill-guard — nenhuma skill entra sem scan
+# skill-guard — no skill enters without a scan
 
-Skill wrapper + **gate executável** que integra o
-[SkillSpector](https://github.com/NVIDIA/SkillSpector) (NVIDIA, Apache-2.0) ao
-fluxo de instalação de skills do harness.
+Skill wrapper + **executable gate** that integrates
+[SkillSpector](https://github.com/NVIDIA/SkillSpector) (NVIDIA, Apache-2.0) into
+the harness's skill installation flow.
 
-Todo o resto deste curso trata a skill como *a coisa boa*: o pacote de
-instrução que ensina o agente a fazer algo bem. Esta página trata a skill como
-**superfície de ataque** — porque ela é as duas coisas ao mesmo tempo.
+Everything else in this course treats the skill as *the good thing*: the instruction
+package that teaches the agent to do something well. This page treats the skill as an
+**attack surface** — because it is both at the same time.
 
-## Por que isto existe
+## Why this exists
 
-Uma skill entra no contexto do agente e passa a **dirigir o comportamento do
-modelo**. Ela chega por `npx skills add`, por um link no Slack, por um
-copiar-e-colar — sem revisão de código, sem sandbox, sem CI. É a forma mais
-barata de comprometer um agente e a mais cara de auditar depois que já rodou.
+A skill enters the agent's context and starts **driving the model's
+behavior**. It arrives via `npx skills add`, a link in Slack, a
+copy-and-paste — without code review, without sandbox, without CI. It is the cheapest
+way to compromise an agent and the most expensive to audit after it has run.
 
-No levantamento da NVIDIA sobre 31.132 skills: **26,1% continham
-vulnerabilidades** e **5,2% mostravam sinal de intenção maliciosa**.
+In NVIDIA's survey of 31,132 skills: **26.1% contained
+vulnerabilities** and **5.2% showed signs of malicious intent**.
 
-O harness já bloqueia commit sem feature declarada (Aula 07) e código sem
-evidência (Aula 09). Uma skill de terceiro entrando sem qualquer gate era o
-buraco no meio disso.
+The harness already blocks commits without a declared feature (Lesson 07) and code without
+evidence (Lesson 09). A third-party skill entering without any gate was the
+hole in the middle of that.
 
-## Entregue
+## Delivered
 
-| Peça | O que é |
+| Piece | What it is |
 |---|---|
-| `skills-artifacts/skill-guard/SKILL.md` | Skill wrapper no padrão do curso — quando escanear, como ler o veredito, o que registrar |
-| `harness-basic/scripts/gate-skill-scan.sh` | **O gate**: bloqueia a instalação de skill reprovada (exit 1) |
-| `skills-lock.json` | Veredito (`scanVerdict`) gravado por skill — quem aprovou, com qual scanner, quando |
-| `pilots/skillspector-demo/` | Evidência: scan real de todas as skills do repositório + o fixture que prova que o gate bloqueia |
+| `skills-artifacts/skill-guard/SKILL.md` | Skill wrapper in the course pattern — when to scan, how to read the verdict, what to record |
+| `harness-basic/scripts/gate-skill-scan.sh` | **The gate**: blocks installation of a failed skill (exit 1) |
+| `skills-lock.json` | Verdict (`scanVerdict`) recorded per skill — who approved it, with which scanner, when |
+| `pilots/skillspector-demo/` | Evidence: real scan of all repository skills + the fixture that proves the gate blocks |
 
-## O gate
+## The gate
 
 ```sh
-harness-basic/scripts/gate-skill-scan.sh <alvo>   # dir, SKILL.md, .zip ou URL de repo
-harness-basic/scripts/gate-skill-scan.sh --all    # todas as skills do repositório
+harness-basic/scripts/gate-skill-scan.sh <target>   # dir, SKILL.md, .zip or repo URL
+harness-basic/scripts/gate-skill-scan.sh --all    # all skills in the repository
 ```
 
-Três decisões de projeto, e o motivo de cada uma:
+Three design decisions, and the reason for each:
 
-**Docker, não `pip install`.** O scanner é Python 3.12+; a máquina do time tem
-o Python que tem. A imagem é construída do `Dockerfile` oficial na primeira
-execução e reusada depois. Zero dependência do ambiente local.
+**Docker, not `pip install`.** The scanner is Python 3.12+; the team's machine has
+whatever Python it has. The image is built from the official `Dockerfile` on the first
+run and reused afterwards. Zero dependency on the local environment.
 
-**Estático (`--no-llm`), não semântico.** Um gate precisa de veredito
-**determinístico**: o mesmo alvo dá o mesmo resultado, em CI, offline, sem
-chave de API e sem custo por scan. A etapa semântica pega o que o estático não
-vê — mas um gate que muda de opinião entre execuções não é um gate.
+**Static (`--no-llm`), not semantic.** A gate needs a **deterministic** verdict:
+the same target gives the same result, in CI, offline, without an
+API key and at no cost per scan. The semantic step catches what the static doesn't
+see — but a gate that changes its mind between executions is not a gate.
 
-**Pin por commit, não por tag.** O gate confere que `v2.11.2` ainda aponta para
-`69dcdfb7…` antes de confiar no scanner. Uma tag remota pode ser reescrita: o
-nome fica igual e o código muda. Fixar uma ferramenta de supply chain por um
-ponteiro móvel seria a própria falha que ela procura.
+**Pin by commit, not by tag.** The gate checks that `v2.11.2` still points to
+`69dcdfb7…` before trusting the scanner. A remote tag can be rewritten: the
+name stays the same and the code changes. Pinning a supply-chain tool to a
+movable pointer would be the very failure it looks for.
 
-## Ler o veredito
+## Reading the verdict
 
-| Score | Severidade | O gate |
+| Score | Severity | The gate |
 |---|---|---|
-| 0-20 | LOW | **aprova** (exit 0) |
-| 21-50 | MEDIUM | **avisa** — leia os achados e decida |
-| 51-100 | HIGH / CRITICAL | **bloqueia** (exit 1) |
+| 0-20 | LOW | **approves** (exit 0) |
+| 21-50 | MEDIUM | **warns** — read the findings and decide |
+| 51-100 | HIGH / CRITICAL | **blocks** (exit 1) |
 
-Relatórios JSON completos em `.harness/skill-scans/<caminho-da-skill>.json`. Os achados
-são identificados por padrão — `SC2` (`curl \| bash`), `PE3` (acesso a
-credenciais), `E1`/`E4` (transmissão externa, vazamento de contexto), `P1`/`P2`
-(instruction override, instruções ocultas), `TM2` (tool misuse) — entre 71
-padrões em 17 categorias, incluindo *MCP tool poisoning*.
+Full JSON reports in `.harness/skill-scans/<skill-path>.json`. The findings
+are identified by pattern — `SC2` (`curl \| bash`), `PE3` (credential
+access), `E1`/`E4` (external transmission, context leak), `P1`/`P2`
+(instruction override, hidden instructions), `TM2` (tool misuse) — among 71
+patterns in 17 categories, including *MCP tool poisoning*.
 
-## Falsos positivos — o baseline
+## False positives — the baseline
 
-Um scanner estático entrega **ruído com sinal dentro**. Quando um achado é
-falso positivo verificado, ele entra num baseline — nunca some por ajuste de
-limiar:
+A static scanner delivers **noise with signal inside**. When a finding is
+verified as a false positive, it enters a baseline — it never disappears by
+threshold adjustment:
 
 ```yaml
 # .harness/baselines/agents-skills-archify.yaml
@@ -84,87 +84,87 @@ rules:
   - id: "EA3"
     message: "*NOT LIMITED TO*"
     reason: >-
-      Casa com a frase da licença SIL Open Font embutida no template.
+      Matches the SIL Open Font license phrase embedded in the template.
 ```
 
-O baseline fica em `.harness/baselines/<slug>.yaml`, **fora da árvore
-escaneada**, e é montado somente-leitura no container. Um por skill — nunca um
-global, que desarmaria a regra para todas as outras.
+The baseline lives in `.harness/baselines/<slug>.yaml`, **outside the scanned
+tree**, and is mounted read-only in the container. One per skill — never a
+global one, which would disarm the rule for all the others.
 
-::: danger Por que não dentro da skill
-A primeira versão guardava o baseline em `<skill>/.skillspector-baseline.yaml`,
-com o argumento de que ficaria "revisável em PR ao lado do código que perdoa".
-A revisão externa derrubou o argumento: é **circular** — o mesmo PR que traz a
-skill traz o baseline. Um autor hostil iteraria o scanner até escrever um YAML
-que suprime todos os próprios achados, e o gate passaria a medir o que ele
-escolheu. "Nenhuma skill entra sem passar pelo scanner" viraria "entra qualquer
-skill que saiba escrever um YAML".
+::: danger Why not inside the skill
+The first version kept the baseline in `<skill>/.skillspector-baseline.yaml`,
+arguing it would be "reviewable in PR next to the code it forgives".
+The external review knocked down the argument: it is **circular** — the same PR that brings the
+skill brings the baseline. A hostile author would iterate the scanner until writing a YAML
+that suppresses all of its own findings, and the gate would start measuring what they
+chose. "No skill enters without passing the scanner" would become "any skill that
+knows how to write a YAML enters".
 
-Hoje o gate **bloqueia** qualquer alvo que traga um baseline dentro de si.
+Today the gate **blocks** any target that carries a baseline inside itself.
 :::
 
-O gate aplica o baseline sozinho quando encontra o arquivo. Toda regra exige
-`reason`: uma supressão sem motivo escrito é uma decisão que ninguém poderá
-revisar depois.
+The gate applies the baseline by itself when it finds the file. Every rule requires
+`reason`: a suppression without a written reason is a decision nobody will be able to
+review later.
 
-**Nunca suprima um achado que você não abriu.** No piloto, 57 dos 59 achados do
-`archify` eram ruído — mas isso só é uma afirmação legítima porque os 59 foram
-lidos um a um. Ver [`pilots/skillspector-demo/scan-results.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/scan-results.md).
+**Never suppress a finding you haven't opened.** In the pilot, 57 of the 59 `archify`
+findings were noise — but that is only a legitimate claim because all 59 were
+read one by one. See [`pilots/skillspector-demo/scan-results.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/scan-results.md).
 
-::: tip O gate reprovou a si mesmo
-Na primeira varredura, a própria `skill-guard` saiu com 33/100 — dois `SC2`
-casando com o texto `curl | bash` nas linhas em que ela **nomeia o padrão**.
-O scanner estático não distingue mencionar de fazer. A saída não foi
-parafrasear o texto (quem lê o relatório precisa achar a mesma string no
-documento), foi o baseline com o motivo escrito.
+::: tip The gate failed itself
+In the first sweep, `skill-guard` itself scored 33/100 — two `SC2`
+matches on the `curl | bash` text in the lines where it **names the pattern**.
+The static scanner doesn't distinguish mentioning from doing. The way out wasn't
+paraphrasing the text (whoever reads the report needs to find the same string in the
+document), it was the baseline with the written reason.
 :::
 
-## Os limites — leia antes de confiar
+## The limits — read before trusting
 
-Um gate sobre o qual você mente é pior que nenhum gate, então:
+A gate you lie to is worse than no gate, so:
 
-- **Score 0 significa "nenhum padrão conhecido", não "é seguro".** O modo
-  estático julga **forma**, não intenção.
-- **O estático é forte em comando e fraco em prosa.** No fixture de teste,
-  o scanner pegou `curl | bash` (SC2), leitura de `~/.ssh` (PE3) e as quatro
-  transmissões externas (E1) — e **não** marcou o "ignore quaisquer restrições
-  anteriores" nem o pedido de repetir o prompt de sistema. Instrução maliciosa
-  escrita em português corrido é justamente o que a etapa semântica veria.
-- **`cobertura: partial` é o caso comum, não a exceção.** Parte do conteúdo
-  não foi inspecionada; o número aparece ao lado do score de propósito.
-- **O gate vale para o que passa por ele.** Uma skill instalada à mão, fora do
-  `skills-lock.json`, não foi escaneada por ninguém.
-- **O pin cobre a tag remota, não a imagem local.** O gate confere que
-  `v2.11.2` ainda aponta para o commit fixado, mas reusa qualquer imagem local
-  com esse nome. Um cache de CI envenenado com uma `skillspector:v2.11.2`
-  adulterada passaria com "pin confirmado" na tela. Onde isso importa, force a
-  reconstrução: `docker rmi skillspector:v2.11.2` antes de rodar o gate.
+- **Score 0 means "no known pattern", not "it's safe".** The static
+  mode judges **form**, not intention.
+- **The static mode is strong on commands and weak on prose.** In the test fixture,
+  the scanner caught `curl | bash` (SC2), `~/.ssh` reading (PE3) and the four
+  external transmissions (E1) — and did **not** flag the "ignore any previous
+  restrictions" nor the request to repeat the system prompt. Malicious instruction
+  written in running Portuguese prose is exactly what the semantic step would see.
+- **`coverage: partial` is the common case, not the exception.** Part of the content
+  was not inspected; the number appears next to the score on purpose.
+- **The gate covers what goes through it.** A skill installed by hand, outside
+  `skills-lock.json`, hasn't been scanned by anyone.
+- **The pin covers the remote tag, not the local image.** The gate checks that
+  `v2.11.2` still points to the pinned commit, but reuses any local image
+  with that name. A poisoned CI cache with a tampered `skillspector:v2.11.2`
+  would pass with "pin confirmed" on screen. Where that matters, force the
+  rebuild: `docker rmi skillspector:v2.11.2` before running the gate.
 
-## Regras
+## Rules
 
-- Escaneie **antes de baixar** — `gate-skill-scan.sh <url>` busca dentro do
-  container. Clonar para escanear depois já pôs o código na máquina.
-- Skill aprovada entra no `skills-lock.json` com o `scanVerdict` que a aprovou.
-- Origem mudou, veredito morreu: rode de novo.
-- **Nunca suba o limiar para fazer uma skill passar.** Instalar algo que o gate
-  bloqueou é uma decisão do usuário, tomada com os achados na frente e
-  registrada — não um ajuste silencioso de `SKILL_GUARD_MAX_SCORE`.
+- Scan **before downloading** — `gate-skill-scan.sh <url>` fetches inside the
+  container. Cloning to scan later has already put the code on the machine.
+- An approved skill enters `skills-lock.json` with the `scanVerdict` that approved it.
+- Source changed, verdict dead: run it again.
+- **Never raise the threshold to make a skill pass.** Installing something the gate
+  blocked is a user decision, made with the findings in front of them and
+  recorded — not a silent adjustment of `SKILL_GUARD_MAX_SCORE`.
 
-## Revisão externa
+## External review
 
-Este gate passou por uma **revisão adversarial independente** depois de pronto,
-e ela achou coisa séria: o baseline e o marcador de fixtures moravam dentro do
-diretório da skill — os dois controlados pela entidade que o gate deveria estar
-medindo — e um `SKILL_GUARD_MAX_SCORE` não-inteiro desarmava o gate em
-silêncio, aprovando score 70.
+This gate went through an **independent adversarial review** after it was ready,
+and it found something serious: the baseline and the fixture marker lived inside the
+skill's directory — both controlled by the entity the gate should have been
+measuring — and a non-integer `SKILL_GUARD_MAX_SCORE` silently disarmed the
+gate, approving score 70.
 
-O relatório completo (11 achados, com os cenários de falha reproduzidos) está
-em [`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/REVISAO-EXTERNA.md),
-junto do prompt que a produziu.
+The full report (11 findings, with the failure scenarios reproduced) is in
+[`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/REVISAO-EXTERNA.md),
+alongside the prompt that produced it.
 
-É a parte mais instrutiva do piloto: **um gate de segurança escrito com
-cuidado ainda tinha um bypass**, e quem o escreveu não o viu. Revisão
-independente não é formalidade de processo.
+It is the most instructive part of the pilot: **a security gate written with
+care still had a bypass**, and whoever wrote it didn't see it. Independent
+review is not a process formality.
 
-**Relacionado**: [Criar uma skill nova](/skills/how-to-create) ·
-[feature-archify](/skills/feature-archify) · [Visão geral](/skills/)
+**Related**: [Create a new skill](/skills/how-to-create) ·
+[feature-archify](/skills/feature-archify) · [Overview](/skills/)

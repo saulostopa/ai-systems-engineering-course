@@ -1,23 +1,23 @@
 {
   "features": [
     {
-      "id": "feature-001",
-      "title": "Exemplo: validacao de email no formulario X",
-      "description": "Adicionar validacao de formato de email com mensagem de erro acessivel.",
+      "id": "feature/OEM-123",
+      "title": "Example: email validation in form X",
+      "description": "Add email format validation with an accessible error message.",
       "status": "not_started",
       "priority": 1
     },
     {
-      "id": "feature-002",
-      "title": "Exemplo: exportar relatorio CSV",
-      "description": "Botao de exportacao na listagem com nome de arquivo datado.",
+      "id": "bugfix/AC-455",
+      "title": "Example: export CSV report",
+      "description": "Export button in the listing with a dated file name.",
       "status": "not_started",
       "priority": 2
     },
     {
-      "id": "feature-003",
-      "title": "Exemplo: tela de detalhe",
-      "description": "Pagina de detalhe com dados vindos da API.",
+      "id": "improvement/EST-3445",
+      "title": "Example: detail screen",
+      "description": "Detail page with data coming from the API.",
       "status": "not_started",
       "priority": 3
     }

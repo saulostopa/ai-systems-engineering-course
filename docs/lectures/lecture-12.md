@@ -1,63 +1,63 @@
 ---
-title: Aula 12 — Sessões terminam com estado limpo
+title: Lesson 12 — Sessions end with clean state
 ---
 
-# Aula 12 — Sessões terminam com estado limpo
+# Lesson 12 — Sessions end with clean state
 
-> O fim de uma sessão é o início da próxima. Terminar sujo é sabotar a continuidade.
+> The end of a session is the beginning of the next one. Ending dirty is sabotaging continuity.
 
-## O que é "estado limpo"
+## What "clean state" is
 
-Uma sessão termina limpa quando a próxima sessão (agente ou humano) consegue retomar sem precisar **desfazer** nada do que você fez. Estado sujo é o oposto: arquivos meio editados, features `in_progress` que ninguém avançou, handoff desatualizado, testes quebrados deixados para trás.
+A session ends clean when the next session (agent or human) can resume without having to **undo** anything you did. Dirty state is the opposite: half-edited files, `in_progress` features nobody advanced, an outdated handoff, broken tests left behind.
 
-O sintoma clássico: o próximo agente abre o repo, roda os testes, e eles falham — e ele gasta a sessão inteira descobrindo que a falha não era dele, era da sessão anterior.
+The classic symptom: the next agent opens the repo, runs the tests, and they fail — and it spends the whole session discovering the failure wasn't its fault, it was the previous session's.
 
-## O protocolo de encerramento do factory
+## The factory's shutdown protocol
 
-O `webmotors-harness-factory` define o fim de sessão com precisão (`AGENTS.md` §8):
+The `webmotors-harness-factory` defines the end of session precisely (`AGENTS.md` §8):
 
-1. Atualizar `feature_list.json` — estados reais das features.
-2. Atualizar `claude-progress.md` — o que foi feito, o que falhou, próxima ação.
-3. Atualizar `session-handoff.md` — seções obrigatórias do cabeçalho.
-4. Rodar `scripts/cleanup-scanner.sh` — detectar drift e artefatos esquecidos.
-5. Rodar `scripts/validate-harness.sh` — **deve passar**.
-6. Seguir `policies/git.md` — commits coerentes, sem lixo.
+1. Update `feature_list.json` — real states of the features.
+2. Update `progress.md` — what was done, what failed, next action.
+3. Update `session-handoff.md` — required header sections.
+4. Run `scripts/cleanup-scanner.sh` — detect drift and forgotten artifacts.
+5. Run `scripts/validate-harness.sh` — **must pass**.
+6. Follow `policies/git.md` — coherent commits, no junk.
 
-Repare na simetria com a Aula 06 (boot): **o boot começa lendo o handoff; o encerramento escreve o handoff**. Se todo mundo escreve, todo mundo lê algo confiável.
+Notice the symmetry with Lesson 06 (boot): **the boot starts by reading the handoff; the shutdown writes the handoff**. If everyone writes, everyone reads something reliable.
 
-## O que fica limpo de verdade
+## What is truly clean
 
-| Artefato | Estado limpo | Estado sujo |
+| Artifact | Clean state | Dirty state |
 |---|---|---|
-| Árvore git | Sem mudanças não commitadas sem propósito | Arquivos órfãos, merges pela metade |
-| Testes | Suíte verde e estável | Falhas preexistentes "deixadas" |
-| Features | Uma `in_progress` coerente, resto `not_started`/`passing` | Dez `in_progress`, nenhuma avançada |
-| Handoff | Diz exatamente onde parou e o que vem | Diz o que aconteceu há 3 sessões |
-| Artefatos | Reports/quizzes gerados e referenciados | HTMLs soltos sem dono |
+| Git tree | No purposeless uncommitted changes | Orphan files, half-done merges |
+| Tests | Green and stable suite | Preexisting failures "left behind" |
+| Features | One coherent `in_progress`, the rest `not_started`/`passing` | Ten `in_progress`, none advanced |
+| Handoff | Says exactly where it stopped and what's next | Says what happened 3 sessions ago |
+| Artifacts | Reports/quizzes generated and referenced | Orphan HTMLs with no owner |
 
-## O encerramento como contrato
+## Shutdown as a contract
 
-O AgEnFK trata o encerramento como parte do fluxo: o item só conclui depois do teste registrado e da evidência — e a transição entre fases preserva o estado. Quando uma sessão é pausada, o `agenfk-pause` salva o contexto completo; quando retoma, o `agenfk-resume` restaura — o "estado limpo" vira mecânico, não hábito.
+A workflow engine treats shutdown as part of the flow: the item only completes after the recorded test and evidence — and the transition between phases preserves state. Pausing saves the full context; resuming restores it — "clean state" becomes mechanical, not a habit. The same guarantee is reachable without an engine: it is exactly what `progress.md` and `session-handoff.md` buy you.
 
-E na prática deste projeto: a sessão que fez o scoping terminou com tudo commitado (working tree clean), pushed e com a story A2 em `IN_PROGRESS` coerente — a sessão seguinte (esta, escrevendo as aulas) começou lendo o estado e continuou sem retrabalho.
+And in practice in this project: the session that did the scoping ended with everything committed (clean working tree), pushed and with story A2 in a coherent `IN_PROGRESS` — the following session (this one, writing the lessons) started by reading the state and continued without rework.
 
-## "Clean state" para áreas de domínio
+## "Clean state" for domain areas
 
-- **Finanças**: o harness de madrugada termina publicando o relatório e marcando as planilhas como processadas — se a manhã começa com o relatório pronto e o estado consistente, o harness dormiu "limpo".
-- **Games**: a sessão de criação de narrativa termina com o doc de design commitado e o item avançado — nunca com ideias só na conversa.
-- **Comercial**: a proposta fica salva e versionada, com o próximo passo registrado.
+- **Finance**: the overnight harness ends by publishing the report and marking the spreadsheets as processed — if the morning starts with the report ready and the state consistent, the harness slept "clean".
+- **Games**: the narrative creation session ends with the design doc committed and the item advanced — never with ideas only in the conversation.
+- **Sales**: the proposal is saved and versioned, with the next step recorded.
 
-## Principais aprendizados
+## Key takeaways
 
-1. Estado limpo é o que permite retomada sem retrabalho — o contrário de "tarefa concluída".
-2. O encerramento espelha o boot: quem escreve o handoff garante a leitura confiável da próxima sessão.
-3. Suíte verde estável, árvore coerente e features consistentes são o mínimo.
-4. Clean state mecânico (pause/resume, gates) > clean state como boa intenção.
+1. Clean state is what allows resumption without rework — the opposite of "task completed".
+2. Shutdown mirrors boot: whoever writes the handoff guarantees the reliable read of the next session.
+3. Stable green suite, coherent tree and consistent features are the minimum.
+4. Mechanical clean state (pause/resume, gates) > clean state as good intention.
 
-## Verifique seu aprendizado
+## Check your learning
 
 ```
-"quiz me on a Aula 12"
+"quiz me on Lesson 12"
 ```
 
-**Próxima aula**: [13 — De prompts manuais a loops autônomos](/lectures/lecture-13).
+**Next lesson**: [13 — From manual prompts to autonomous loops](/lectures/lecture-13).

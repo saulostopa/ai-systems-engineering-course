@@ -2,11 +2,12 @@
   "name": "harness-plannig",
   "version": "0.1.0",
   "private": true,
-  "description": "Harness Foundation Course — curso de Harness Engineering Webmotors (VitePress + Eleanor, pt-BR)",
+  "description": "Harness Foundation Course — Webmotors Harness Engineering course (VitePress + Eleanor, en)",
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs"
+    "preview": "vitepress preview docs",
+    "check:i18n": "node scripts/check-locales.mjs"
   },
   "devDependencies": {
     "vitepress": "^1.6.3"

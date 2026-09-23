@@ -1,93 +1,93 @@
 ---
-title: Projeto 01 — Baseline vs. harness mínimo
+title: Project 01 — Baseline vs. minimal harness
 ---
 
-# Projeto 01 — Baseline vs. harness mínimo
+# Project 01 — Baseline vs. minimal harness
 
-> O primeiro experimento do curso: a mesma feature, com e sem harness. Meça a diferença antes de confiar nela.
+> The first experiment of the course: the same feature, with and without a harness. Measure the difference before trusting it.
 
-## Objetivo
+## Objective
 
-Rodar uma feature real **duas vezes** — uma com o agente "cru" (sem harness) e outra com o harness mínimo — e comparar:
+Run a real feature **twice** — once with the "raw" agent (no harness) and once with the minimal harness — and compare:
 
-- tempo até a entrega;
-- número de erros corrigidos depois do primeiro "pronto";
-- quantidade de retrabalho (commits de correção);
-- sensação de confiança (verificado vs. "parece que funciona").
+- time to delivery;
+- number of errors fixed after the first "done";
+- amount of rework (fix commits);
+- sense of confidence (verified vs. "it seems to work").
 
-O resultado é o **seu** baseline: a partir dele, todo harness que você construir terá um número para comparar.
+The result is **your** baseline: from it on, every harness you build will have a number to compare against.
 
-## Pré-requisitos
+## Prerequisites
 
-- Um repositório de teste (pode ser um fork de projeto pequeno ou um repo novo).
-- Um agente instalado (Claude Code, OpenCode, Cursor, Codex ou Gemini CLI).
-- A mesma feature bem delimitada para as duas rodadas (ex.: "adicionar validação de e-mail no formulário X").
+- A test repository (can be a fork of a small project or a new repo).
+- An installed agent (Claude Code, OpenCode, Cursor, Codex or Gemini CLI).
+- The same well-delimited feature for both rounds (e.g.: "add email validation to form X").
 
-## Passo a passo
+## Step by step
 
-### Rodada A — sem harness (baseline)
+### Round A — no harness (baseline)
 
-1. Abra o repo **sem nenhum** AGENTS.md, skills ou regras.
-2. Peça ao agente: `implemente a validação de e-mail no formulário X`.
-3. Anote: tempo até o primeiro "pronto", o que ele verificou (se verificou), quantas correções vieram depois.
-4. Não interfira — deixe o agente declarar vitória do jeito dele.
+1. Open the repo **without** any AGENTS.md, skills or rules.
+2. Ask the agent: `implement email validation on form X`.
+3. Note: time to the first "done", what it verified (if it verified), how many fixes came afterward.
+4. Don't interfere — let the agent declare victory its own way.
 
-### Rodada B — com harness mínimo
+### Round B — with minimal harness
 
-1. Adicione ao repo:
+1. Add to the repo:
 
 ```markdown
 # AGENTS.md
 
-## 1. O que este repo é
-Projeto de teste para o Projeto 01 do curso.
+## 1. What this repo is
+Test project for Project 01 of the course.
 
-## 2. Como verificar
-- Rode `npm run build` — deve passar.
-- Rode `npm test` — deve passar.
-- Nada é "pronto" sem o build e os testes rodados e anexados.
+## 2. How to verify
+- Run `npm run build` — it must pass.
+- Run `npm test` — it must pass.
+- Nothing is "done" without the build and tests run and attached.
 
-## 3. Escopo
-- Uma feature por vez.
-- Não toque em nada fora da feature.
+## 3. Scope
+- One feature at a time.
+- Don't touch anything outside the feature.
 ```
 
-2. Adicione o estado:
+2. Add the state:
 
 ```json
 {
   "features": [
-    { "id": "f1", "title": "Validação de e-mail", "status": "in_progress" }
+    { "id": "f1", "title": "Email validation", "status": "in_progress" }
   ]
 }
 ```
 
-3. Peça a **mesma** tarefa ao agente.
-4. Anote: tempo até o "pronto" *com* build e testes, quantas correções, o que ele registrou como evidência.
+3. Ask the **same** task to the agent.
+4. Note: time to "done" *with* build and tests, how many fixes, what it recorded as evidence.
 
-### Comparação
+### Comparison
 
-| Métrica | Rodada A (sem harness) | Rodada B (harness mínimo) |
+| Metric | Round A (no harness) | Round B (minimal harness) |
 |---|---|---|
-| Tempo até o primeiro "pronto" | | |
-| "Prontos" que falharam o build/testes | | |
-| Correções após o "pronto" | | |
-| Evidência registrada (sim/não) | | |
+| Time to first "done" | | |
+| "Dones" that failed the build/tests | | |
+| Fixes after "done" | | |
+| Evidence recorded (yes/no) | | |
 
-## Verificação
+## Verification
 
-- Build e testes passam na Rodada B (na A, anote se passavam ou se o agente "esqueceu").
-- O diff da Rodada B toca só o escopo declarado.
-- Você consegue apontar **o que exatamente** o harness mudou no comportamento do agente.
+- Build and tests pass in Round B (in A, note whether they passed or the agent "forgot").
+- Round B's diff touches only the declared scope.
+- You can point out **exactly what** the harness changed in the agent's behavior.
 
-## Entregável
+## Deliverable
 
-Um parágrafo no seu diário de aprendizagem (ou no `session-handoff.md` do projeto):
+A paragraph in your learning journal (or in the project's `session-handoff.md`):
 
-> "Sem harness o agente [X]; com harness ele [Y]. A diferença veio de [arquivos/políticas]."
+> "Without a harness the agent [X]; with a harness it [Y]. The difference came from [files/policies]."
 
-::: tip Dica
-Guarde a planilha da comparação — ela será a semente do benchmark interno do curso (EPIC G, métricas e evidência).
+::: tip Tip
+Keep the comparison spreadsheet. The same measurement was done for the course itself in the EPIC G pilots — the consolidated numbers are in `pilots/g4-metrics/G4-REPORT.md`, and yours is the local version of that evidence.
 :::
 
-**Próximo projeto**: [02 — Harness básico instalável](/projects/project-02).
+**Next project**: [02 — Installable basic harness](/projects/project-02).

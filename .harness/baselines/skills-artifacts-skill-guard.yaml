@@ -1,16 +1,17 @@
 # SkillSpector baseline — skill-guard
 #
-# A skill que ensina a reconhecer `curl | bash` foi marcada por escrever
-# `curl | bash`. As duas ocorrências de SC2 estão nas linhas em que a skill
-# NOMEIA o padrão para quem vai ler o relatório do scanner — é vocabulário de
-# documentação, não instrução de execução.
+# The skill that teaches recognizing `curl | bash` was flagged for writing
+# `curl | bash`. The two SC2 occurrences are in the lines where the skill
+# NAMES the pattern for whoever will read the scanner report — it is
+# documentation vocabulary, not an execution instruction.
 #
-# Verificado em 2026-09-17: SKILL.md:55 (lista de IDs de padrão) e SKILL.md:103
-# (a regra "o estático pega curl | bash e leitura de ~/.ssh").
+# Verified on 2026-09-17: SKILL.md:55 (list of pattern IDs) and SKILL.md:103
+# (the rule "the static mode catches curl | bash and ~/.ssh reads").
 #
-# A alternativa seria parafrasear o padrão para não casar com a regra. Seria
-# pior: quem lê o relatório precisa encontrar no texto a mesma string que viu
-# no achado. Documentação de segurança precisa poder citar o que descreve.
+# The alternative would be paraphrasing the pattern so it does not match the
+# rule. That would be worse: whoever reads the report needs to find in the
+# text the same string they saw in the finding. Security documentation must be
+# able to quote what it describes.
 
 version: 2
 
@@ -18,21 +19,21 @@ rules:
   - id: "SC2"
     path: "SKILL.md"
     reason: >-
-      Falso positivo por autorreferência: a skill cita o padrão `curl | bash`
-      ao explicar o que o scanner detecta e o que o modo estático pega bem.
-      Não há execução, fetch remoto nem script a ser buscado — é prosa
-      didática nomeando a própria regra SC2.
+      False positive by self-reference: the skill cites the `curl | bash`
+      pattern while explaining what the scanner detects and what the static
+      mode catches well. There is no execution, remote fetch, or script to be
+      retrieved — it is didactic prose naming its own SC2 rule.
 
-  # Este é circular e vale explicar: ao citar o próprio arquivo de baseline, a
-  # SKILL.md gera uma referência que o scanner não consegue resolver — porque o
-  # SkillSpector exclui de propósito o baseline selecionado da análise de
-  # conteúdo (para que o texto das supressões não vire achado). A referência
-  # fica "out_of_scope" e sai como sinal de cobertura.
+  # This one is circular and worth explaining: by citing its own baseline
+  # file, the SKILL.md generates a reference the scanner cannot resolve —
+  # because SkillSpector deliberately excludes the selected baseline from the
+  # content analysis (so that the suppression text does not become a finding).
+  # The reference stays "out_of_scope" and comes out as a coverage signal.
   - id: "AE1"
     path: "SKILL.md"
     message: "*.skillspector-baseline.yaml*"
     reason: >-
-      Referência à `.skillspector-baseline.yaml` marcada como out_of_scope: o
-      próprio SkillSpector exclui o baseline da análise de conteúdo, então a
-      referência nunca resolve. Sinal de cobertura sobre um arquivo excluído
-      por design, não conteúdo não inspecionado.
+      Reference to `.skillspector-baseline.yaml` flagged as out_of_scope:
+      SkillSpector itself excludes the baseline from the content analysis, so
+      the reference never resolves. Coverage signal over a file excluded by
+      design, not uninspected content.

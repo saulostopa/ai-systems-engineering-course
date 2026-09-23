@@ -1,73 +1,73 @@
 ---
-title: Aula 13 — De prompts manuais a loops autônomos
+title: Lesson 13 — From manual prompts to autonomous loops
 ---
 
-# Aula 13 — De prompts manuais a loops autônomos
+# Lesson 13 — From manual prompts to autonomous loops
 
-> O salto de qualidade não vem de prompts melhores; vem de loops que se auto-corrigem.
+> The quality leap doesn't come from better prompts; it comes from loops that self-correct.
 
-## Do prompt ao loop
+## From prompt to loop
 
-**Prompting** é uma conversa: você fala, o modelo responde, você fala de novo. O agente não age — ele emite texto.
+**Prompting** is a conversation: you speak, the model responds, you speak again. The agent doesn't act — it emits text.
 
-**Loop engineering** é um ciclo: o agente **age** (edita, roda, testa), **observa** o resultado (exit codes, outputs, diffs) e **decide** o próximo passo — repetindo até o critério de saída.
-
-```
-PROMPT:   humano → modelo → texto → humano → modelo → ...
-LOOP:     humano → agente → ação → observação → decisão → ação → ... → critério de saída
-```
-
-O prompt pede; o loop **trabalha**. O harness é o que torna o loop seguro: sem gates e verificação, um loop autônomo é uma avalanche.
-
-## Os quatro componentes de um loop seguro
-
-1. **Ação** — o agente executa ferramentas (editar, build, testar, git). O harness controla quais.
-2. **Observação** — o agente lê o resultado real (exit code, output, diff, teste). O harness garante que ele não pule essa etapa.
-3. **Decisão** — o agente decide o próximo passo com base no observado (corrigir, continuar, parar).
-4. **Critério de saída** — a condição verificável que encerra o loop. O harness a impõe (Definition of Done, gates).
-
-Sem o componente 4, o loop não termina ou termina cedo demais — o que une as aulas 07 e 09.
-
-## Loop vs. fluxo de múltiplos loops
-
-Um agente pode rodar um loop único: fazer → verificar → repetir. Mas um harness real orquestra **vários loops em sequência**, cada um com seu critério:
+**Loop engineering** is a cycle: the agent **acts** (edits, runs, tests), **observes** the result (exit codes, outputs, diffs) and **decides** the next step — repeating until the exit criterion.
 
 ```
-loop de escopo    → entender o que fazer (boot, leitura, decomposição)
-loop de código    → implementar até o build+testes passarem
-loop de review    → revisar o diff até os gates passarem
-loop de evidência → gerar artefatos até o report/quiz fecharem
+PROMPT:   human → model → text → human → model → ...
+LOOP:     human → agent → action → observation → decision → action → ... → exit criterion
 ```
 
-Cada loop tem ferramentas próprias, gates próprios e saída verificável. O harness define **quando um loop termina e o próximo começa** — isso é o que a Aula 14 formaliza como grafos.
+The prompt asks; the loop **works**. The harness is what makes the loop safe: without gates and verification, an autonomous loop is an avalanche.
 
-## No nosso ecossistema
+## The four components of a safe loop
 
-- **AgEnFK**: cada fase do fluxo (plan → code → test → review → close) é um loop com critério de saída — o `verify` exige evidência para *avançar* o item, não apenas "continuar".
-- **Factory**: `init.sh` é o loop de escopo; os pre-commit hooks fecham o loop de código; o `pr-hook.sh` fecha o loop de entrega.
-- **Skills de artefato**: `feature-report` roda o loop de evidência — ler o diff/testes, sintetizar, gerar o HTML.
+1. **Action** — the agent executes tools (edit, build, test, git). The harness controls which.
+2. **Observation** — the agent reads the real result (exit code, output, diff, test). The harness ensures it doesn't skip this step.
+3. **Decision** — the agent decides the next step based on what was observed (fix, continue, stop).
+4. **Exit criterion** — the verifiable condition that ends the loop. The harness enforces it (Definition of Done, gates).
 
-E o curso inteiro é um loop: cada aula termina com o quiz (observação), e o leitor decide o próximo passo (decisão).
+Without component 4, the loop doesn't end or ends too early — which ties together Lessons 07 and 09.
 
-## Loop autônomo em domínios
+## Loop vs. multi-loop flow
 
-- **Finanças**: o harness de madrugada roda o loop relatório: ler planilhas → validar → processar → publicar → registrar. Sem humano até o café.
-- **Games**: o loop de playteste simulado: gerar variações → simular → medir engajamento → iterar.
-- **Comercial**: o loop de proposta: ler briefing + CRM → rascunhar → validar contra requisitos → finalizar.
-
-O mesmo esqueleto de loop — o que muda são as ações e os critérios de saída.
-
-## Principais aprendizados
-
-1. Prompt pede; loop trabalha. O salto é de conversa para ciclo de ação.
-2. Ação, observação, decisão e critério de saída são os quatro componentes.
-3. O harness torna o loop seguro: sem gates, autonomia é avalanche.
-4. Um fluxo completo é uma sequência de loops, cada um com sua saída verificável.
-
-## Verifique seu aprendizado
+An agent can run a single loop: do → verify → repeat. But a real harness orchestrates **several loops in sequence**, each with its own criterion:
 
 ```
-"quiz me on a Aula 13"
+scope loop      → understand what to do (boot, reading, decomposition)
+code loop       → implement until build+tests pass
+review loop     → review the diff until the gates pass
+evidence loop   → generate artifacts until the report/quiz close
 ```
 
-**Próxima aula**: [14 — De loops únicos a engenharia de grafos](/lectures/lecture-14).
+Each loop has its own tools, its own gates and a verifiable output. The harness defines **when one loop ends and the next begins** — that is what Lesson 14 formalizes as graphs.
+
+## In our ecosystem
+
+- **A workflow engine**: each flow phase (plan → code → test → review → close) is a loop with an exit criterion — advancing the item requires evidence, not just "continue".
+- **Factory**: `init.sh` is the scope loop; the pre-commit hooks close the code loop; `pr-hook.sh` closes the delivery loop.
+- **Artifact skills**: `feature-report` runs the evidence loop — read the diff/tests, synthesize, generate the HTML.
+
+And the entire course is a loop: each lesson ends with the quiz (observation), and the reader decides the next step (decision).
+
+## Autonomous loops in domains
+
+- **Finance**: the overnight harness runs the report loop: read spreadsheets → validate → process → publish → record. No human until the coffee.
+- **Games**: the simulated playtest loop: generate variations → simulate → measure engagement → iterate.
+- **Sales**: the proposal loop: read briefing + CRM → draft → validate against requirements → finalize.
+
+The same loop skeleton — what changes are the actions and the exit criteria.
+
+## Key takeaways
+
+1. The prompt asks; the loop works. The leap is from conversation to action cycle.
+2. Action, observation, decision and exit criterion are the four components.
+3. The harness makes the loop safe: without gates, autonomy is an avalanche.
+4. A complete flow is a sequence of loops, each with its own verifiable output.
+
+## Check your learning
+
+```
+"quiz me on Lesson 13"
+```
+
+**Next lesson**: [14 — From single loops to graph engineering](/lectures/lecture-14).
