@@ -29,8 +29,8 @@ are downloaded.
 The `adk_app/agent.py` entrypoint runs in offline demo mode by default:
 
 ```bash
-pip install -e '.[adk,jev-sdk]'
-adk web
+uv sync --extra adk --extra jev-sdk
+uv run adk web
 ```
 
 Open `http://localhost:8000`, select `adk_app`, and try a request such as
@@ -47,5 +47,5 @@ python3 -m unittest discover -s tests -v  # 12 tests
 Optional runtime dependencies:
 
 ```bash
-pip install -e '.[jev-sdk,adk]'
+uv sync --extra adk --extra jev-sdk
 ```
