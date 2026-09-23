@@ -13,6 +13,7 @@ from .contracts import (
 from .workflow import AdkRagWorkflow, WorkflowResult
 from .jev import JevDecisionProvider
 from .rag_adapter import RagHarnessAdapter
+from .adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig, AdkRuntimeUnavailable
 
 __all__ = [
     "AdkRagWorkflow",
@@ -27,4 +28,7 @@ __all__ = [
     "WorkflowResult",
     "JevDecisionProvider",
     "RagHarnessAdapter",
+    "AdkRuntimeAdapter",
+    "AdkRuntimeConfig",
+    "AdkRuntimeUnavailable",
 ]

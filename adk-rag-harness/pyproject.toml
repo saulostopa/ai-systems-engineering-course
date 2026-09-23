@@ -9,5 +9,8 @@ description = "Typed decision and retrieval boundary for an ADK RAG harness"
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+adk = ["google-adk[gcp]>=2.0.0,<3.0.0"]
+
 [tool.setuptools.packages.find]
 where = ["."]

@@ -5,6 +5,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parents[1]))
 
 from adk_rag_harness.contracts import DecisionAnswer, DecisionProviderError, DecisionQuestion, DecisionResult, EvidenceChunk, RetrievalResponse
+from adk_rag_harness.adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig, AdkRuntimeUnavailable
 from adk_rag_harness.jev import JevDecisionProvider
 from adk_rag_harness.workflow import AdkRagWorkflow, WorkflowStatus
 
@@ -109,6 +110,52 @@ class JevAdapterTests(unittest.TestCase):
         provider = JevDecisionProvider(transport=lambda payload: {})
         with self.assertRaises(DecisionProviderError):
             provider.decide({}, [DecisionQuestion("collection", "Which?", "choice")])
+
+
+class AdkRuntimeTests(unittest.TestCase):
+    def test_builds_optional_agent_with_structured_workflow_tool(self):
+        decisions = FakeDecisions([{"needs_retrieval": (False, 0.98)}])
+        captured = {}
+
+        def fake_agent(**kwargs):
+            captured.update(kwargs)
+            return kwargs
+
+        adapter = AdkRuntimeAdapter(
+            AdkRagWorkflow(decisions, FakeRag()),
+            AdkRuntimeConfig(model="test-model"),
+            agent_factory=fake_agent,
+        )
+        agent = adapter.build_agent()
+        payload = agent["tools"][0]("write a greeting")
+        self.assertEqual(agent["model"], "test-model")
+        self.assertEqual(payload["status"], "direct")
+        self.assertEqual(payload["confidence"], 0.98)
+
+    def test_builds_app_around_agent(self):
+        calls = []
+
+        def fake_agent(**kwargs):
+            return kwargs
+
+        def fake_app(**kwargs):
+            calls.append(kwargs)
+            return kwargs
+
+        adapter = AdkRuntimeAdapter(
+            AdkRagWorkflow(FakeDecisions([{"needs_retrieval": (False, 0.98)}]), FakeRag()),
+            AdkRuntimeConfig(app_name="test-app"),
+            agent_factory=fake_agent,
+            app_factory=fake_app,
+        )
+        app = adapter.build_app()
+        self.assertEqual(app["name"], "test-app")
+        self.assertEqual(calls[0]["root_agent"]["name"], "adk_rag_router")
+
+    def test_missing_adk_is_explicit(self):
+        adapter = AdkRuntimeAdapter(AdkRagWorkflow(FakeDecisions([]), FakeRag()))
+        with self.assertRaises(AdkRuntimeUnavailable):
+            adapter.build_agent()
 
 
 if __name__ == "__main__":
