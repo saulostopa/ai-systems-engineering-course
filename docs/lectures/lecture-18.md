@@ -105,6 +105,30 @@ The evals compare route, RAG call count, collection, strategy, evidence source
 and blocked/clarification behavior. They do not compare generated prose, so a
 small wording change does not create a false failure.
 
+### Switching the decision provider
+
+The chat model and the typed routing provider are separate. The app reads
+`HARNESS_DECISION_PROVIDER` from `adk_app/agent.py`:
+
+```sh
+# Local and deterministic demo
+HARNESS_DECISION_PROVIDER=demo uv run adk web
+
+# Local typed decisions with Ollama
+HARNESS_DECISION_PROVIDER=ollama-system-one \
+OLLAMA_DECISION_MODEL=llama3.1:8b uv run adk web
+
+# OpenRouter for hosted decisions
+HARNESS_DECISION_PROVIDER=openrouter-system-one \
+OPENROUTER_API_KEY=your-key uv run adk web
+```
+
+The two OpenAI-compatible modes preserve the typed contract but are not the
+Jev model. Evaluate their confidence values before using them as a production
+policy boundary. The installed `codex`, `claude` and `agy` CLIs can be wrapped
+later with read-only subprocess adapters and strict JSON Schema output; their
+interactive tools and session state should not run inside this decision path.
+
 After the offline contract passes, exercise the real model path with Ollama:
 
 ```sh

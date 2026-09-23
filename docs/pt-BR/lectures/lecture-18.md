@@ -107,6 +107,31 @@ fonte da evidência e comportamento de bloqueio/solicitação de esclarecimento.
 Elas não comparam o texto gerado, evitando falhas falsas por uma pequena mudança
 de redação.
 
+### Trocando o provedor de decisões
+
+O modelo de conversa e o provedor de roteamento tipado são separados. O app lê
+`HARNESS_DECISION_PROVIDER` em `adk_app/agent.py`:
+
+```sh
+# Demo local e determinística
+HARNESS_DECISION_PROVIDER=demo uv run adk web
+
+# Decisões tipadas locais com Ollama
+HARNESS_DECISION_PROVIDER=ollama-system-one \
+OLLAMA_DECISION_MODEL=llama3.1:8b uv run adk web
+
+# OpenRouter para decisões hospedadas
+HARNESS_DECISION_PROVIDER=openrouter-system-one \
+OPENROUTER_API_KEY=sua-chave uv run adk web
+```
+
+Os dois modos compatíveis com OpenAI preservam o contrato tipado, mas não são o
+modelo Jev. Avalie os valores de confiança antes de usá-los como limite de
+política em produção. Os CLIs instalados `codex`, `claude` e `agy` podem ser
+envolvidos depois por adapters de subprocesso somente leitura e saída estrita
+com JSON Schema; suas ferramentas interativas e estado de sessão não devem
+rodar dentro desse caminho de decisão.
+
 Depois que o contrato offline passar, exercite o caminho do modelo real com
 Ollama:
 

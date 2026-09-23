@@ -46,6 +46,43 @@ OLLAMA_MODEL=mistral-small3.1 HARNESS_OFFLINE=0 uv run adk web
 The Ollama server must be running and the selected model must support tool
 calling. The ADK integration uses the `ollama_chat` LiteLLM provider.
 
+## Decision provider modes
+
+The conversational model and the typed decision provider are separate. Select
+the decision provider with `HARNESS_DECISION_PROVIDER`:
+
+```bash
+# Default local demo: deterministic and offline
+HARNESS_DECISION_PROVIDER=demo uv run adk web
+
+# Local open-model decisions through Ollama's OpenAI-compatible endpoint
+HARNESS_DECISION_PROVIDER=ollama-system-one \
+OLLAMA_DECISION_MODEL=llama3.1:8b uv run adk web
+
+# Hosted OpenRouter decisions; the chat model can remain local Ollama
+HARNESS_DECISION_PROVIDER=openrouter-system-one \
+OPENROUTER_API_KEY=... \
+OPENROUTER_DECISION_MODEL=openai/gpt-oss-20b:free \
+uv run adk web
+
+# Official TypeSafe Jev decisions
+HARNESS_OFFLINE=0 HARNESS_DECISION_PROVIDER=jev \
+TYPESAFE_API_KEY=... uv run adk web
+```
+
+`ollama-system-one` and `openrouter-system-one` implement the same typed
+decision contract with an OpenAI-compatible chat endpoint. They are compatible
+with the harness contract, but they are not the Jev model and their confidence
+values must be evaluated with the golden prompts before use in production.
+
+The CLI tools `codex`, `claude` and `agy` can also be integrated as decision
+providers through their non-interactive print modes and JSON-schema output. The
+safe design is a separate subprocess adapter with read-only/no-tool flags,
+short timeouts and strict JSON validation. They should not be invoked from the
+workflow as unrestricted agents because they can carry workspace tools, session
+state and side effects. The current app leaves those modes opt-in for a later
+adapter; use Ollama or OpenRouter for the supported provider modes today.
+
 ## Golden prompt evaluations
 
 The natural-language examples from the course are also stored as executable

@@ -9,6 +9,7 @@ from adk_rag_harness.contracts import DecisionAnswer, DecisionProviderError, Dec
 from adk_rag_harness.adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig, AdkRuntimeUnavailable
 from adk_rag_harness.jev_sdk import TypeSafeSdkDecisionProvider
 from adk_rag_harness.jev import JevDecisionProvider
+from adk_rag_harness.openai_compatible import OpenAICompatibleDecisionProvider
 from adk_rag_harness.workflow import AdkRagWorkflow, WorkflowStatus
 
 
@@ -158,6 +159,37 @@ class AdkRuntimeTests(unittest.TestCase):
         adapter = AdkRuntimeAdapter(AdkRagWorkflow(FakeDecisions([]), FakeRag()))
         with self.assertRaises(AdkRuntimeUnavailable):
             adapter.build_agent()
+
+
+class OpenAICompatibleTests(unittest.TestCase):
+    def test_maps_structured_json_to_typed_answers(self):
+        provider = OpenAICompatibleDecisionProvider(
+            base_url="http://ollama/v1",
+            model="llama3.1:8b",
+            transport=lambda payload: {
+                "choices": [{"message": {"content": '{"answers":{"needs_retrieval":{"type":"noul","noul":0.91}}}'}}]
+            },
+        )
+        result = provider.decide(
+            {"request": "find policy"},
+            [DecisionQuestion("needs_retrieval", "Need evidence?", "noul")],
+        )
+        self.assertTrue(result.answer("needs_retrieval").value)
+        self.assertEqual(result.provider, "openai-compatible")
+
+    def test_rejects_choice_outside_declared_options(self):
+        provider = OpenAICompatibleDecisionProvider(
+            base_url="http://ollama/v1",
+            model="llama3.1:8b",
+            transport=lambda payload: {
+                "choices": [{"message": {"content": '{"answers":{"collection":{"type":"choice","choice":"web","confidence":0.9}}}'}}]
+            },
+        )
+        with self.assertRaises(DecisionProviderError):
+            provider.decide(
+                {},
+                [DecisionQuestion("collection", "Which?", "choice", ("docs", "code"))],
+            )
 
 
 class TypeSafeSdkTests(unittest.TestCase):

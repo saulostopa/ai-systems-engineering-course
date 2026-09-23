@@ -15,6 +15,7 @@ from .jev import JevDecisionProvider
 from .rag_adapter import RagHarnessAdapter
 from .adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig, AdkRuntimeUnavailable
 from .jev_sdk import TypeSafeSdkDecisionProvider
+from .openai_compatible import OpenAICompatibleDecisionProvider
 
 __all__ = [
     "AdkRagWorkflow",
@@ -33,4 +34,5 @@ __all__ = [
     "AdkRuntimeConfig",
     "AdkRuntimeUnavailable",
     "TypeSafeSdkDecisionProvider",
+    "OpenAICompatibleDecisionProvider",
 ]
