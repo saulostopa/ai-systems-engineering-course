@@ -43,3 +43,5 @@ pgvector e retorna o mesmo contrato de evidência usado pelo harness local.
 O banco não torna o workflow determinístico sozinho. O determinismo vem da
 rota tipada, das coleções e estratégias permitidas, da ordenação estável, dos
 thresholds e do estado `blocked` quando a evidência é insuficiente.
+
+**Design**: [Harness ADK RAG com PostgreSQL](/pt-BR/harness-designs/adk-rag-postgres-harness)

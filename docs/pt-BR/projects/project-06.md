@@ -46,3 +46,7 @@ a partir desse diretório. Ela inclui as evals de contrato dos prompts dourados 
 não exige chave de API em nuvem.
 
 Veja o [registro da feature](/pt-BR/tasks/adk-rag-jev-harness) para as decisões e guardrails adotados.
+
+**Designs**: [ADK + RAG + Jev](/pt-BR/harness-designs/adk-rag-jev-harness) ·
+[ADK RAG PostgreSQL](/pt-BR/harness-designs/adk-rag-postgres-harness) ·
+[Projeto 06B](/pt-BR/projects/project-06-postgres)

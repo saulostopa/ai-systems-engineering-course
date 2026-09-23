@@ -38,10 +38,8 @@ point for LLM-based decisions: `decide_with_llm()`.
 
 ### The POC decision (read the full `POC_REPORT.md`)
 
-- ✅ **Architecture adopted** — portable to pgvector without redesign.
-- ❌ **Heavy infra postponed** (watcher/queue/pgvector) — the EPIC G pilots closed
-  without needing it, so the bar for adopting it is still unmet. The POC runs
-  without infra: on-demand indexing.
+- ✅ **Local architecture adopted** — portable to pgvector without redesign.
+- ✅ **Shared-storage variant available** — see the [ADK RAG PostgreSQL Harness](/harness-designs/adk-rag-postgres-harness) for larger teams.
 - ⚖️ **Priority inverted**: business RAG (D3) has more immediate ROI than the
   watcher.
 
@@ -111,8 +109,8 @@ with sources when the team arrives (Lesson 13: autonomous loop with exit criteri
 - RAG doesn't replace native agents (grep/glob already exist) — the added
   value is in the **business context** and the **chunking quality** in
   large repos.
-- Heavy infra (watcher, pgvector, queue) stays until the evidence asks for it —
-  the rag-harness.md rule still applies: **don't build before the recorded
-  pain**.
+- Watchers and queues remain optional operational extensions. PostgreSQL +
+  pgvector is available when shared persistence and scale justify it; the local
+  JSON index remains the default for small projects.
 
 **Related**: [Project 05](/projects/project-05) · [Domain harnesses](/harness-designs/domain-harnesses)

@@ -133,4 +133,4 @@ OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workfl
 Dynamic (ADK 2) são evolução declarada, não implementados no núcleo — o grafo
 já suporta fan-out runtime via `run_fanout` com `MAX_CHILDREN`.
 
-**Relacionados**: [Aula 16 (ADK 2)](/pt-BR/lectures/lecture-16) · [Harness básico](/pt-BR/harness-designs/basic-harness) · [Harness enterprise](/pt-BR/harness-designs/enterprise-harness) · [App Harness](/pt-BR/harness-designs/app-harness) · [RAG](/pt-BR/harness-designs/rag-harness)
+**Relacionados**: [Aula 16 (ADK 2)](/pt-BR/lectures/lecture-16) · [Harness básico](/pt-BR/harness-designs/basic-harness) · [Harness enterprise](/pt-BR/harness-designs/enterprise-harness) · [App Harness](/pt-BR/harness-designs/app-harness) · [RAG](/pt-BR/harness-designs/rag-harness) · [ADK + RAG + Jev](/pt-BR/harness-designs/adk-rag-jev-harness) · [ADK RAG PostgreSQL](/pt-BR/harness-designs/adk-rag-postgres-harness)

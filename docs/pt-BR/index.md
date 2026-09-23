@@ -34,7 +34,7 @@ features:
     link: /pt-BR/skills/
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M11.6 2.2a1 1 0 0 1 .8 0l8.5 3.9a1 1 0 0 1 0 1.8l-8.5 3.9a1 1 0 0 1-.8 0L3.1 7.9a1 1 0 0 1 0-1.8l8.5-3.9ZM6 7l6 2.8L18 7l-6-2.8L6 7Z" clip-rule="evenodd"/><path d="M3.6 11.2a1 1 0 0 0-.5 1.8l8.5 3.9a1 1 0 0 0 .8 0l8.5-3.9a1 1 0 0 0-.8-1.8L12 14.9l-7.9-3.6a1 1 0 0 0-.5-.1Z"/><path d="M3.6 15.9a1 1 0 0 0-.5 1.8l8.5 3.9a1 1 0 0 0 .8 0l8.5-3.9a1 1 0 0 0-.8-1.8L12 19.6l-7.9-3.6a1 1 0 0 0-.5-.1Z"/></svg>'
     title: Design de Harnesses
-    details: 'Blueprints dos harnesses que este projeto entrega: básico, grande, de App, RAG/Area Copilot e de domínio.'
+    details: 'Blueprints para harnesses locais, compartilhados com PostgreSQL, ADK + RAG + Jev, executáveis, de App, domínio e enterprise.'
     link: /pt-BR/harness-designs/
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm4.3 3.7a1 1 0 0 0-1.1-.2l-5 2.2a1 1 0 0 0-.5.5l-2.2 5a1 1 0 0 0 1.3 1.3l5-2.2a1 1 0 0 0 .5-.5l2.2-5a1 1 0 0 0-.2-1.1Zm-2.5 2.5-1.2 2.8-2.8 1.2 1.2-2.8 2.8-1.2Z" clip-rule="evenodd"/></svg>'
     title: Referência

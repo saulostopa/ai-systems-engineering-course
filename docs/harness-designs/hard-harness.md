@@ -133,4 +133,4 @@ OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workfl
 Dynamic (ADK 2) are declared evolution, not implemented in the core — the graph
 already supports runtime fan-out via `run_fanout` with `MAX_CHILDREN`.
 
-**Related**: [Lesson 16 (ADK 2)](/lectures/lecture-16) · [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness) · [App Harness](/harness-designs/app-harness) · [RAG](/harness-designs/rag-harness)
+**Related**: [Lesson 16 (ADK 2)](/lectures/lecture-16) · [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness) · [App Harness](/harness-designs/app-harness) · [RAG](/harness-designs/rag-harness) · [ADK + RAG + Jev](/harness-designs/adk-rag-jev-harness) · [ADK RAG PostgreSQL](/harness-designs/adk-rag-postgres-harness)

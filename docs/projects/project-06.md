@@ -66,3 +66,7 @@ that directory. It includes the golden prompt contract evals and does not
 require a cloud API key.
 
 See the [feature record](/tasks/adk-rag-jev-harness) for the adopted decisions and guardrails.
+
+**Blueprints**: [ADK + RAG + Jev](/harness-designs/adk-rag-jev-harness) ·
+[ADK RAG PostgreSQL](/harness-designs/adk-rag-postgres-harness) ·
+[Project 06B](/projects/project-06-postgres)

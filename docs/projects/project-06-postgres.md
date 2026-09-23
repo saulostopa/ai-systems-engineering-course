@@ -43,3 +43,5 @@ similarity and returns the same evidence contract used by the local harness.
 The database does not make a workflow deterministic by itself. Determinism
 comes from the typed route, allowed collections and strategies, stable ordering,
 thresholds and the blocked state when evidence is insufficient.
+
+**Blueprint**: [ADK RAG PostgreSQL Harness](/harness-designs/adk-rag-postgres-harness)

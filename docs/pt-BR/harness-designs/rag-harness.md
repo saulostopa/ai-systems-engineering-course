@@ -38,10 +38,8 @@ extensão para decisão via LLM: `decide_with_llm()`.
 
 ### Decisão da POC (leia o `POC_REPORT.md` completo)
 
-- ✅ **Arquitetura adotada** — portável para pgvector sem redesenho.
-- ❌ **Infra pesada adiada** (watcher/fila/pgvector) — os pilotos do EPIC G
-  fecharam sem precisar dela, então a régua para adotá-la continua não atingida.
-  A POC roda sem infra: indexação sob demanda.
+- ✅ **Arquitetura local adotada** — portável para pgvector sem redesenho.
+- ✅ **Variante com armazenamento compartilhado disponível** — veja o [Harness ADK RAG com PostgreSQL](/pt-BR/harness-designs/adk-rag-postgres-harness) para times maiores.
 - ⚖️ **Prioridade invertida**: RAG de negócio (D3) tem mais ROI imediato que o
   watcher.
 
@@ -111,8 +109,9 @@ com fontes quando o time chega (Aula 13: loop autônomo com critério de saída)
 - O RAG não substitui os agentes nativos (grep/glob já existem) — o valor
   agregado está no **contexto de negócio** e na **qualidade de chunking** em
   repos grandes.
-- Infra pesada (watcher, pgvector, fila) fica para quando a evidência pedir —
-  a regra do `rag-harness.md` continua valendo: **não construa antes da dor
-  registrada**.
+- Watchers e filas continuam extensões operacionais opcionais. PostgreSQL +
+  pgvector está disponível quando persistência compartilhada e escala
+  justificarem seu uso; o índice JSON local continua sendo o padrão para
+  projetos pequenos.
 
 **Relacionados**: [Projeto 05](/pt-BR/projects/project-05) · [Harnesses de domínio](/pt-BR/harness-designs/domain-harnesses)
