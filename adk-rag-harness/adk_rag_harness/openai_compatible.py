@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -13,6 +14,26 @@ from .contracts import DecisionAnswer, DecisionProviderError, DecisionQuestion, 
 
 
 JsonTransport = Callable[[dict[str, Any]], dict[str, Any]]
+
+
+def load_openrouter_api_key() -> str:
+    """Load an OpenRouter key from env or the local OpenCode auth file."""
+
+    explicit = os.getenv("OPENROUTER_API_KEY", "")
+    if explicit:
+        return explicit
+    auth_path = Path(
+        os.getenv("OPENROUTER_AUTH_FILE", "~/.local/share/opencode/auth.json")
+    ).expanduser()
+    try:
+        data = json.loads(auth_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return ""
+    for provider in ("openrouter", "opencode"):
+        value = data.get(provider)
+        if isinstance(value, dict) and isinstance(value.get("key"), str):
+            return value["key"]
+    return ""
 
 
 class OpenAICompatibleDecisionProvider:

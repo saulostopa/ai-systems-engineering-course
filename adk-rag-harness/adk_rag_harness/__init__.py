@@ -15,7 +15,7 @@ from .jev import JevDecisionProvider
 from .rag_adapter import RagHarnessAdapter
 from .adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig, AdkRuntimeUnavailable
 from .jev_sdk import TypeSafeSdkDecisionProvider
-from .openai_compatible import OpenAICompatibleDecisionProvider
+from .openai_compatible import OpenAICompatibleDecisionProvider, load_openrouter_api_key
 
 __all__ = [
     "AdkRagWorkflow",
@@ -35,4 +35,5 @@ __all__ = [
     "AdkRuntimeUnavailable",
     "TypeSafeSdkDecisionProvider",
     "OpenAICompatibleDecisionProvider",
+    "load_openrouter_api_key",
 ]

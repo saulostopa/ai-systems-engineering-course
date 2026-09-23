@@ -130,7 +130,8 @@ OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
 # OpenRouter para decisões hospedadas
 HARNESS_DECISION_PROVIDER=openrouter-system-one \
-OPENROUTER_API_KEY=sua-chave uv run adk web
+OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 \
+uv run adk web
 ```
 
 Os dois modos compatíveis com OpenAI preservam o contrato tipado, mas não são o
@@ -139,6 +140,10 @@ política em produção. Os CLIs instalados `codex`, `claude` e `agy` podem ser
 envolvidos depois por adapters de subprocesso somente leitura e saída estrita
 com JSON Schema; suas ferramentas interativas e estado de sessão não devem
 rodar dentro desse caminho de decisão.
+
+Se `OPENROUTER_API_KEY` não estiver definido, o app pode ler localmente
+`openrouter.key` em `~/.local/share/opencode/auth.json` sem copiar a credencial
+para o projeto.
 
 Depois que o contrato offline passar, exercite o caminho do modelo real com
 Ollama:

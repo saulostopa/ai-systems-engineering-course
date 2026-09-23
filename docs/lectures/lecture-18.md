@@ -128,7 +128,8 @@ OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
 # OpenRouter for hosted decisions
 HARNESS_DECISION_PROVIDER=openrouter-system-one \
-OPENROUTER_API_KEY=your-key uv run adk web
+OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 \
+uv run adk web
 ```
 
 The two OpenAI-compatible modes preserve the typed contract but are not the
@@ -136,6 +137,10 @@ Jev model. Evaluate their confidence values before using them as a production
 policy boundary. The installed `codex`, `claude` and `agy` CLIs can be wrapped
 later with read-only subprocess adapters and strict JSON Schema output; their
 interactive tools and session state should not run inside this decision path.
+
+If `OPENROUTER_API_KEY` is not set, the app can read the local
+`openrouter.key` from `~/.local/share/opencode/auth.json` without copying the
+credential into the project.
 
 After the offline contract passes, exercise the real model path with Ollama:
 

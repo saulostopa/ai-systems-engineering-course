@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parents[1]))
 from adk_rag_harness.adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig
 from adk_rag_harness.contracts import DecisionAnswer, DecisionQuestion, DecisionResult, EvidenceChunk, RetrievalResponse
 from adk_rag_harness.jev_sdk import TypeSafeSdkDecisionProvider
-from adk_rag_harness.openai_compatible import OpenAICompatibleDecisionProvider
+from adk_rag_harness.openai_compatible import OpenAICompatibleDecisionProvider, load_openrouter_api_key
 from adk_rag_harness.workflow import AdkRagWorkflow
 
 
@@ -82,12 +82,16 @@ def _build_workflow() -> AdkRagWorkflow:
             model=DECISION_MODEL,
         )
     elif DECISION_PROVIDER == "openrouter-system-one":
-        if not os.getenv("OPENROUTER_API_KEY"):
-            raise RuntimeError("OPENROUTER_API_KEY is required for openrouter-system-one")
+        openrouter_key = load_openrouter_api_key()
+        if not openrouter_key:
+            raise RuntimeError(
+                "OpenRouter credentials are required: set OPENROUTER_API_KEY "
+                "or configure ~/.local/share/opencode/auth.json"
+            )
         decisions = OpenAICompatibleDecisionProvider(
             base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
-            model=os.getenv("OPENROUTER_DECISION_MODEL", "openai/gpt-oss-20b:free"),
-            api_key=os.getenv("OPENROUTER_API_KEY", ""),
+            model=os.getenv("OPENROUTER_DECISION_MODEL", "deepseek/deepseek-v4-flash-0731").removeprefix("openrouter/"),
+            api_key=openrouter_key,
         )
     elif DECISION_PROVIDER == "jev":
         decisions = TypeSafeSdkDecisionProvider()

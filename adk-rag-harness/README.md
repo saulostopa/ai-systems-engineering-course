@@ -69,7 +69,7 @@ OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 # Hosted OpenRouter decisions; the chat model can remain local Ollama
 HARNESS_DECISION_PROVIDER=openrouter-system-one \
 OPENROUTER_API_KEY=... \
-OPENROUTER_DECISION_MODEL=openai/gpt-oss-20b:free \
+OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 \
 uv run adk web
 
 # Official TypeSafe Jev decisions
@@ -81,6 +81,9 @@ TYPESAFE_API_KEY=... uv run adk web
 decision contract with an OpenAI-compatible chat endpoint. They are compatible
 with the harness contract, but they are not the Jev model and their confidence
 values must be evaluated with the golden prompts before use in production.
+When `OPENROUTER_API_KEY` is absent, the app reads the `openrouter.key` entry
+from `~/.local/share/opencode/auth.json` and falls back to `opencode.key`.
+The auth file is never copied into the repository or printed.
 
 The CLI tools `codex`, `claude` and `agy` can also be integrated as decision
 providers through their non-interactive print modes and JSON-schema output. The
