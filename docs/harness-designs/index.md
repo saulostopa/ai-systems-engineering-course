@@ -15,3 +15,7 @@ architecture, the components and what makes it functional in practice.
 ::: tip Status
 The blueprints cover the local, shared-storage and executable-orchestration variants of the course harnesses.
 :::
+
+::: tip Download the runnable projects
+The complete standalone catalog is available at [github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses). It contains the runnable harness directories and their installation instructions without requiring a clone of this course repository.
+:::

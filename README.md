@@ -7,6 +7,10 @@ multi-domain (games/finance/commercial), artifact skills, and intranet.
 An agent is model + harness: this project delivers both sides — the
 knowledge to build harnesses and the ready-to-adopt harnesses.
 
+The runnable projects are also published separately at
+[github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses), for
+teams that want to download and use the harnesses without cloning the course.
+
 ## How to run the 2 environments
 
 ### 1. Course site (VitePress)

@@ -3,6 +3,8 @@
 The hands-on part: each project delivers a working harness. By the end of the course,
 you will have a complete harness in your own repository — or in your area's.
 
+If you want only the runnable project packages, use the [standalone harness catalog](https://github.com/saulostopa/harnesses). The course repository contains the lessons and explanations; the catalog contains the executable projects and their local READMEs.
+
 | Project | Deliverable |
 |---------|---------|
 | [01 · Baseline vs. minimal harness](/projects/project-01) | The same feature with and without a harness; measure the difference. |

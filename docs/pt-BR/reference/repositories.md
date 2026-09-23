@@ -8,4 +8,5 @@
 | `agenfk-report` | Relatórios e explainers do uso do framework. |
 | `cargroup-skills` | Skills específicas do grupo de carros. |
 | `harness-plannig` | **Este repositório** — o curso. |
+| [`harnesses`](https://github.com/saulostopa/harnesses) | Distribuição standalone dos projetos de harness executáveis, sem o site do curso. |
 | `webmotors.ds.eleanor.tokens` | Tokens do design system Eleanor (fonte deste tema). |
