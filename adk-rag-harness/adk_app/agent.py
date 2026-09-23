@@ -19,6 +19,7 @@ from adk_rag_harness.adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig
 from adk_rag_harness.contracts import DecisionAnswer, DecisionQuestion, DecisionResult, EvidenceChunk, RetrievalResponse
 from adk_rag_harness.jev_sdk import TypeSafeSdkDecisionProvider
 from adk_rag_harness.openai_compatible import OpenAICompatibleDecisionProvider, load_openrouter_api_key
+from adk_rag_harness.rag_adapter import RagHarnessAdapter
 from adk_rag_harness.workflow import AdkRagWorkflow
 
 
@@ -31,6 +32,8 @@ os.environ.setdefault("OLLAMA_API_BASE", OLLAMA_API_BASE)
 #   HARNESS_DECISION_PROVIDER=demo                    # deterministic demo
 #   HARNESS_DECISION_PROVIDER=openrouter-system-one   # hosted, needs key
 #   HARNESS_DECISION_PROVIDER=jev                    # official Jev, needs key
+#   HARNESS_RAG_PROVIDER=demo                         # demo evidence
+#   HARNESS_RAG_PROVIDER=rag-harness                  # real local index
 # The conversational model remains controlled by OLLAMA_MODEL. These settings
 # affect only the typed routing decisions inside run_workflow. Qwen is the
 # local decision default because it was more consistent than llama3.1:8b in the
@@ -42,6 +45,7 @@ DECISION_MODEL = os.getenv(
     "HARNESS_DECISION_MODEL",
     os.getenv("OLLAMA_DECISION_MODEL", "qwen2.5:14b"),
 )
+RAG_PROVIDER = os.getenv("HARNESS_RAG_PROVIDER", "demo")
 
 
 class DemoDecisions:
@@ -100,7 +104,20 @@ def _build_workflow() -> AdkRagWorkflow:
             f"Unsupported HARNESS_DECISION_PROVIDER={DECISION_PROVIDER!r}; "
             "use demo, ollama-system-one, openrouter-system-one or jev"
         )
-    return AdkRagWorkflow(decisions, DemoRag())
+    if RAG_PROVIDER == "demo":
+        rag = DemoRag()
+    elif RAG_PROVIDER == "rag-harness":
+        repository_root = Path(__file__).parents[2]
+        rag_root = repository_root / "rag-harness"
+        docs_index = Path(
+            os.getenv("HARNESS_RAG_DOCS_INDEX", str(repository_root / "docs" / ".rag_index"))
+        )
+        rag = RagHarnessAdapter(str(rag_root), {"docs": str(docs_index)})
+    else:
+        raise RuntimeError(
+            f"Unsupported HARNESS_RAG_PROVIDER={RAG_PROVIDER!r}; use demo or rag-harness"
+        )
+    return AdkRagWorkflow(decisions, rag)
 
 
 def _build_model():

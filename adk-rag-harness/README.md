@@ -24,6 +24,36 @@ https://github.com/typesafe-ai/typesafe-sdk-python. This project depends on its
 package rather than copying its source. Jev is an API service; no model weights
 are downloaded.
 
+## RAG provider modes
+
+The decision provider and retrieval provider are independent:
+
+```bash
+# Demo evidence, no index required
+HARNESS_RAG_PROVIDER=demo uv run adk web
+
+# Real course-document index
+HARNESS_RAG_PROVIDER=rag-harness uv run adk web
+```
+
+Create the course-document index before using `rag-harness`:
+
+```bash
+RAG_EMBEDDER=ngram PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
+```
+
+The generated `docs/.rag_index/` stays local and is ignored by Git. The real
+provider returns `blocked` when the index is missing or retrieval fails, rather
+than allowing the model to invent evidence.
+
+To run the complete local-evidence test with OpenRouter decisions:
+
+```bash
+HARNESS_DECISION_PROVIDER=openrouter-system-one \
+HARNESS_RAG_PROVIDER=rag-harness \
+uv run adk web
+```
+
 ## Run the ADK app
 
 The `adk_app/agent.py` entrypoint uses Ollama locally by default. The

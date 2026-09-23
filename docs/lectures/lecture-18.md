@@ -142,6 +142,32 @@ If `OPENROUTER_API_KEY` is not set, the app can read the local
 `openrouter.key` from `~/.local/share/opencode/auth.json` without copying the
 credential into the project.
 
+### Switching from demo evidence to the real RAG index
+
+The retrieval provider is independent from the decision provider. Build the
+course-document index once:
+
+```sh
+RAG_EMBEDDER=ngram PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
+```
+
+Then start the app with:
+
+```sh
+HARNESS_RAG_PROVIDER=rag-harness uv run adk web
+```
+
+The index is local and ignored by Git. A missing index or retrieval failure
+produces `blocked`, so the assistant cannot present invented evidence.
+
+Combine it with OpenRouter decisions when testing the complete path:
+
+```sh
+HARNESS_DECISION_PROVIDER=openrouter-system-one \
+HARNESS_RAG_PROVIDER=rag-harness \
+uv run adk web
+```
+
 After the offline contract passes, exercise the real model path with Ollama:
 
 ```sh

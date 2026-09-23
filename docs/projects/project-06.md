@@ -58,6 +58,8 @@ and start it with `uv run adk web`. The default conversation model is
 `llama3.1:8b`; the typed decision provider is local `ollama-system-one` using
 `qwen2.5:14b`. The [Ollama Dev UI lesson](/lectures/lecture-18) contains the
 complete prompt sequence, screenshots and evidence checklist.
+Set `HARNESS_RAG_PROVIDER=rag-harness` after creating the local course index to
+replace the demo evidence with real repository sources.
 
 Run the full offline suite with `python3 -m unittest discover -s tests -v` from
 that directory. It includes the golden prompt contract evals and does not

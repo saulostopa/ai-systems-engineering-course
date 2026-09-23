@@ -36,6 +36,8 @@ A fatia local está em `adk-rag-harness/` e inclui o entrypoint do Dev UI do
 ADK. Instale com `uv sync --extra adk --extra ollama --extra jev-sdk` e inicie
 com `uv run adk web`. O modelo de conversa padrão é `llama3.1:8b`; o provider
 de decisão tipada é o `ollama-system-one` local usando `qwen2.5:14b`.
+Defina `HARNESS_RAG_PROVIDER=rag-harness` depois de criar o índice local do
+curso para trocar a evidência de demonstração por fontes reais do repositório.
 A [aula do Dev UI com Ollama](/pt-BR/lectures/lecture-18) traz a sequência
 completa de prompts, screenshots e checklist de evidências.
 

@@ -71,6 +71,8 @@ class OllamaEmbedder:
 
 
 def make_embedder() -> NGramEmbedder | OllamaEmbedder:
+    if os.environ.get("RAG_EMBEDDER", "").lower() == "ngram":
+        return NGramEmbedder()
     try:
         ollama = OllamaEmbedder()
         if ollama._available():

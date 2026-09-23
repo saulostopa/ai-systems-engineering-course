@@ -82,7 +82,16 @@ class AdkRagWorkflow:
         if min(choices.answer("collection").confidence, choices.answer("strategy").confidence) < self.policy.config.review_threshold:
             return WorkflowResult(WorkflowStatus.CLARIFY, "retrieval route choices need review", route.confidence)
 
-        response = self.rag.retrieve(RetrievalRequest(request, collection, strategy))
+        try:
+            response = self.rag.retrieve(RetrievalRequest(request, collection, strategy))
+        except Exception:
+            return WorkflowResult(
+                WorkflowStatus.BLOCKED,
+                "retrieval provider unavailable",
+                route.confidence,
+                collection=collection,
+                strategy=strategy,
+            )
         if not response.answerable or not response.chunks:
             return WorkflowResult(WorkflowStatus.BLOCKED, "evidence is insufficient", route.confidence, response.chunks, collection, strategy)
         return WorkflowResult(WorkflowStatus.RETRIEVED, "evidence retrieved", route.confidence, response.chunks, collection, strategy)
