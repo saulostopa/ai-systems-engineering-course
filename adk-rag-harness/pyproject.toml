@@ -12,6 +12,7 @@ dependencies = []
 [project.optional-dependencies]
 adk = ["google-adk>=2.0.0,<3.0.0"]
 adk-gcp = ["google-adk[gcp]>=2.0.0,<3.0.0"]
+ollama = ["litellm>=1.84"]
 jev-sdk = ["typesafe-sdk>=0.7.1,<0.8.0"]
 
 [tool.setuptools.packages.find]

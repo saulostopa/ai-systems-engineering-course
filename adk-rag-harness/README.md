@@ -29,14 +29,22 @@ are downloaded.
 The `adk_app/agent.py` entrypoint runs in offline demo mode by default:
 
 ```bash
-uv sync --extra adk --extra jev-sdk
+uv sync --extra adk --extra ollama --extra jev-sdk
 uv run adk web
 ```
 
 Open `http://localhost:8000`, select `adk_app`, and try a request such as
-`find the deployment policy`. To opt into Jev for routing, set
-`HARNESS_OFFLINE=0` and `TYPESAFE_API_KEY` before starting ADK. The Gemini
-model still requires its own ADK authentication configuration.
+`find the deployment policy`. The app uses Ollama by default through
+`http://localhost:11434` and the
+`gemma3:latest` model. Set `OLLAMA_MODEL` to another locally installed model
+when needed. `HARNESS_OFFLINE=0` and `TYPESAFE_API_KEY` enable Jev for routing.
+
+```bash
+OLLAMA_MODEL=mistral-small3.1 HARNESS_OFFLINE=0 uv run adk web
+```
+
+The Ollama server must be running and the selected model must support tool
+calling. The ADK integration uses the `ollama_chat` LiteLLM provider.
 
 ## Test
 
@@ -47,5 +55,5 @@ python3 -m unittest discover -s tests -v  # 12 tests
 Optional runtime dependencies:
 
 ```bash
-uv sync --extra adk --extra jev-sdk
+uv sync --extra adk --extra ollama --extra jev-sdk
 ```

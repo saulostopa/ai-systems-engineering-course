@@ -1,7 +1,8 @@
 """Executable Google ADK app for local development.
 
 Offline mode is the default so ``adk web`` never calls external providers by
-accident. Set ``HARNESS_OFFLINE=0`` and ``TYPESAFE_API_KEY`` to use Jev.
+accident. The online app uses Ollama through LiteLLM. Set
+``HARNESS_OFFLINE=0`` and ``TYPESAFE_API_KEY`` to use Jev.
 """
 
 from __future__ import annotations
@@ -16,6 +17,11 @@ from adk_rag_harness.adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig
 from adk_rag_harness.contracts import DecisionAnswer, DecisionQuestion, DecisionResult, EvidenceChunk, RetrievalResponse
 from adk_rag_harness.jev_sdk import TypeSafeSdkDecisionProvider
 from adk_rag_harness.workflow import AdkRagWorkflow
+
+
+OLLAMA_API_BASE = os.getenv("OLLAMA_API_BASE", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma3:latest")
+os.environ.setdefault("OLLAMA_API_BASE", OLLAMA_API_BASE)
 
 
 class DemoDecisions:
@@ -53,11 +59,22 @@ def _build_workflow() -> AdkRagWorkflow:
     return AdkRagWorkflow(decisions, DemoRag())
 
 
+def _build_model():
+    try:
+        from google.adk.models.lite_llm import LiteLlm
+    except ImportError as exc:
+        raise RuntimeError(
+            "Ollama support requires the optional dependency: "
+            "uv sync --extra adk --extra ollama"
+        ) from exc
+    return LiteLlm(model=f"ollama_chat/{OLLAMA_MODEL}")
+
+
 root_agent = AdkRuntimeAdapter(
     _build_workflow(),
     AdkRuntimeConfig(
         app_name="adk_rag_harness",
         agent_name="adk_rag_router",
-        model=os.getenv("ADK_MODEL", "gemini-flash-latest"),
+        model=_build_model(),
     ),
 ).build_agent()

@@ -28,7 +28,7 @@ Avaliar três decisões:
 
 O Jev não deve gerar prosa, substituir a busca semântica nem ser a única barreira de segurança. O código mantém um fallback determinístico para indisponibilidade, baixa confiança ou evidências contraditórias.
 
-A implementação inicial está em `adk-rag-harness/`. Ela fornece os contratos independentes do provedor, a política determinística de recuperação, um adapter Jev sem dependências para o contrato `/v1/systemone` da TypeSafe, um adapter opcional para o pacote Python oficial `typesafe-sdk`, um adapter com coleções permitidas para o `rag-harness` existente, fallback para falha do provedor e doze testes offline. O adapter opcional do runtime Google ADK expõe o workflow limitado como uma tool estruturada de `LlmAgent` e um `App`; `adk-rag-harness/adk_app/agent.py` agora é um entrypoint executável do ADK com modo demo offline ativado por padrão. Instale `adk-rag-harness[adk,jev-sdk]` somente ao executar com o Google ADK e o SDK oficial.
+A implementação inicial está em `adk-rag-harness/`. Ela fornece os contratos independentes do provedor, a política determinística de recuperação, um adapter Jev sem dependências para o contrato `/v1/systemone` da TypeSafe, um adapter opcional para o pacote Python oficial `typesafe-sdk`, um adapter com coleções permitidas para o `rag-harness` existente, fallback para falha do provedor e doze testes offline. O adapter opcional do runtime Google ADK expõe o workflow limitado como uma tool estruturada de `LlmAgent` e um `App`; `adk-rag-harness/adk_app/agent.py` agora é um entrypoint executável do ADK com Ollama como provedor local padrão e modo demo offline ativado por padrão. Instale os extras `adk`, `ollama` e `jev-sdk` para o app local completo.
 
 ## Guardrails e avaliação
 

@@ -20,7 +20,7 @@ class AdkRuntimeUnavailable(RuntimeError):
 class AdkRuntimeConfig:
     app_name: str = "adk_rag_harness"
     agent_name: str = "adk_rag_router"
-    model: str = "gemini-flash-latest"
+    model: Any = "gemini-flash-latest"
     description: str = "Routes evidence requests through a deterministic RAG policy."
 
 
