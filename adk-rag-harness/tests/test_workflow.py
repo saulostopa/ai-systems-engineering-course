@@ -135,6 +135,13 @@ class AdkRuntimeTests(unittest.TestCase):
         self.assertEqual(payload["status"], "direct")
         self.assertEqual(payload["confidence"], 0.98)
 
+    def test_tool_falls_back_to_generated_function_label_for_bad_string_argument(self):
+        decisions = FakeDecisions([{"needs_retrieval": (True, 0.98)}, {"collection": ("docs", 0.98), "strategy": ("hybrid", 0.98)}])
+        adapter = AdkRuntimeAdapter(AdkRagWorkflow(decisions, FakeRag()), agent_factory=lambda **kwargs: kwargs)
+        result = adapter.run_workflow('{"type": "string"}', ADK_function="find_deployment_policy")
+        self.assertEqual(result["status"], "retrieved")
+        self.assertEqual(result["collection"], "docs")
+
     def test_builds_app_around_agent(self):
         calls = []
 

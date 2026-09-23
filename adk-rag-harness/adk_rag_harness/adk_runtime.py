@@ -40,8 +40,18 @@ class AdkRuntimeAdapter:
         self._agent_factory = agent_factory
         self._app_factory = app_factory
 
-    def run_workflow(self, request: str) -> dict[str, Any]:
-        """ADK function tool: execute one bounded request and return JSON data."""
+    def run_workflow(self, request: str, ADK_function: str = "") -> dict[str, Any]:
+        """Execute one bounded request and return JSON data.
+
+        Some local tool-calling models have emitted a JSON-schema placeholder
+        such as ``{"type": "string"}`` instead of the argument value. When
+        that happens, ADK also provides the generated function label; using it
+        as a text fallback preserves routing while keeping the workflow in
+        control.
+        """
+
+        if not isinstance(request, str) or request.strip() in {"", "{'type': 'string'}", '{"type": "string"}'}:
+            request = ADK_function.replace("_", " ").strip() or str(request)
 
         return self._serialize_result(self.workflow.run(request))
 
