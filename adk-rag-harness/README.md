@@ -26,7 +26,9 @@ are downloaded.
 
 ## Run the ADK app
 
-The `adk_app/agent.py` entrypoint runs in offline demo mode by default:
+The `adk_app/agent.py` entrypoint uses Ollama locally by default. The
+conversation model is `llama3.1:8b`; typed routing decisions use
+`qwen2.5:14b`, which can be changed independently:
 
 ```bash
 uv sync --extra adk --extra ollama --extra jev-sdk
@@ -37,7 +39,9 @@ Open `http://localhost:8000`, select `adk_app`, and try a request such as
 `find the deployment policy`. The app uses Ollama by default through
 `http://localhost:11434` and the
 `llama3.1:8b` model. Set `OLLAMA_MODEL` to another locally installed model
-when needed. `HARNESS_OFFLINE=0` and `TYPESAFE_API_KEY` enable Jev for routing.
+when needed. Set `HARNESS_DECISION_PROVIDER=demo` for the deterministic demo or
+`HARNESS_DECISION_PROVIDER=jev` with `HARNESS_OFFLINE=0` and
+`TYPESAFE_API_KEY` for official Jev routing.
 
 ```bash
 OLLAMA_MODEL=mistral-small3.1 HARNESS_OFFLINE=0 uv run adk web
@@ -52,12 +56,15 @@ The conversational model and the typed decision provider are separate. Select
 the decision provider with `HARNESS_DECISION_PROVIDER`:
 
 ```bash
-# Default local demo: deterministic and offline
+# Default: local Ollama decision provider
+uv run adk web
+
+# Deterministic demo provider
 HARNESS_DECISION_PROVIDER=demo uv run adk web
 
 # Local open-model decisions through Ollama's OpenAI-compatible endpoint
 HARNESS_DECISION_PROVIDER=ollama-system-one \
-OLLAMA_DECISION_MODEL=llama3.1:8b uv run adk web
+OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
 # Hosted OpenRouter decisions; the chat model can remain local Ollama
 HARNESS_DECISION_PROVIDER=openrouter-system-one \

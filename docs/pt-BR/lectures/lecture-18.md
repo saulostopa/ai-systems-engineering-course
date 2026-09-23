@@ -15,11 +15,16 @@ sessões e inspecionar eventos. Ele não substitui o workflow determinístico. O
 modelo propõe quando chamar uma ferramenta; `run_workflow` continua aplicando
 em código a decisão tipada, a política de recuperação e os fallbacks.
 
-A demonstração offline atual garante duas rotas:
+A configuração local padrão exercita duas rotas com os prompts da aula:
 
 - pedidos diretos, que respondem sem recuperação;
-- pedidos recuperados, que retornam a evidência de demonstração e a referência
-  da fonte.
+- pedidos recuperados, que retornam a evidência local de demonstração e a
+  referência da fonte.
+
+O modelo de conversa padrão é `llama3.1:8b`. As decisões tipadas usam
+`qwen2.5:14b` via `ollama-system-one`, pois ele foi mais consistente que o
+`llama3.1:8b` nas evals de roteamento. O `demo` continua disponível como
+provider determinístico explícito.
 
 O provedor Jev real é habilitado separadamente com `HARNESS_OFFLINE=0` e uma
 `TYPESAFE_API_KEY`. Essa separação mantém os experimentos locais seguros e
@@ -113,12 +118,15 @@ O modelo de conversa e o provedor de roteamento tipado são separados. O app lê
 `HARNESS_DECISION_PROVIDER` em `adk_app/agent.py`:
 
 ```sh
-# Demo local e determinística
+# Padrão: decisões tipadas locais com Ollama
+uv run adk web
+
+# Provider demo determinístico
 HARNESS_DECISION_PROVIDER=demo uv run adk web
 
 # Decisões tipadas locais com Ollama
 HARNESS_DECISION_PROVIDER=ollama-system-one \
-OLLAMA_DECISION_MODEL=llama3.1:8b uv run adk web
+OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
 # OpenRouter para decisões hospedadas
 HARNESS_DECISION_PROVIDER=openrouter-system-one \
@@ -204,7 +212,7 @@ adk_rag_router
 | O modelo não é chamado | Confirme que o Ollama está acessível e use um modelo com suporte a tools. |
 | `ollama ps` fica vazio depois da resposta | O modelo pode ter sido descarregado; inspecione durante um pedido ativo ou rode `ollama list`. |
 | A UI abre, mas o app não aparece | Inicie o servidor a partir do diretório do repositório com o diretório do app disponível e atualize a página. |
-| A rota é sempre de demonstração | É esperado com `HARNESS_OFFLINE=1`, o padrão. Use `HARNESS_OFFLINE=0` e `TYPESAFE_API_KEY` somente ao testar o Jev. |
+| A rota é sempre de demonstração | Confira se `HARNESS_DECISION_PROVIDER` não está definido como `demo`. |
 | O trace não mostra Ollama | Confirme `OLLAMA_MODEL` e `OLLAMA_API_BASE`, depois reinicie `adk web`. |
 
 ## Checklist de evidências

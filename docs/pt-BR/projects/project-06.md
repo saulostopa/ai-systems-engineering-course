@@ -32,11 +32,10 @@ Usar as decisões tipadas Noul, Choice e Score do Jev. Aplicar limiares no códi
 
 ## Implementação atual
 
-A fatia offline está em `adk-rag-harness/` e inclui o entrypoint do Dev UI do
+A fatia local está em `adk-rag-harness/` e inclui o entrypoint do Dev UI do
 ADK. Instale com `uv sync --extra adk --extra ollama --extra jev-sdk` e inicie
-com `OLLAMA_MODEL=llama3.1:8b uv run adk web`. O padrão `HARNESS_OFFLINE=1`
-mantém os provedores de decisão e recuperação determinísticos; use
-`HARNESS_OFFLINE=0` com `TYPESAFE_API_KEY` somente ao testar o provedor Jev real.
+com `uv run adk web`. O modelo de conversa padrão é `llama3.1:8b`; o provider
+de decisão tipada é o `ollama-system-one` local usando `qwen2.5:14b`.
 A [aula do Dev UI com Ollama](/pt-BR/lectures/lecture-18) traz a sequência
 completa de prompts, screenshots e checklist de evidências.
 

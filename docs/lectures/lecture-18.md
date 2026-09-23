@@ -15,10 +15,15 @@ starting sessions and inspecting events. It does not replace the deterministic
 workflow. The model proposes when to call a tool; `run_workflow` still applies
 the typed decision, retrieval policy and fallback rules in code.
 
-The current offline demo has two guaranteed routes:
+The local default has two routing paths exercised by the course prompts:
 
 - direct requests, which answer without retrieval;
-- retrieved requests, which return the demo evidence and source reference.
+- retrieved requests, which return local demo evidence and a source reference.
+
+The conversation model defaults to `llama3.1:8b`. Typed routing decisions use
+`qwen2.5:14b` through `ollama-system-one`, because it was more consistent than
+`llama3.1:8b` on the routing evals. `demo` remains available as an explicit
+deterministic provider.
 
 The real Jev provider is enabled separately with `HARNESS_OFFLINE=0` and a
 `TYPESAFE_API_KEY`. That separation makes local UI experiments safe and
@@ -111,12 +116,15 @@ The chat model and the typed routing provider are separate. The app reads
 `HARNESS_DECISION_PROVIDER` from `adk_app/agent.py`:
 
 ```sh
-# Local and deterministic demo
+# Default: local Ollama typed decisions
+uv run adk web
+
+# Deterministic demo provider
 HARNESS_DECISION_PROVIDER=demo uv run adk web
 
 # Local typed decisions with Ollama
 HARNESS_DECISION_PROVIDER=ollama-system-one \
-OLLAMA_DECISION_MODEL=llama3.1:8b uv run adk web
+OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
 # OpenRouter for hosted decisions
 HARNESS_DECISION_PROVIDER=openrouter-system-one \
@@ -197,7 +205,7 @@ adk_rag_router
 | The model is not called | Confirm Ollama is reachable and use a tool-capable model. |
 | `ollama ps` is empty after the answer | The model may have been unloaded; inspect it during an active request or run `ollama list`. |
 | The UI opens but the app is missing | Start the server from the repository root with the app directory available, then refresh. |
-| The route is always a demo route | This is expected with the default `HARNESS_OFFLINE=1`. Set `HARNESS_OFFLINE=0` and provide `TYPESAFE_API_KEY` only when testing Jev. |
+| The route is always a demo route | Check that `HARNESS_DECISION_PROVIDER` is not set to `demo`. |
 | The trace does not show Ollama | Confirm `OLLAMA_MODEL` and `OLLAMA_API_BASE`, then restart `adk web`. |
 
 ## Evidence checklist

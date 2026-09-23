@@ -60,5 +60,5 @@ CLI version and command configuration with every result.
 - Each CLI provider passes the shared `DecisionProvider` contract tests.
 - Malformed, truncated and out-of-schema output is rejected.
 - A hung or unavailable CLI reaches the deterministic fallback.
-- The default provider remains `demo`; enabling a CLI is explicit.
+- The default provider remains `ollama-system-one`; enabling a CLI is explicit.
 - The integration does not modify the workspace or create persistent sessions.
