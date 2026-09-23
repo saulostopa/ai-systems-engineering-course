@@ -1,11 +1,13 @@
 import sys
 import unittest
+from types import SimpleNamespace
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[1]))
 
 from adk_rag_harness.contracts import DecisionAnswer, DecisionProviderError, DecisionQuestion, DecisionResult, EvidenceChunk, RetrievalResponse
 from adk_rag_harness.adk_runtime import AdkRuntimeAdapter, AdkRuntimeConfig, AdkRuntimeUnavailable
+from adk_rag_harness.jev_sdk import TypeSafeSdkDecisionProvider
 from adk_rag_harness.jev import JevDecisionProvider
 from adk_rag_harness.workflow import AdkRagWorkflow, WorkflowStatus
 
@@ -156,6 +158,60 @@ class AdkRuntimeTests(unittest.TestCase):
         adapter = AdkRuntimeAdapter(AdkRagWorkflow(FakeDecisions([]), FakeRag()))
         with self.assertRaises(AdkRuntimeUnavailable):
             adapter.build_agent()
+
+
+class TypeSafeSdkTests(unittest.TestCase):
+    def test_official_sdk_adapter_maps_typed_questions_and_answers(self):
+        class Question:
+            def __init__(self, **values):
+                self.__dict__.update(values)
+
+        class Answer:
+            def __init__(self, **values):
+                self.__dict__.update(values)
+
+        class Usage:
+            input_tokens = 8
+            output_tokens = 0
+
+        class Response:
+            model = "jev-1.13.0"
+            usage = Usage()
+            answers = {
+                "needs_retrieval": Answer(noul=0.91),
+                "collection": Answer(choice="docs", confidence=0.89),
+                "urgency": Answer(score=1.4, confidence=0.76),
+            }
+
+        class FakeClient:
+            def system_one(self, **kwargs):
+                self.request = kwargs
+                return Response()
+
+        client = FakeClient()
+        sdk = SimpleNamespace(
+            Noul=lambda **values: Question(**values),
+            Choice=lambda **values: Question(**values),
+            Score=lambda **values: Question(**values),
+        )
+        provider = TypeSafeSdkDecisionProvider(client=client, sdk=sdk)
+        result = provider.decide(
+            {"request": "find policy"},
+            [
+                DecisionQuestion("needs_retrieval", "Need evidence?", "noul"),
+                DecisionQuestion("collection", "Which collection?", "choice", ("docs", "code")),
+                DecisionQuestion("urgency", "How urgent?", "score", ("low", "medium", "high")),
+            ],
+        )
+        self.assertEqual(client.request["questions"]["collection"].criteria, {"docs": "Select docs.", "code": "Select code."})
+        self.assertTrue(result.answer("needs_retrieval").value)
+        self.assertEqual(result.answer("collection").value, "docs")
+        self.assertEqual(result.answer("urgency").value, 1.4)
+
+    def test_missing_sdk_is_reported_at_runtime(self):
+        provider = TypeSafeSdkDecisionProvider()
+        with self.assertRaises(DecisionProviderError):
+            provider.decide({}, [DecisionQuestion("needs_retrieval", "Need evidence?", "noul")])
 
 
 if __name__ == "__main__":
