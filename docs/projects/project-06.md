@@ -61,6 +61,7 @@ provider. The [Ollama Dev UI lesson](/lectures/lecture-18) contains the complete
 prompt sequence, screenshots and evidence checklist.
 
 Run the full offline suite with `python3 -m unittest discover -s tests -v` from
-that directory. It does not require a cloud API key.
+that directory. It includes the golden prompt contract evals and does not
+require a cloud API key.
 
 See the [feature record](/tasks/adk-rag-jev-harness) for the adopted decisions and guardrails.

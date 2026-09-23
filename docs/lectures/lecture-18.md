@@ -90,9 +90,20 @@ required.
 | `Answer only when the repository evidence is sufficient; otherwise explain what is missing.` | The desired contract for a guarded answer | Guarded answer |
 
 The first two prompts are the reliable smoke test for the current demo. The
-last prompt describes the low-confidence contract; its complete behavior is
+The last prompt describes the low-confidence contract; its complete behavior is
 covered by the decision-policy tests and becomes meaningful when the real Jev
 and RAG providers are enabled.
+
+The same prompts are stored in `adk-rag-harness/evals/golden_prompts.json`.
+Run the offline contract evals with:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+The evals compare route, RAG call count, collection, strategy, evidence source
+and blocked/clarification behavior. They do not compare generated prose, so a
+small wording change does not create a false failure.
 
 ## How to read the Dev UI
 

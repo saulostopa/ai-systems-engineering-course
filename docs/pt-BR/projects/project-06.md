@@ -41,6 +41,7 @@ A [aula do Dev UI com Ollama](/pt-BR/lectures/lecture-18) traz a sequência
 completa de prompts, screenshots e checklist de evidências.
 
 Execute a suíte offline completa com `python3 -m unittest discover -s tests -v`
-a partir desse diretório. Ela não exige chave de API em nuvem.
+a partir desse diretório. Ela inclui as evals de contrato dos prompts dourados e
+não exige chave de API em nuvem.
 
 Veja o [registro da feature](/pt-BR/tasks/adk-rag-jev-harness) para as decisões e guardrails adotados.

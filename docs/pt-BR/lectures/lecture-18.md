@@ -91,9 +91,21 @@ especial é necessária.
 | `Responda somente quando a evidência do repositório for suficiente; caso contrário, explique o que está faltando.` | O contrato desejado para uma resposta protegida | Guardada |
 
 Os dois primeiros prompts são o smoke test confiável da demonstração atual. O
-último descreve o contrato de baixa confiança; seu comportamento completo é
+O último descreve o contrato de baixa confiança; seu comportamento completo é
 coberto pelos testes de política de decisão e se torna efetivo quando os
 provedores reais do Jev e do RAG forem habilitados.
+
+Os mesmos prompts estão armazenados em `adk-rag-harness/evals/golden_prompts.json`.
+Execute as evals offline do contrato com:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+As evals comparam rota, quantidade de chamadas ao RAG, coleção, estratégia,
+fonte da evidência e comportamento de bloqueio/solicitação de esclarecimento.
+Elas não comparam o texto gerado, evitando falhas falsas por uma pequena mudança
+de redação.
 
 ## Como ler o Dev UI
 

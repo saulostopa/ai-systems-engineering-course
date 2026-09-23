@@ -46,10 +46,21 @@ OLLAMA_MODEL=mistral-small3.1 HARNESS_OFFLINE=0 uv run adk web
 The Ollama server must be running and the selected model must support tool
 calling. The ADK integration uses the `ollama_chat` LiteLLM provider.
 
+## Golden prompt evaluations
+
+The natural-language examples from the course are also stored as executable
+contract fixtures in `evals/golden_prompts.json`. They test the workflow's
+observable result instead of comparing model prose: route, RAG call count,
+collection, strategy, evidence source and blocked/clarification behavior.
+
+These evals use scripted decision and RAG providers, so they do not require
+Ollama, Jev, Google ADK or network access. Provider-backed evals belong in a
+separate integration job after the offline contract is stable.
+
 ## Test
 
 ```bash
-python3 -m unittest discover -s tests -v  # 12 tests
+python3 -m unittest discover -s tests -v  # 13 tests
 ```
 
 Optional runtime dependencies:
