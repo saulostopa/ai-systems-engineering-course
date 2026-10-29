@@ -149,8 +149,10 @@ export default defineConfig({
               items: [
                 { text: 'Plano original', link: '/pt-BR/reference/plan' },
                 { text: 'Repositórios do ecossistema', link: '/pt-BR/reference/repositories' },
+                { text: 'Decisão operacional (Jev)', link: '/pt-BR/reference/jev' },
               ],
             },
+
           ],
         },
         outline: {
@@ -274,8 +276,10 @@ export default defineConfig({
           items: [
             { text: 'Original plan', link: '/reference/plan' },
             { text: 'Ecosystem repositories', link: '/reference/repositories' },
+            { text: 'Operational decision (Jev)', link: '/reference/jev' },
           ],
         },
+
       ],
     },
     outline: {

@@ -291,5 +291,15 @@ the metrics. None of them exercised layer 3 with an engine — which is exactly
 the gap this page describes.
 :::
 
+## Decision and Routing Gateway with Jev
+
+In a multi-team enterprise setup, unconstrained LLM calls across dozens of adopted repositories quickly explode costs and introduce latency variance. Layer A (`~/wm-harness/`) integrates the [Jev decision architecture](/reference/jev) as an operational gateway:
+
+- **Enterprise Model Router**: Dispatches developer and agent requests to Small ($), Medium ($$), or Large ($$$) models based on task complexity, preserving organizational budget.
+- **Tool Call & Security Guardrails**: Intercepts tool calls across workflows with deterministic `allow`, `ask` (HITL), or `deny` policies, preventing destructive deployments or secret leaks.
+- **Mass Labeling & Compliance Triage**: Batch-scores and tags repository compliance, test coverage trends, and commit hygiene across all adopted teams without heavy LLM costs.
+
 **Related**: [Basic harness](/harness-designs/basic-harness) ·
-[App Harness](/harness-designs/app-harness) · [Domain harnesses](/harness-designs/domain-harnesses)
+[App Harness](/harness-designs/app-harness) · [Domain harnesses](/harness-designs/domain-harnesses) ·
+[ADK + RAG + Jev](/harness-designs/adk-rag-jev-harness)
+

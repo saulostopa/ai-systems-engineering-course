@@ -21,12 +21,15 @@ A configuração local padrão exercita duas rotas com os prompts da aula:
 - pedidos recuperados, que retornam a evidência local de demonstração e a
   referência da fonte.
 
-O modelo de conversa padrão é `llama3.1:8b`. As decisões tipadas usam
-`qwen2.5:14b` via `ollama-system-one`, pois ele foi mais consistente que o
-`llama3.1:8b` nas evals de roteamento. O `demo` continua disponível como
-provider determinístico explícito.
+O app usa por padrão o OpenRouter com o Jev (`typesafe/jev-router`) tanto na
+conversa quanto nas decisões tipadas. Esta aula roda tudo localmente, então
+define `HARNESS_CHAT_PROVIDER=ollama` e
+`HARNESS_DECISION_PROVIDER=ollama-system-one`. O modelo de conversa é o
+`llama3.1:8b`. As decisões tipadas usam `qwen2.5:14b`, pois ele foi mais
+consistente que o `llama3.1:8b` nas evals de roteamento. O `demo` continua
+disponível como provider determinístico explícito.
 
-O provedor Jev real é habilitado separadamente com `HARNESS_OFFLINE=0` e uma
+O provedor Jev oficial da TypeSafe é habilitado separadamente com `HARNESS_DECISION_PROVIDER=jev` e uma
 `TYPESAFE_API_KEY`. Essa separação mantém os experimentos locais seguros e
 repetíveis.
 
@@ -71,6 +74,7 @@ no ambiente do projeto, sem depender de uma instalação global de `pip` ou `adk
 git clone https://github.com/saulostopa/harnesses.git
 cd adk-rag-harness
 uv sync --extra adk --extra ollama --extra jev-sdk
+HARNESS_CHAT_PROVIDER=ollama HARNESS_DECISION_PROVIDER=ollama-system-one \
 OLLAMA_MODEL=llama3.1:8b uv run adk web
 ```
 
@@ -119,7 +123,7 @@ O modelo de conversa e o provedor de roteamento tipado são separados. O app lê
 `HARNESS_DECISION_PROVIDER` em `adk_app/agent.py`:
 
 ```sh
-# Padrão: decisões tipadas locais com Ollama
+# Padrão: OpenRouter com Jev na conversa e nas decisões
 uv run adk web
 
 # Provider demo determinístico
@@ -129,10 +133,8 @@ HARNESS_DECISION_PROVIDER=demo uv run adk web
 HARNESS_DECISION_PROVIDER=ollama-system-one \
 OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
-# OpenRouter para decisões hospedadas
-HARNESS_DECISION_PROVIDER=openrouter-system-one \
-OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 \
-uv run adk web
+# Decisões no OpenRouter com outro modelo hospedado
+OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 uv run adk web
 ```
 
 Os dois modos compatíveis com OpenAI preservam o contrato tipado, mas não são o
@@ -169,12 +171,21 @@ O modelo `nomic-embed-text` fornece embeddings semânticos pela API local do
 Ollama. Para validar a arquitetura totalmente offline, use
 `RAG_EMBEDDER=ngram`; recrie o índice ao trocar o provider de embeddings.
 
-Combine com as decisões do OpenRouter ao testar o caminho completo:
+Em um repositório de aplicação, crie um índice por coleção com
+`--profile docs` (Markdown, JSON, YAML) e `--profile code` (Python, shell,
+TypeScript, JavaScript), e aponte `HARNESS_RAG_DOCS_INDEX` e
+`HARNESS_RAG_CODE_INDEX` para `.rag_index/docs` e `.rag_index/code`. Só as
+coleções com índice são oferecidas ao provider de decisões. Dentro de um
+repositório Git, o indexador lê apenas os arquivos versionados, sempre ignora
+lockfiles e respeita um `.ragignore` na raiz. `RAG_EMBEDDER=openrouter` troca o
+Ollama por um modelo de embeddings hospedado (padrão `voyageai/voyage-code-4`);
+cada índice registra o seu embedder, então uma busca com outro embedder falha
+de forma segura. O README do `adk-rag-harness` traz a referência completa.
+
+Combine com as decisões padrão do OpenRouter ao testar o caminho completo:
 
 ```sh
-HARNESS_DECISION_PROVIDER=openrouter-system-one \
-HARNESS_RAG_PROVIDER=rag-harness \
-uv run adk web
+HARNESS_RAG_PROVIDER=rag-harness uv run adk web
 ```
 
 Depois que o contrato offline passar, exercite o caminho do modelo real com
@@ -197,6 +208,10 @@ TYPESAFE_API_KEY=sua-chave uv run python evals/run_jev_evals.py
 Essa verificação avalia as decisões tipadas de roteamento do Jev separadamente
 do Ollama e exibe apenas modelo do provedor, rota, confiança e quantidade de
 evidências.
+Ela exercita a camada de decisão fundamental que sustenta os quatro pilares operacionais do Jev
+([Rotear, Filtrar, Pontuar e Liberar](/pt-BR/reference/jev)): protegendo contra injeções de prompt,
+roteando para a faixa de modelo adequada e aplicando portões de confiança tripartites antes das ações rodarem.
+
 
 ## Como ler o Dev UI
 

@@ -3,13 +3,25 @@
 **Ready-to-copy** templates — the basic harness package, versioned at the
 root of this repository in `templates/`.
 
-## Installation
+## Template-only installation
 
 ```sh
 cp -r templates/ <your-project>/
 cd <your-project>
 ./init.sh          # validates the environment and prints the next steps
 ```
+
+This copies only the instructional skeleton. For the runnable core with
+scripts, hooks and execution-plan directories, use the standalone installer:
+
+```bash
+./harness-basic/install.sh /absolute/path/to/project
+```
+
+A course-standard derived distribution can additionally install seven skills
+under `.agents/skills/` and expose `./install.sh --self` when package and
+target are intentionally the same directory. Those capabilities are not part
+of a raw `templates/` copy.
 
 ## Package contents
 
@@ -36,6 +48,7 @@ that underpins it.
 3. **Project 05** adds the area context on top of it.
 
 ::: tip Status
-This package is the deliverable of Story **A4** of the course. The package with complete
-mechanical gates (hooks) is Story **B1** (EPIC B).
+This template skeleton is Story **A4**. The runnable core with mechanical
+gates is Story **B1** (EPIC B); the standard skill profile is the distribution
+used by the complete course harness.
 :::

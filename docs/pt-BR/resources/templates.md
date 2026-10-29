@@ -3,13 +3,25 @@
 Templates **prontos para copiar** — o pacote de harness básico, versionado na
 raiz deste repositório em `templates/`.
 
-## Instalação
+## Instalação somente dos templates
 
 ```sh
 cp -r templates/ <seu-projeto>/
 cd <seu-projeto>
 ./init.sh          # valida o ambiente e imprime os próximos passos
 ```
+
+Essa cópia leva apenas o esqueleto instrucional. Para o núcleo executável com
+scripts, hooks e diretórios de planos de execução, use o instalador standalone:
+
+```bash
+./harness-basic/install.sh /caminho/absoluto/do/projeto
+```
+
+Uma distribuição derivada no padrão do curso também pode instalar sete skills
+em `.agents/skills/` e expor `./install.sh --self` quando pacote e destino são,
+intencionalmente, a mesma pasta. Essas capacidades não fazem parte de uma
+cópia bruta de `templates/`.
 
 ## Conteúdo do pacote
 
@@ -36,6 +48,7 @@ que o fundamenta.
 3. **Projeto 05** adiciona o contexto da área em cima dele.
 
 ::: tip Status
-Este pacote é o entregável da Story **A4** do curso. O pacote com gates
-mecânicos (hooks) completos é a Story **B1** (EPIC B).
+Este esqueleto de templates é a Story **A4**. O núcleo executável com gates
+mecânicos é a Story **B1** (EPIC B); o perfil padrão de skills é a distribuição
+usada pelo harness completo do curso.
 :::
