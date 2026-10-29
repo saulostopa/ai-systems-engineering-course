@@ -66,6 +66,12 @@ com screenshot). O formato do veredito é tabela + achados com causa provável
 build → E2E (gate) → navegação agêntica (visão) → achados → novos testes E2E → ...
 ```
 
+### Jev no App Harness: Loop em Tempo Real e Segurança de Ações
+
+A aplicação da [arquitetura de decisão Jev](/pt-BR/reference/jev) potencializa a navegação agêntica:
+1. **Loop em Tempo Real (~300ms)**: Passos de transição do DOM e decisões de navegação rodam através de decisões tipadas rápidas do Jev, evitando invocar modelos multimodais pesados a cada micro-clique. A LLM de visão com custo maior é acionada somente em checkpoints de validação visual e anomalias de layout.
+2. **Guardrail de Tool Calls**: O Jev intercepta chamadas de ferramentas do navegador com `permite` / `pergunta` / `nega`, bloqueando ações destrutivas (ex.: submissão de compras ou deleção de bancos em ambientes de teste) ou solicitando confirmação do operador (HITL).
+
 ## Por que as duas camadas
 
 | | E2E (QA) | Navegação agêntica |
@@ -85,4 +91,4 @@ está quebrado de verdade na tela.
   blueprint é a solução de referência.
 - **O piloto G2** rodou as duas camadas num app real: o gate de E2E bloqueou e liberou corretamente, e a navegação agêntica retornou HTTP 200. Evidência em `pilots/g2-app-harness/evidence/`.
 
-**Relacionados**: [Harness básico](/pt-BR/harness-designs/basic-harness) · [Harness grande](/pt-BR/harness-designs/enterprise-harness)
+**Relacionados**: [Harness básico](/pt-BR/harness-designs/basic-harness) · [Harness grande](/pt-BR/harness-designs/enterprise-harness) · [Harness ADK + RAG + Jev](/pt-BR/harness-designs/adk-rag-jev-harness)

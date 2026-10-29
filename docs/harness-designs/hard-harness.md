@@ -127,7 +127,9 @@ OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workfl
 | File-first persistence | `.harness/` (state.json + events.jsonl + artifacts + locks) — database later |
 | Limits in code | MAX_DEPTH/CHILDREN/RETRIES/LLM_CALLS/timeout/budget in the runner |
 | RAG = context, never orchestrator | retrieval separated from orchestration (course requirement) |
+| Jev decision gates | Bounded typed scoring and tool call filtering (`allow` / `ask` / `deny`) evaluate transition gates without unbounded LLM hallucinations (see [Jev reference](/reference/jev)) |
 | No database in this version | `FileStateStore` today; SQLite or an external system later, via the same interface |
+
 
 **Limitations**: agents are stubs (LLM provider to inject); Collaborative and
 Dynamic (ADK 2) are declared evolution, not implemented in the core — the graph

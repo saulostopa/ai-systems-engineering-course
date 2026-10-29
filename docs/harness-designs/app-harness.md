@@ -66,6 +66,12 @@ with screenshot). The verdict format is a table + findings with probable cause
 build → E2E (gate) → agentic navigation (vision) → findings → new E2E tests → ...
 ```
 
+### Jev in App Harness: Real-Time Loop & Action Safety
+
+Applying the [Jev decision architecture](/reference/jev) enhances agentic navigation:
+1. **Real-Time Loop (~300ms)**: Browser DOM transition steps and route choices run through Jev's fast typed decisions, avoiding invoking heavy multimodal LLMs on every micro-click. The expensive vision LLM is invoked only for visual anomaly detection and layout validation checkpoints.
+2. **Tool Call Guardrail**: Jev intercepts browser tool calls with `allow` / `ask` / `deny`, blocking destructive actions (e.g., checkout submissions or database truncations in live staging) or requesting operator confirmation (HITL).
+
 ## Why the two layers
 
 | | E2E (QA) | Agentic navigation |
@@ -85,4 +91,5 @@ and is genuinely broken on the screen.
   blueprint is the reference solution.
 - **Pilot G2** ran both layers on a real app: the E2E gate blocked and allowed correctly, and the agentic navigation returned HTTP 200. Evidence in `pilots/g2-app-harness/evidence/`.
 
-**Related**: [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness)
+**Related**: [Basic harness](/harness-designs/basic-harness) · [Enterprise harness](/harness-designs/enterprise-harness) · [ADK + RAG + Jev](/harness-designs/adk-rag-jev-harness)
+

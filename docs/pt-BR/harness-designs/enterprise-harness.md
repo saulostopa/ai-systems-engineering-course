@@ -290,5 +290,15 @@ finanças, e o **G4** consolidou as métricas. Nenhum deles exercitou a camada 3
 com engine — que é exatamente a lacuna que esta página descreve.
 :::
 
+## Gateway de Decisão e Roteamento com Jev
+
+Em uma estrutura corporativa multi-time, chamadas irrestritas a LLMs em dezenas de repositórios adotados explodem rapidamente os custos e introduzem alta dispersão de latência. A Camada A (`~/wm-harness/`) integra a [arquitetura de decisão Jev](/pt-BR/reference/jev) como um gateway operacional:
+
+- **Roteador de Modelos Corporativo**: Direciona requisições de desenvolvedores e agentes para modelos Pequenos ($), Médios ($$) ou Grandes ($$$) com base na complexidade da tarefa, protegendo o orçamento da organização.
+- **Guardrails de Tool Calls e Segurança**: Intercepta chamadas de ferramentas nos workflows com políticas determinísticas de `permite`, `pergunta` (HITL) ou `nega`, blindando deploys destrutivos ou vazamento de segredos.
+- **Labeling em Massa e Triagem de Conformidade**: Pontua em lote e classifica a conformidade de repositórios, tendências de cobertura de testes e higiene de commits sem os custos pesados de inferência generativa.
+
 **Relacionados**: [Harness básico](/pt-BR/harness-designs/basic-harness) ·
-[App Harness](/pt-BR/harness-designs/app-harness) · [Harnesses de domínio](/pt-BR/harness-designs/domain-harnesses)
+[App Harness](/pt-BR/harness-designs/app-harness) · [Harnesses de domínio](/pt-BR/harness-designs/domain-harnesses) ·
+[Harness ADK + RAG + Jev](/pt-BR/harness-designs/adk-rag-jev-harness)
+

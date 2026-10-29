@@ -127,7 +127,9 @@ OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workfl
 | Persistência em arquivo primeiro | `.harness/` (state.json + events.jsonl + artifacts + locks) — banco depois |
 | Limites em código | MAX_DEPTH/CHILDREN/RETRIES/LLM_CALLS/timeout/budget no runner |
 | RAG = contexto, nunca orquestrador | recuperação separada da orquestração (requisito do curso) |
+| Portões de decisão Jev | Pontuação tipada delimitada e filtragem de tool calls (`permite` / `pergunta` / `nega`) avaliam portões de transição sem alucinações de LLM (veja a [referência Jev](/pt-BR/reference/jev)) |
 | Sem banco nesta versão | `FileStateStore` hoje; SQLite ou sistema externo depois, pela mesma interface |
+
 
 **Limitações**: agentes são stubs (provider LLM a injetar); Collaborative e
 Dynamic (ADK 2) são evolução declarada, não implementados no núcleo — o grafo

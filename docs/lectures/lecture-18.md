@@ -20,12 +20,15 @@ The local default has two routing paths exercised by the course prompts:
 - direct requests, which answer without retrieval;
 - retrieved requests, which return local demo evidence and a source reference.
 
-The conversation model defaults to `llama3.1:8b`. Typed routing decisions use
-`qwen2.5:14b` through `ollama-system-one`, because it was more consistent than
-`llama3.1:8b` on the routing evals. `demo` remains available as an explicit
-deterministic provider.
+The app defaults to OpenRouter with Jev (`typesafe/jev-router`) for both the
+conversation and the typed decisions. This lesson runs everything locally, so
+it sets `HARNESS_CHAT_PROVIDER=ollama` and
+`HARNESS_DECISION_PROVIDER=ollama-system-one`. The conversation model is
+`llama3.1:8b`. Typed routing decisions use `qwen2.5:14b`, because it was more
+consistent than `llama3.1:8b` on the routing evals. `demo` remains available
+as an explicit deterministic provider.
 
-The real Jev provider is enabled separately with `HARNESS_OFFLINE=0` and a
+The official TypeSafe Jev provider is enabled separately with `HARNESS_DECISION_PROVIDER=jev` and a
 `TYPESAFE_API_KEY`. That separation makes local UI experiments safe and
 repeatable.
 
@@ -70,6 +73,7 @@ the project environment, so a global `pip` or `adk` installation is not needed.
 git clone https://github.com/saulostopa/harnesses.git
 cd adk-rag-harness
 uv sync --extra adk --extra ollama --extra jev-sdk
+HARNESS_CHAT_PROVIDER=ollama HARNESS_DECISION_PROVIDER=ollama-system-one \
 OLLAMA_MODEL=llama3.1:8b uv run adk web
 ```
 
@@ -117,7 +121,7 @@ The chat model and the typed routing provider are separate. The app reads
 `HARNESS_DECISION_PROVIDER` from `adk_app/agent.py`:
 
 ```sh
-# Default: local Ollama typed decisions
+# Default: OpenRouter with Jev for chat and decisions
 uv run adk web
 
 # Deterministic demo provider
@@ -127,10 +131,8 @@ HARNESS_DECISION_PROVIDER=demo uv run adk web
 HARNESS_DECISION_PROVIDER=ollama-system-one \
 OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
 
-# OpenRouter for hosted decisions
-HARNESS_DECISION_PROVIDER=openrouter-system-one \
-OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 \
-uv run adk web
+# OpenRouter decisions with another hosted model
+OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 uv run adk web
 ```
 
 The two OpenAI-compatible modes preserve the typed contract but are not the
@@ -166,12 +168,22 @@ The `nomic-embed-text` model supplies semantic embeddings through the local
 Ollama API. For a fully offline architecture check, use
 `RAG_EMBEDDER=ngram`; recreate the index when changing embedding providers.
 
-Combine it with OpenRouter decisions when testing the complete path:
+For an application repository, build one index per collection with
+`--profile docs` (Markdown, JSON, YAML) and `--profile code` (Python, shell,
+TypeScript, JavaScript), and point `HARNESS_RAG_DOCS_INDEX` and
+`HARNESS_RAG_CODE_INDEX` at `.rag_index/docs` and `.rag_index/code`. Only the
+collections with an index are offered to the decision provider. Inside a Git
+repository the indexer reads only the files Git tracks, always skips
+lockfiles and honors a `.ragignore` at the root. `RAG_EMBEDDER=openrouter`
+replaces Ollama with a hosted embedding model (default
+`voyageai/voyage-code-4`); each index records its embedder, so a query with
+another embedder fails closed. The `adk-rag-harness` README has the full
+reference.
+
+Combine it with the default OpenRouter decisions when testing the complete path:
 
 ```sh
-HARNESS_DECISION_PROVIDER=openrouter-system-one \
-HARNESS_RAG_PROVIDER=rag-harness \
-uv run adk web
+HARNESS_RAG_PROVIDER=rag-harness uv run adk web
 ```
 
 After the offline contract passes, exercise the real model path with Ollama:
@@ -191,6 +203,10 @@ TYPESAFE_API_KEY=your-key uv run python evals/run_jev_evals.py
 
 This check evaluates Jev's typed routing decisions separately from Ollama and
 prints only the provider model, route, confidence and evidence count.
+It exercises the foundational decision layer that powers the four Jev operational pillars
+([Route, Filter, Score, and Release](/reference/jev)): protecting against prompt injection,
+routing to the right model tier, and enforcing tripartite confidence gates before actions run.
+
 
 ## How to read the Dev UI
 

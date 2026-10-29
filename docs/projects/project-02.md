@@ -8,7 +8,10 @@ title: Project 02 — Installable basic harness
 
 ## Objective
 
-Build the **basic harness package**: a set of files you copy into any small repo that delivers AGENTS.md (router), feature list, progress/handoff, essential policies and an `init.sh` initialization script.
+Build the **basic harness package**: an installer that delivers AGENTS.md
+(router), feature state, progress/handoff, essential policies, execution plans
+and mechanical validation to any small repository. The course standard profile
+also bundles seven reusable skills under `.agents/skills/`.
 
 This is literally Story **B1** of our plan — and this project teaches you to build it before the course delivers the official one.
 
@@ -25,7 +28,9 @@ harness-basico/
 │   ├── scope-control.md       # scope before editing (Lesson 07)
 │   ├── definition-of-done.md  # verifiable "done" (Lesson 09)
 │   └── evidence-required.md   # evidence before "done" (Lesson 09)
-└── skills/                    # (optional) harness-agent-skills package
+├── scripts/                   # validation, gates, artifacts and skill scan
+├── .githooks/                 # pre-commit and pre-push enforcement
+└── .agents/skills/            # standard profile (seven course skills)
 ```
 
 ## Step by step
@@ -66,17 +71,54 @@ Use the [Library](/resources/templates) templates: `feature_list.json` with 3-5 
 
 ### 4. Install in a real repo
 
-Copy the package to one of your small projects, run `./init.sh`, execute a feature end-to-end and record the evidence.
+Use an explicit target instead of copying files by hand:
+
+```bash
+./install.sh /absolute/path/to/project
+cd /absolute/path/to/project
+./init.sh
+./scripts/validate-harness.sh
+```
+
+The installer must protect existing files and require `--force` for a
+conscious replacement. When the target is a Git repository it configures
+`core.hooksPath=.githooks`.
+
+### 5. Support an explicit self-install mode in derived packages
+
+If the package directory itself will be managed by the harness, make the
+intent explicit:
+
+```bash
+git init
+./install.sh --self
+```
+
+Never make `./install.sh .` silently overwrite package state. `--self` is the
+separate contract for a derived distribution; the standalone core can keep
+requiring another target.
+
+### 6. Bundle the standard skill profile
+
+Install these under `.agents/skills/`: `feature-report`, `feature-quiz`,
+`feature-archify`, `skill-guard`, `qa-playwright-e2e`, `qa-perf-triage` and
+`agentic-navigation`. Keep shared Eleanor assets under
+`.agents/skills/assets/` and validate that every skill has a `SKILL.md` with
+matching frontmatter.
 
 ## Verification
 
 - `./init.sh` runs without errors and prints the next steps.
+- `./scripts/validate-harness.sh` validates the core and all seven standard skills.
+- A clean install, overwrite refusal and `--force` reinstall are covered by tests.
+- A derived package's `--self` mode is tested separately from normal installation.
 - A fresh agent, with no context, can: read the AGENTS.md → pick the feature → implement → prove (build+test) → update the states.
 - The handoff written by one session lets another resume without asking anything.
 
 ## Deliverable
 
-Your package versioned in a repo (or in a `templates/` folder of your harness) + the evidence of the first feature executed with it.
+Your package versioned in a repository, installer tests, the standard skill
+profile (when selected) and evidence from the first feature executed with it.
 
 ::: tip Status
 The official package, with complete hook scripts and validation, is Story **B1** of the course (EPIC B). This project gives you the foundation to review the official one with a critical eye.
