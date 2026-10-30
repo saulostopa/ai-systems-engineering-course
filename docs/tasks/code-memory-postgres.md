@@ -193,6 +193,17 @@ the top 5:
   this size, grep and Read are still enough, so the gain from MCP is not proven.
 - With 32 questions written after reading the code, small differences may be chance.
 
+**The fixes from phase 6 are applied** (same branch). A search without a collection now
+goes by meaning, names in code style return their definition first, and the triage says
+the questions are about the repository:
+
+- The default search rose from 56% to 91% at hit@5. With the right collection, hybrid
+  stayed at 94% and the right file in first place rose from 56% to 66%.
+- Real Jev rose from 20 to 26 of 32, and from 3 to 6 of 6 on names. It searched in every
+  question and still admitted when the repository had no answer.
+- Rules are still its weak spot, with 2 of 5, because it sends some of them to `memory` or `code`.
+- The numbers use the same questions that guided the fixes, so they may be slightly optimistic.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

@@ -194,6 +194,17 @@ sem contexto encontrou quatro bugs graves, todos reproduzidos e agora cobertos p
   repositório deste tamanho, grep e Read ainda bastam, então o ganho do MCP não está provado.
 - Com 32 perguntas escritas depois de ler o código, diferenças pequenas podem ser acaso.
 
+**As correções da fase 6 estão aplicadas** (mesma branch). A busca sem coleção agora vai por
+sentido, nomes em estilo de código trazem primeiro a definição, e a triagem diz que as perguntas
+são sobre o repositório:
+
+- A busca padrão subiu de 56% para 91% no top 5. Com a coleção certa, a híbrida ficou em 94%, e
+  o arquivo certo em 1º lugar subiu de 56% para 66%.
+- O Jev real subiu de 20 para 26 de 32, e de 3 para 6 de 6 em nomes. Ele buscou em todas as
+  perguntas e continuou admitindo quando o repositório não tinha resposta.
+- As regras continuam sendo o ponto fraco, com 2 de 5, porque ele envia algumas para `memory` ou `code`.
+- Os números usam as mesmas perguntas que orientaram as correções, então podem estar um pouco otimistas.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
