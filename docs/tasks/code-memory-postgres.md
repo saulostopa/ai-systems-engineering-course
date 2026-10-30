@@ -108,6 +108,19 @@ repository:
   `UserProvider`. Without `--collection`, harness documents still come first, and
   the evaluation in step 6 has to measure and fix this.
 
+**Phase 3 is done** (same branch). `remember` writes to the versioned file and the
+database, and `recall` searches memories and feature logs:
+
+- A real run with `qwen3-embedding:4b` on a temporary repository restored both
+  memories after the database was dropped, and the replaced decision stayed hidden.
+- `recall` reads progress and handoff files through their indexed chunks instead of
+  importing a second copy, so they never go stale.
+- The credential check uses patterns, so it reduces the risk but does not replace
+  reviewing the file in the diff.
+- On Biometrik, the logs still use 100-line chunks, and the removal feature's
+  progress came fourth for "why did we remove Supabase". The evaluation in step 6
+  has to measure this.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

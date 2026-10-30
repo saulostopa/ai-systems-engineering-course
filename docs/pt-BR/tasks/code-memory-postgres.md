@@ -109,6 +109,19 @@ repositório:
   `UserProvider`. Sem `--collection`, os documentos do harness ainda vêm primeiro, e
   a avaliação do passo 6 precisa medir e corrigir isso.
 
+**A fase 3 está pronta** (mesma branch). O `remember` grava no arquivo versionado e
+no banco, e o `recall` busca nas memórias e nos registros das features:
+
+- Uma execução real com `qwen3-embedding:4b` em um repositório temporário restaurou
+  as duas memórias depois de apagar o banco, e a decisão substituída continuou oculta.
+- O `recall` lê os arquivos de progresso e handoff pelos chunks já indexados, sem
+  importar uma segunda cópia, então eles nunca ficam desatualizados.
+- A checagem de credenciais usa padrões, então reduz o risco, mas não substitui
+  revisar o arquivo no diff.
+- No Biometrik, os registros ainda usam chunks de 100 linhas, e o progresso da feature
+  de remoção veio em quarto para "por que removemos o Supabase". A avaliação do passo
+  6 precisa medir isso.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
