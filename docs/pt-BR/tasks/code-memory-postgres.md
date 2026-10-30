@@ -67,7 +67,10 @@ Tomadas com o dono do curso em 2026-10-30.
    responder "onde X é usado".
 3. **Memória.** Guardar decisões, convenções e handoffs com a fonte, e marcar uma
    memória como substituída quando outra mais nova tomar o lugar dela. Importar os
-   arquivos `progress` e `handoff` das features.
+   arquivos `progress` e `handoff` das features. Cada `remember` também grava em um
+   arquivo de texto no repositório, como `docs/harness/memories.jsonl`, sem vetores,
+   e recusa conteúdo que pareça credencial. O Git é o backup, e o `index` restaura
+   as memórias desse arquivo em uma máquina nova.
 4. **Entrada sem Jev.** Comandos de CLI para indexar e buscar, e um servidor MCP
    com `search_code`, `find_symbol`, `read_lines`, `remember` e `recall`, sobre as
    mesmas funções. Registrar o servidor para o Biometrik.
@@ -125,6 +128,8 @@ Ainda falta confirmar quando o trabalho começar:
 - Arquivos TS e TSX são quebrados pela sintaxe, e o `find_symbol` encontra
   componentes e funções do Biometrik.
 - As memórias registram a fonte, e uma memória substituída não volta como atual.
+- Depois de apagar o banco, o `index` restaura todas as memórias do arquivo
+  versionado, e chunks e embeddings são recriados a partir do repositório.
 - O Claude Code usa as ferramentas MCP no Biometrik sem nenhuma chamada paga de API
   além de um modelo de embeddings escolhido explicitamente.
 - O `adk web` roda com `HARNESS_RAG_PROVIDER=postgres`; falhas na busca terminam em

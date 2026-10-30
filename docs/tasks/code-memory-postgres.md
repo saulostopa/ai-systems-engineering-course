@@ -67,7 +67,10 @@ Made with the course owner on 2026-10-30.
    X used".
 3. **Memory.** Store decisions, conventions and handoffs with their source, and
    mark a memory as replaced when a newer one supersedes it. Import feature
-   `progress` and `handoff` files.
+   `progress` and `handoff` files. Each `remember` also writes to a text file in
+   the repository, such as `docs/harness/memories.jsonl`, without vectors, and
+   refuses content that looks like a credential. Git is the backup, and `index`
+   restores memories from that file on a new machine.
 4. **Entry without Jev.** CLI commands for indexing and search, and an MCP server
    with `search_code`, `find_symbol`, `read_lines`, `remember` and `recall`, over
    the same functions. Register it for Biometrik.
@@ -124,6 +127,8 @@ Still to confirm when the work starts:
 - TS and TSX files are chunked by syntax, and `find_symbol` finds Biometrik
   components and functions.
 - Memories record their source and a superseded memory is not returned as current.
+- After dropping the database, `index` restores every memory from the versioned
+  file, and chunks and embeddings are rebuilt from the repository.
 - Claude Code uses the MCP tools on Biometrik with no paid API call beyond any
   embedding model that was explicitly chosen.
 - `adk web` runs with `HARNESS_RAG_PROVIDER=postgres`; retrieval failures end in
