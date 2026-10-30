@@ -6,6 +6,8 @@ title: Backlog — memória de código no Postgres
 
 Status: **in progress** · Priority: **P1** · Escopo: `adk-rag-postgres-harness`, com e sem Jev
 
+**Quick View: How it Works:** <a href="/demos/code-memory-postgres-jev.html" target="_blank" rel="noopener">abra o fluxo</a> de uma pergunta, com Jev e sem Jev.
+
 ## Por que isso entra no backlog
 
 Agentes de código perdem entre sessões o que aprenderam sobre um repositório, e

@@ -6,6 +6,8 @@ title: Backlog — code memory on Postgres
 
 Status: **in progress** · Priority: **P1** · Scope: `adk-rag-postgres-harness`, with and without Jev
 
+**Quick View: How it Works:** <a href="/demos/code-memory-postgres-jev.html" target="_blank" rel="noopener">open the flow</a> (in Portuguese) of one question, with Jev and without it.
+
 ## Why this belongs in the harness backlog
 
 Coding agents lose what they learned about a repository between sessions, and

@@ -11,6 +11,11 @@ The runnable projects are also published separately at
 [github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses), for
 teams that want to download and use the harnesses without cloning the course.
 
+## Quick View: How it Works
+
+[Open the code memory flow](https://claude.ai/artifact/GRLxiHpRE9oML4ngJAyvnb) to see, in Portuguese, how one question travels
+with Jev and without it. In the course site, it is on the home page.
+
 ## How to run the 2 environments
 
 ### 1. Course site (VitePress)
