@@ -169,6 +169,30 @@ with no context found four serious bugs, all reproduced and now covered by tests
 - Local models routed worse: `qwen2.5:14b` answered the login question without
   searching, and `llama3.1:8b` made up an answer. Step 6 compares them with Jev.
 
+**Phase 6 measured the search and the agents; the fixes await a decision** (same
+branch, `evals/`). On 32 Biometrik questions with an answer, counting the right file in
+the top 5:
+
+| Search | `4b` | `8b` | `voyage-code-4` | JSON index |
+|---|---|---|---|---|
+| Right collection, hybrid | 94% | 84% | 81% | 72% |
+| Right collection, semantic | 91% | 94% | 78% | 84% |
+| No collection, hybrid (MCP default) | 56% | 62% | 69% | not applicable |
+| No collection, semantic | 91% | 84% | 62% | not applicable |
+
+- `qwen3-embedding:4b` stays the default. The `8b` took 38 minutes to index and uses
+  9.3 GB, with no clear gain. The Voyage run sends no query or document type, so it may
+  be underrated.
+- The default search is the main problem: full text matches any word and favors long
+  documents. In a read-only test, semantic search with exact names first kept 91% and
+  put all six name questions first.
+- Real Jev found the right file in 20 of 32, at US$ 0.10 for 34 questions. It skipped the
+  search in four questions, and three of those got generic answers unrelated to the repository.
+- Claude Code used the MCP tools in 3 of 10 questions and cited the expected file in 8.
+  It also caught that the `home-streak-progress` handoff was out of date. In a repository
+  this size, grep and Read are still enough, so the gain from MCP is not proven.
+- With 32 questions written after reading the code, small differences may be chance.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

@@ -171,6 +171,29 @@ sem contexto encontrou quatro bugs graves, todos reproduzidos e agora cobertos p
 - Os modelos locais roteiam pior: `qwen2.5:14b` respondeu à pergunta do login sem buscar,
   e `llama3.1:8b` inventou uma resposta. A etapa 6 os compara com o Jev.
 
+**A fase 6 mediu a busca e os agentes; as correções aguardam decisão** (mesma branch,
+`evals/`). Em 32 perguntas do Biometrik com resposta, contando o arquivo certo no top 5:
+
+| Busca | `4b` | `8b` | `voyage-code-4` | Índice JSON |
+|---|---|---|---|---|
+| Coleção certa, híbrida | 94% | 84% | 81% | 72% |
+| Coleção certa, semântica | 91% | 94% | 78% | 84% |
+| Sem coleção, híbrida (padrão do MCP) | 56% | 62% | 69% | não se aplica |
+| Sem coleção, semântica | 91% | 84% | 62% | não se aplica |
+
+- O `qwen3-embedding:4b` continua como padrão. O `8b` levou 38 minutos para indexar e usa
+  9,3 GB, sem ganho claro. A rodada do Voyage não informa o tipo de texto (consulta ou
+  documento), então ele pode ter sido subestimado.
+- A busca padrão é o principal problema: a parte por texto aceita qualquer palavra e favorece
+  documentos longos. Em um teste só de leitura, a busca semântica com nomes exatos primeiro
+  manteve 91% e colocou em 1º as seis perguntas sobre nomes.
+- O Jev real encontrou o arquivo certo em 20 de 32, a US$ 0,10 por 34 perguntas. Ele não buscou
+  em quatro perguntas, e três delas receberam respostas genéricas, sem relação com o repositório.
+- O Claude Code usou as ferramentas MCP em 3 de 10 perguntas e citou o arquivo esperado em 8.
+  Ele também percebeu que o handoff de `home-streak-progress` estava desatualizado. Em um
+  repositório deste tamanho, grep e Read ainda bastam, então o ganho do MCP não está provado.
+- Com 32 perguntas escritas depois de ler o código, diferenças pequenas podem ser acaso.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
