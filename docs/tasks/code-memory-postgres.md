@@ -121,6 +121,20 @@ database, and `recall` searches memories and feature logs:
   progress came fourth for "why did we remove Supabase". The evaluation in step 6
   has to measure this.
 
+**Phase 4 is done** (same branch). The MCP server exposes the five tools over the
+same functions as the CLI, and it is registered for Biometrik in the private `local`
+scope of Claude Code, so the Biometrik repository did not change:
+
+- By default, Claude Code hid the tools behind its tool search, and the agent answered
+  with grep and Read alone. With `anthropic/alwaysLoad`, the same question used
+  `search_code`, `recall`, `find_symbol` and `read_lines`.
+- That run is not a comparison. The agent tried grep first and turned to the MCP tools
+  after grep waited for an approval, so step 6 has to measure how often it chooses them.
+- Over real stdio, a search took 0.2 s once the model was loaded, and 5.9 s on the first
+  call. Without Ollama, `search_code` fails with a clear error and `remember` still saves.
+- The server does not reindex, so new files stay out of the results until the next
+  `index`, and it reads the indexed folder rather than the agent's worktree.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

@@ -122,6 +122,21 @@ no banco, e o `recall` busca nas memórias e nos registros das features:
   de remoção veio em quarto para "por que removemos o Supabase". A avaliação do passo
   6 precisa medir isso.
 
+**A fase 4 está pronta** (mesma branch). O servidor MCP expõe as cinco ferramentas
+sobre as mesmas funções da CLI e está registrado para o Biometrik no escopo privado
+`local` do Claude Code, então o repositório do Biometrik não mudou:
+
+- Por padrão, o Claude Code escondeu as ferramentas atrás da sua busca de ferramentas, e
+  o agente respondeu só com grep e Read. Com `anthropic/alwaysLoad`, a mesma pergunta
+  usou `search_code`, `recall`, `find_symbol` e `read_lines`.
+- Essa execução não é uma comparação. O agente tentou o grep primeiro e passou às
+  ferramentas MCP depois que o grep ficou aguardando aprovação, então a etapa 6 precisa
+  medir com que frequência ele as escolhe.
+- Em stdio real, uma busca levou 0,2 s com o modelo já carregado e 5,9 s na primeira
+  chamada. Sem Ollama, `search_code` falha com um erro claro e `remember` continua salvando.
+- O servidor não reindexa, então arquivos novos ficam fora dos resultados até o próximo
+  `index`, e ele lê a pasta indexada, não o worktree do agente.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
