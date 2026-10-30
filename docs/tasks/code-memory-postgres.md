@@ -149,6 +149,22 @@ with no context found four serious bugs, all reproduced and now covered by tests
 - Moved to step 6: documents crowding searches without `--collection`, handlers inside
   components, `recall` without Ollama and HNSW candidates in a shared database.
 
+**Phase 5 is done** (same branch). `HARNESS_RAG_PROVIDER=postgres` with
+`HARNESS_RAG_PROJECT` selects the index in `adk web`:
+
+- The adapter ignored the strategy Jev chose, so `semantic` and `keyword` now really
+  change the search. Memories became a third collection beside `code` and `docs`.
+- On Biometrik, real Jev chose `code` for the login question and `memory` for the
+  Supabase question, and it cited the right files. Three questions cost US$ 0.035,
+  all of it from Jev and the conversation model.
+- With PostgreSQL down, `adk web` ended in `blocked` with `human_review`. With Ollama
+  down, the workflow did the same for `hybrid`, while `keyword` still answered.
+- For "where is the hook useUser", Jev chose `keyword` and the evidence had only its
+  uses, so the agent said it had not found the definition. This path has no
+  `find_symbol`, and step 6 has to measure this.
+- Local models routed worse: `qwen2.5:14b` answered the login question without
+  searching, and `llama3.1:8b` made up an answer. Step 6 compares them with Jev.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

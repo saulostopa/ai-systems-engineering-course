@@ -151,6 +151,22 @@ sem contexto encontrou quatro bugs graves, todos reproduzidos e agora cobertos p
 - Passaram para a etapa 6: documentos dominando buscas sem `--collection`, handlers dentro
   de componentes, `recall` sem Ollama e candidatos do HNSW em um banco compartilhado.
 
+**A fase 5 está pronta** (mesma branch). `HARNESS_RAG_PROVIDER=postgres` com
+`HARNESS_RAG_PROJECT` seleciona o índice no `adk web`:
+
+- O adapter ignorava a estratégia escolhida pelo Jev, então agora `semantic` e `keyword`
+  mudam de fato a busca. As memórias viraram uma terceira coleção, ao lado de `code` e `docs`.
+- No Biometrik, o Jev real escolheu `code` para a pergunta do login e `memory` para a do
+  Supabase, e citou os arquivos certos. Três perguntas custaram US$ 0,035, tudo do Jev e
+  do modelo de conversa.
+- Com o PostgreSQL fora do ar, o `adk web` terminou em `blocked` com `human_review`. Com o
+  Ollama fora do ar, o workflow fez o mesmo no `hybrid`, enquanto o `keyword` ainda respondeu.
+- Para "onde fica o hook useUser", o Jev escolheu `keyword` e a evidência trouxe só os
+  usos, então o agente disse que não encontrou a definição. Este caminho não tem
+  `find_symbol`, e a etapa 6 precisa medir isso.
+- Os modelos locais roteiam pior: `qwen2.5:14b` respondeu à pergunta do login sem buscar,
+  e `llama3.1:8b` inventou uma resposta. A etapa 6 os compara com o Jev.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
