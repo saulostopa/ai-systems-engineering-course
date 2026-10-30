@@ -103,7 +103,7 @@ The core agents receive an injectable provider
 OPENROUTER_API_KEY=... PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
 # optional — local:
-OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+OLLAMA_BASE_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
 # no env: deterministic stub (clear warning), perfect for tests/offline
 ```

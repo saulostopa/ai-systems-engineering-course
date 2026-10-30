@@ -103,7 +103,7 @@ Os agentes do núcleo recebem um provider injetável
 OPENROUTER_API_KEY=... PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
 # opcional — local:
-OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+OLLAMA_BASE_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
 # sem env: stub determinístico (aviso claro), perfeito para testes/offline
 ```

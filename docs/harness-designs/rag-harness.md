@@ -68,7 +68,7 @@ python tests/test_rag.py                       # 7 tests
 python -m rag_harness eval ../harness-basic    # precision@k (health metric)
 python -m rag_harness agent ../harness-basic "how does the gatekeeper block commits"
 # real semantics (optional, with Ollama):
-OLLAMA_API_URL=http://localhost:11434 python -m rag_harness index ../harness-basic
+OLLAMA_BASE_URL=http://localhost:11434 python -m rag_harness index ../harness-basic
 ```
 
 ## D3 — Area Copilot (business context)
@@ -105,7 +105,7 @@ with sources when the team arrives (Lesson 13: autonomous loop with exit criteri
 ## What it is NOT (honest limits)
 
 - The POC with NGramEmbedder validates **architecture**, not semantics — real
-  semantics requires Ollama/embeddings API (set `OLLAMA_API_URL`).
+  semantics requires Ollama/embeddings API (set `OLLAMA_BASE_URL`).
 - RAG doesn't replace native agents (grep/glob already exist) — the added
   value is in the **business context** and the **chunking quality** in
   large repos.

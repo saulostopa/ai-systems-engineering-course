@@ -32,7 +32,7 @@ Ingest a collection with local semantic embeddings:
 
 ```bash
 ollama pull nomic-embed-text
-RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
+HARNESS_EMBED_PROVIDER=ollama HARNESS_EMBED_MODEL=nomic-embed-text \
 PYTHONPATH=.:../rag-harness \
 uv run python -m adk_rag_postgres_harness.cli ingest /path/to/your-repository --collection docs
 ```
