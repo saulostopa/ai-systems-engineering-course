@@ -82,6 +82,8 @@ Tomadas com o dono do curso em 2026-10-30.
    custo, e fixar o modelo padrão a partir dessa evidência.
 7. **Curso.** Atualizar o design do harness e as aulas relacionadas, em inglês e
    em português do Brasil.
+8. **Outros agentes (último corte).** Testar o servidor MCP com Codex e agy no Biometrik.
+   Até agora, só o Claude Code foi testado.
 
 ## Andamento
 
@@ -205,6 +207,7 @@ Ainda falta confirmar quando o trabalho começar:
 - O `adk web` roda com `HARNESS_RAG_PROVIDER=postgres`; falhas na busca terminam em
   `blocked` com `human_review`.
 - O caminho sem Jev instala e roda sem o Google ADK.
+- Codex e agy usam as ferramentas MCP no Biometrik.
 - O relatório de avaliação fixa o modelo de embeddings padrão, e o motivo fica
   registrado no README do harness e no curso.
 - Nenhuma credencial ou valor de `.env` chega ao banco, aos logs ou à saída das

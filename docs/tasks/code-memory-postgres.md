@@ -82,6 +82,8 @@ Made with the course owner on 2026-10-30.
    and cost, and fix the default model from that evidence.
 7. **Course.** Update the harness design and the related lessons, in English and
    Brazilian Portuguese.
+8. **Other agents (last cut).** Test the MCP server with Codex and agy on Biometrik.
+   So far only Claude Code has been tested.
 
 ## Progress
 
@@ -202,6 +204,7 @@ Still to confirm when the work starts:
 - `adk web` runs with `HARNESS_RAG_PROVIDER=postgres`; retrieval failures end in
   `blocked` with `human_review`.
 - The path without Jev installs and runs without Google ADK.
+- Codex and agy use the MCP tools on Biometrik.
 - The evaluation report fixes the default embedding model, and the reason is
   recorded in the harness README and the course.
 - No credential or `.env` value reaches the database, logs or evaluation output.
