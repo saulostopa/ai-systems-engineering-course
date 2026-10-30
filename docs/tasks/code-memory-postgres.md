@@ -4,7 +4,7 @@ title: Backlog — code memory on Postgres
 
 # Backlog — code memory on Postgres
 
-Status: **backlog** · Priority: **P1** · Scope: `adk-rag-postgres-harness`, with and without Jev
+Status: **in progress** · Priority: **P1** · Scope: `adk-rag-postgres-harness`, with and without Jev
 
 ## Why this belongs in the harness backlog
 
@@ -80,6 +80,20 @@ Made with the course owner on 2026-10-30.
 7. **Course.** Update the harness design and the related lessons, in English and
    Brazilian Portuguese.
 
+## Progress
+
+**Phase 1 is done** (2026-10-30, branch `feature/code-memory-postgres` of the
+harnesses repository). Measured on Biometrik, with 505 files and 728 unique
+chunks, on an M1 Max with `qwen3-embedding:4b`:
+
+- The first indexing run took 26 minutes, and a run with no changes took 0.7 s.
+- A search took about 0.6 s from the CLI, including the query embedding.
+- PostgreSQL chose an exact scan at this size, which is correct for so few rows.
+  In a synthetic test with 20,000 rows it chose the HNSW index, and the database
+  part of the search took 0.07 s.
+- A search with no `--collection` is crowded by harness documents, and line
+  chunks still cut components. Phase 2 and the evaluation address this.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be
@@ -97,7 +111,6 @@ on MTEB Code. That is their own result, so step 6 decides on real questions.
 
 Still to confirm when the work starts:
 
-- Whether Ollama 0.34.3, the version installed today, runs `qwen3-embedding`.
 - How `voyage-code-4` dimensions fit the shared vector column.
 - Whether `nomic-embed-code` is available on Ollama, as another candidate.
 
@@ -105,8 +118,9 @@ Still to confirm when the work starts:
 
 - `docker compose up` and one CLI command index a real repository, and a second
   run embeds only the files that changed.
-- Search uses the HNSW index, confirmed with `EXPLAIN`, and returns path and line
-  range with content reread from disk.
+- Search can use the HNSW index, confirmed with `EXPLAIN` on a table large enough
+  for the planner to prefer it, and returns path and line range with content
+  reread from disk.
 - TS and TSX files are chunked by syntax, and `find_symbol` finds Biometrik
   components and functions.
 - Memories record their source and a superseded memory is not returned as current.

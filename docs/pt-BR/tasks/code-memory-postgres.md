@@ -4,7 +4,7 @@ title: Backlog — memória de código no Postgres
 
 # Backlog — memória de código no Postgres
 
-Status: **backlog** · Priority: **P1** · Escopo: `adk-rag-postgres-harness`, com e sem Jev
+Status: **in progress** · Priority: **P1** · Escopo: `adk-rag-postgres-harness`, com e sem Jev
 
 ## Por que isso entra no backlog
 
@@ -80,6 +80,20 @@ Tomadas com o dono do curso em 2026-10-30.
 7. **Curso.** Atualizar o design do harness e as aulas relacionadas, em inglês e
    em português do Brasil.
 
+## Andamento
+
+**A fase 1 está pronta** (2026-10-30, branch `feature/code-memory-postgres` do
+repositório de harnesses). Medido no Biometrik, com 505 arquivos e 728 chunks
+únicos, em um M1 Max com `qwen3-embedding:4b`:
+
+- A primeira indexação levou 26 minutos, e uma execução sem mudanças levou 0,7 s.
+- Uma busca levou cerca de 0,6 s pelo CLI, incluindo o embedding da pergunta.
+- O PostgreSQL escolheu uma varredura exata nesse tamanho, o que é correto para
+  tão poucas linhas. Em um teste sintético com 20.000 linhas ele escolheu o índice
+  HNSW, e a parte da busca no banco levou 0,07 s.
+- Uma busca sem `--collection` fica cheia de documentos do harness, e os chunks por
+  linha ainda cortam componentes. A fase 2 e a avaliação tratam disso.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
@@ -98,7 +112,6 @@ Code. O resultado é deles mesmos, então o passo 6 decide com perguntas reais.
 
 Ainda falta confirmar quando o trabalho começar:
 
-- Se o Ollama 0.34.3, a versão instalada hoje, roda o `qwen3-embedding`.
 - Como as dimensões do `voyage-code-4` se encaixam na coluna de vetor compartilhada.
 - Se o `nomic-embed-code` está disponível no Ollama, como mais um candidato.
 
@@ -106,8 +119,9 @@ Ainda falta confirmar quando o trabalho começar:
 
 - `docker compose up` e um comando do CLI indexam um repositório real, e uma
   segunda execução só gera embeddings dos arquivos que mudaram.
-- A busca usa o índice HNSW, confirmado com `EXPLAIN`, e devolve caminho e linhas
-  com o conteúdo relido do disco.
+- A busca consegue usar o índice HNSW, confirmado com `EXPLAIN` em uma tabela grande
+  o bastante para o planejador preferi-lo, e devolve caminho e linhas com o conteúdo
+  relido do disco.
 - Arquivos TS e TSX são quebrados pela sintaxe, e o `find_symbol` encontra
   componentes e funções do Biometrik.
 - As memórias registram a fonte, e uma memória substituída não volta como atual.
