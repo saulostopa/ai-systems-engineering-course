@@ -204,6 +204,13 @@ the questions are about the repository:
 - Rules are still its weak spot, with 2 of 5, because it sends some of them to `memory` or `code`.
 - The numbers use the same questions that guided the fixes, so they may be slightly optimistic.
 
+**The system is ready for a period of real use** (same branch, and
+`feature/jev-adk-rag-harness` on Biometrik). `npm run assistente` now uses this memory by
+default, with `ASSISTENTE_RAG=json` as the way back. The index updates after each commit,
+merge and branch switch, and searches are recorded locally. Further tuning waits for 2 to 4
+weeks of real questions, which also become the next evaluation set. Before indexing a second
+large project, review the HNSW candidates in a shared database.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

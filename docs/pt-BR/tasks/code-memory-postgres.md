@@ -205,6 +205,13 @@ são sobre o repositório:
 - As regras continuam sendo o ponto fraco, com 2 de 5, porque ele envia algumas para `memory` ou `code`.
 - Os números usam as mesmas perguntas que orientaram as correções, então podem estar um pouco otimistas.
 
+**O sistema está pronto para um período de uso real** (mesma branch, e
+`feature/jev-adk-rag-harness` no Biometrik). O `npm run assistente` agora usa esta memória por
+padrão, com `ASSISTENTE_RAG=json` para voltar. O índice se atualiza depois de cada commit, merge e
+troca de branch, e as buscas ficam registradas localmente. Novos ajustes esperam de 2 a 4 semanas
+de perguntas reais, que também viram o próximo conjunto de avaliação. Antes de indexar um segundo
+projeto grande, é preciso revisar os candidatos do HNSW em um banco compartilhado.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
