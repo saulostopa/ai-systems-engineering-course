@@ -135,6 +135,20 @@ scope of Claude Code, so the Biometrik repository did not change:
 - The server does not reindex, so new files stay out of the results until the next
   `index`, and it reads the indexed folder rather than the agent's worktree.
 
+**The independent test of phase 4 led to a batch of fixes** (same branch). A tester
+with no context found four serious bugs, all reproduced and now covered by tests:
+
+- One large file stopped the whole `index`. Problem files are now listed and skipped,
+  with no effect on the 505 Biometrik files.
+- A line separator such as U+2028 made the memory file unreadable, and common formats
+  such as `DB_PASSWORD=` passed the credential check.
+- Symbolic links reached the database and got past `read_lines`. They are no longer
+  indexed or read.
+- `index` also refuses a missing folder or an unexpected one, replaced decisions no
+  longer come back, and `uses` finds scoped packages.
+- Moved to step 6: documents crowding searches without `--collection`, handlers inside
+  components, `recall` without Ollama and HNSW candidates in a shared database.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

@@ -137,6 +137,20 @@ sobre as mesmas funções da CLI e está registrado para o Biometrik no escopo p
 - O servidor não reindexa, então arquivos novos ficam fora dos resultados até o próximo
   `index`, e ele lê a pasta indexada, não o worktree do agente.
 
+**O teste independente da fase 4 gerou um lote de correções** (mesma branch). Um testador
+sem contexto encontrou quatro bugs graves, todos reproduzidos e agora cobertos por testes:
+
+- Um único arquivo grande parava todo o `index`. Agora arquivos problemáticos são listados
+  e pulados, sem efeito sobre os 505 arquivos do Biometrik.
+- Um separador de linha como U+2028 deixava o arquivo de memórias ilegível, e formatos
+  comuns como `DB_PASSWORD=` passavam pela checagem de credenciais.
+- Links simbólicos chegavam ao banco e passavam pelo `read_lines`. Agora não são indexados
+  nem lidos.
+- O `index` também recusa uma pasta inexistente ou inesperada, decisões substituídas não
+  voltam mais, e o `uses` encontra pacotes com escopo.
+- Passaram para a etapa 6: documentos dominando buscas sem `--collection`, handlers dentro
+  de componentes, `recall` sem Ollama e candidatos do HNSW em um banco compartilhado.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
