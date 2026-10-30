@@ -97,6 +97,17 @@ chunks, on an M1 Max with `qwen3-embedding:4b`:
 - A search with no `--collection` is crowded by harness documents, and line
   chunks still cut components. Phase 2 and the evaluation address this.
 
+**Phase 2 is done** (same branch). tree-sitter split the 385 TS and JS files of
+Biometrik into definitions of at most 80 lines, for 1,467 unique chunks in the
+repository:
+
+- The new index reused 201 vectors and embedded 1,266 chunks in 13 minutes.
+- `uses useUser` returned the 20 files that grep finds beyond the definition.
+- All 1,324 imports of local modules resolved, including `tsconfig.json` aliases.
+- Code-only searches now point to whole components, such as `Login` and
+  `UserProvider`. Without `--collection`, harness documents still come first, and
+  the evaluation in step 6 has to measure and fix this.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be

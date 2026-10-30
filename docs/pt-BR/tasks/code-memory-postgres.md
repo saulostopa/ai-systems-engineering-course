@@ -97,6 +97,18 @@ repositório de harnesses). Medido no Biometrik, com 505 arquivos e 728 chunks
 - Uma busca sem `--collection` fica cheia de documentos do harness, e os chunks por
   linha ainda cortam componentes. A fase 2 e a avaliação tratam disso.
 
+**A fase 2 está pronta** (mesma branch). O tree-sitter dividiu os 385 arquivos TS e
+JS do Biometrik em definições de até 80 linhas, com 1.467 chunks únicos no
+repositório:
+
+- O novo índice reaproveitou 201 vetores e gerou 1.266 chunks em 13 minutos.
+- `uses useUser` devolveu os 20 arquivos que o grep encontra além da definição.
+- Todos os 1.324 imports de módulos locais foram resolvidos, inclusive os aliases do
+  `tsconfig.json`.
+- Buscas só em código agora apontam para componentes inteiros, como `Login` e
+  `UserProvider`. Sem `--collection`, os documentos do harness ainda vêm primeiro, e
+  a avaliação do passo 6 precisa medir e corrigir isso.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
