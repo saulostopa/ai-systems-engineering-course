@@ -84,8 +84,8 @@ Tomadas com o dono do curso em 2026-10-30.
    custo, e fixar o modelo padrão a partir dessa evidência.
 7. **Curso.** Atualizar o design do harness e as aulas relacionadas, em inglês e
    em português do Brasil.
-8. **Outros agentes (último corte).** Testar o servidor MCP com Codex e agy no Biometrik.
-   Até agora, só o Claude Code foi testado.
+8. **Outros agentes (último corte).** Testar o servidor MCP com o Codex no Biometrik, quando
+   chegar o momento. O Claude Code e o agy já foram testados.
 
 ## Andamento
 
@@ -212,6 +212,17 @@ troca de branch, e as buscas ficam registradas localmente. Novos ajustes esperam
 de perguntas reais, que também viram o próximo conjunto de avaliação. Antes de indexar um segundo
 projeto grande, é preciso revisar os candidatos do HNSW em um banco compartilhado.
 
+**A fase 7 está pronta, e o agy foi testado** (mesma branch). O design do harness e o Projeto 06B agora
+descrevem a memória de código e o que a avaliação ensinou, nos dois idiomas.
+
+- O agy alcançou as ferramentas e respondeu certo quando a pergunta citou `find_symbol`.
+- Nas mesmas 10 perguntas do Claude Code, sem citar ferramenta, ele não escolheu o MCP em nenhuma. Deu
+  6 respostas, citando o arquivo esperado em 5, e 4 respostas vieram vazias porque o agy sem interação
+  negou comandos do shell. Isso é um limite deste teste, não das respostas.
+- O agy não tem configuração por repositório, então um servidor fixo em um projeto responderia em todos.
+  O registro foi removido depois do teste.
+- O Codex foi adiado.
+
 ## Modelo de embeddings
 
 Vetores de modelos diferentes ficam em espaços diferentes, então não podem ser
@@ -250,7 +261,8 @@ Ainda falta confirmar quando o trabalho começar:
 - O `adk web` roda com `HARNESS_RAG_PROVIDER=postgres`; falhas na busca terminam em
   `blocked` com `human_review`.
 - O caminho sem Jev instala e roda sem o Google ADK.
-- Codex e agy usam as ferramentas MCP no Biometrik.
+- O agy consegue usar as ferramentas MCP no Biometrik.
+- O Codex usa as ferramentas MCP no Biometrik (adiado).
 - O relatório de avaliação fixa o modelo de embeddings padrão, e o motivo fica
   registrado no README do harness e no curso.
 - Nenhuma credencial ou valor de `.env` chega ao banco, aos logs ou à saída das

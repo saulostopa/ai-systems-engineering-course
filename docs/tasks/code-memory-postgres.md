@@ -84,8 +84,8 @@ Made with the course owner on 2026-10-30.
    and cost, and fix the default model from that evidence.
 7. **Course.** Update the harness design and the related lessons, in English and
    Brazilian Portuguese.
-8. **Other agents (last cut).** Test the MCP server with Codex and agy on Biometrik.
-   So far only Claude Code has been tested.
+8. **Other agents (last cut).** Test the MCP server with Codex on Biometrik, when it is
+   time to do so. Claude Code and agy have been tested.
 
 ## Progress
 
@@ -211,6 +211,17 @@ merge and branch switch, and searches are recorded locally. Further tuning waits
 weeks of real questions, which also become the next evaluation set. Before indexing a second
 large project, review the HNSW candidates in a shared database.
 
+**Phase 7 is done, and agy is tested** (same branch). The harness design and Project 06B now
+describe the code memory and what the evaluation taught, in both languages.
+
+- agy reached the tools and answered correctly when the question named `find_symbol`.
+- Asked the same 10 questions as Claude Code without naming a tool, it chose MCP in none. It gave
+  6 answers, citing the expected file in 5, and 4 answers came back empty because headless agy denied
+  shell commands. That is a limit of this test, not of the answers.
+- agy has no setting per repository, so a server fixed on one project would answer in all of them.
+  The registration was removed after the test.
+- Codex is postponed.
+
 ## Embedding model
 
 Vectors from different models live in different spaces, so they cannot be
@@ -248,7 +259,8 @@ Still to confirm when the work starts:
 - `adk web` runs with `HARNESS_RAG_PROVIDER=postgres`; retrieval failures end in
   `blocked` with `human_review`.
 - The path without Jev installs and runs without Google ADK.
-- Codex and agy use the MCP tools on Biometrik.
+- agy can use the MCP tools on Biometrik.
+- Codex uses the MCP tools on Biometrik (postponed).
 - The evaluation report fixes the default embedding model, and the reason is
   recorded in the harness README and the course.
 - No credential or `.env` value reaches the database, logs or evaluation output.
