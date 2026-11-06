@@ -54,7 +54,7 @@ adapter nunca deve executar uma sessão interativa irrestrita dentro de
 
 Executar os prompts dourados de resposta direta, recuperação, esclarecimento e
 bloqueio. Comparar rota, calibração de confiança, coleção, estratégia,
-evidência e latência com `ollama-system-one` e o Jev oficial quando disponível.
+evidência e latência com `ollama` e o Jev oficial quando disponível.
 Registrar a versão do CLI e a configuração do comando em cada resultado.
 
 ## Critérios de aceitação

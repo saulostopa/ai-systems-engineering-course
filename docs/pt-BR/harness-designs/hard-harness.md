@@ -102,10 +102,14 @@ Os agentes do núcleo recebem um provider injetável
 # padrão (mesmo fluxo desta sessão):
 OPENROUTER_API_KEY=... PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
-# opcional — local:
-OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+# sem OPENROUTER_API_KEY, a chave vem do ~/.local/share/opencode/auth.json
+# (ou de OPENROUTER_AUTH_FILE), e o terminal avisa, porque a chamada é paga:
+PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
-# sem env: stub determinístico (aviso claro), perfeito para testes/offline
+# opcional — local:
+OLLAMA_BASE_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+
+# sem chave e sem Ollama: stub determinístico (aviso claro), perfeito para testes/offline
 ```
 
 - **OpenRouterProvider** — API compatível com OpenAI (stdlib urllib), modelo

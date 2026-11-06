@@ -1,48 +1,81 @@
 ---
 title: Projeto 06B — ADK RAG com PostgreSQL
-description: Harness de referência com PostgreSQL e pgvector para times maiores.
+description: Uma memória de código em PostgreSQL e pgvector, usada com o Jev ou por um agente de código sozinho.
 ---
 
 # Projeto 06B — ADK RAG com PostgreSQL
 
-Esta é a variante do Projeto 06 para projetos maiores. Ela mantém a mesma
-fronteira do workflow ADK + RAG e troca o índice local em JSON por PostgreSQL e
-pgvector.
+Construa uma memória de código para um repositório real e depois meça o resultado. A busca roda
+localmente, então só o caminho com Jev tem custo.
 
-Use este projeto quando várias pessoas ou serviços compartilharem a base de
-conhecimento, quando o repositório tiver muitas funções e registros de
-arquitetura, ou quando a recuperação precisar de filtros por metadados e
-persistência centralizada. O `adk-rag-harness` local continua sendo a
-implementação recomendada para o curso e projetos pequenos.
+**Quick View: How it Works:** <a href="/demos/code-memory-postgres-jev.html" target="_blank" rel="noopener">abra o fluxo</a>.
 
-## Baixar e executar
+## 1. Instalar e indexar
 
-O projeto de referência está disponível no repositório em
-[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-postgres-harness).
+O projeto está em
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/feature/code-memory-postgres/adk-rag-postgres-harness),
+na branch `feature/code-memory-postgres` até o merge.
 
 ```bash
-git clone https://github.com/saulostopa/harnesses.git
-cd adk-rag-postgres-harness
+git clone -b feature/code-memory-postgres https://github.com/saulostopa/harnesses.git
+cd harnesses/adk-rag-postgres-harness
 uv sync --extra postgres
 docker compose up -d postgres
-uv run python -m adk_rag_postgres_harness.cli migrate
+ollama pull qwen3-embedding:4b
+uv run python -m adk_rag_postgres_harness.cli index /caminho/do/repo --project meu-repo
 ```
 
-Ingira uma coleção usando embeddings semânticos locais:
+A primeira execução gera o embedding de cada trecho, o que levou cerca de 13 minutos para 1.300 trechos
+em um M1 Max. Uma execução sem mudanças leva menos de um segundo.
+
+## 2. Buscar e salvar decisões
 
 ```bash
-ollama pull nomic-embed-text
-RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
-PYTHONPATH=.:../rag-harness \
-uv run python -m adk_rag_postgres_harness.cli ingest /caminho/para/seu-repositorio --collection docs
+uv run python -m adk_rag_postgres_harness.cli search "onde o login é tratado" --project meu-repo
+uv run python -m adk_rag_postgres_harness.cli symbol useUser --project meu-repo
+uv run python -m adk_rag_postgres_harness.cli uses useUser --project meu-repo
+uv run python -m adk_rag_postgres_harness.cli remember "As novas tentativas ficam no cliente da API." \
+  --project meu-repo --kind decision --source "PR 12"
+uv run python -m adk_rag_postgres_harness.cli recall "onde ficam as novas tentativas" --project meu-repo
 ```
 
-O banco armazena a fonte, os limites do chunk, os metadados e o embedding. A
-consulta combina busca textual do PostgreSQL com similaridade cosine do
-pgvector e retorna o mesmo contrato de evidência usado pelo harness local.
+O `remember` grava em `docs/harness/memories.jsonl` no repositório de destino. Faça commit desse arquivo:
+o Git é o backup, e o `index` o restaura em uma máquina nova.
 
-O banco não torna o workflow determinístico sozinho. O determinismo vem da
-rota tipada, das coleções e estratégias permitidas, da ordenação estável, dos
-thresholds e do estado `blocked` quando a evidência é insuficiente.
+## 3. Usar sem Jev
 
-**Design**: [Harness ADK RAG com PostgreSQL](/pt-BR/harness-designs/adk-rag-postgres-harness)
+A partir do repositório de destino, entregue as ferramentas ao seu agente:
+
+```bash
+claude mcp add --scope local code-memory -- uv run --directory /caminho/do/adk-rag-postgres-harness \
+  --extra postgres python -m adk_rag_postgres_harness.cli mcp --project meu-repo
+```
+
+O agy aceita o mesmo comando por `agy mcp add`, mas essa configuração vale para todos os repositórios.
+O Claude Code e o agy foram testados, e o Codex não.
+
+## 4. Usar com Jev
+
+```bash
+cd ../adk-rag-harness
+uv sync --extra adk --extra openrouter --extra postgres
+HARNESS_RAG_PROVIDER=postgres HARNESS_RAG_PROJECT=meu-repo uv run adk web
+```
+
+O Jev e o modelo de conversa são pagos pelo OpenRouter, enquanto a busca continua local. O Ollama
+precisa estar rodando para `hybrid` e `semantic`.
+
+## 5. Medir antes de ajustar
+
+Escreva perguntas com o arquivo que deve responder a cada uma, como em
+`evals/biometrik_questions.json`, e rode:
+
+```bash
+uv run --extra postgres python evals/run_retrieval.py --questions minhas_perguntas.json --out resultados.json
+```
+
+Nosso primeiro padrão encontrou o arquivo certo em só 56% das perguntas. Só vimos e corrigimos isso porque
+medimos. Use `queries --json` para transformar perguntas registradas no próximo conjunto de avaliação:
+perguntas escritas depois de ler o código favorecem a busca.
+
+**Blueprint**: [Harness ADK RAG com PostgreSQL](/pt-BR/harness-designs/adk-rag-postgres-harness)

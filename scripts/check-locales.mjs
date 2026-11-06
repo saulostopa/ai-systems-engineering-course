@@ -65,6 +65,11 @@ function checkLinks(file, localeDir) {
   for (const target of links) {
     if (/\.(png|jpe?g|gif|svg|webp|css|js|pdf|zip|woff2?)$/i.test(target)) continue
     if (target.startsWith('/wm-')) continue
+    // A static page served from docs/public, such as a demo.
+    if (target.startsWith('/') && fs.existsSync(path.join(DOCS, 'public', target))) {
+      checks++
+      continue
+    }
     if (target.startsWith('https://') || target.startsWith('http://')) continue
     if (target.startsWith('/pt-BR') && localeDir === DOCS) {
       fail(`${rel(file)}: PT link on an English page: ${target}`)

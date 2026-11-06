@@ -24,12 +24,12 @@ A configuração local padrão exercita duas rotas com os prompts da aula:
 O app usa por padrão o OpenRouter com o Jev (`typesafe/jev-router`) tanto na
 conversa quanto nas decisões tipadas. Esta aula roda tudo localmente, então
 define `HARNESS_CHAT_PROVIDER=ollama` e
-`HARNESS_DECISION_PROVIDER=ollama-system-one`. O modelo de conversa é o
+`HARNESS_DECISION_PROVIDER=ollama`. O modelo de conversa é o
 `llama3.1:8b`. As decisões tipadas usam `qwen2.5:14b`, pois ele foi mais
 consistente que o `llama3.1:8b` nas evals de roteamento. O `demo` continua
 disponível como provider determinístico explícito.
 
-O provedor Jev oficial da TypeSafe é habilitado separadamente com `HARNESS_DECISION_PROVIDER=jev` e uma
+O provedor Jev oficial da TypeSafe é habilitado separadamente com `HARNESS_DECISION_PROVIDER=typesafe` e uma
 `TYPESAFE_API_KEY`. Essa separação mantém os experimentos locais seguros e
 repetíveis.
 
@@ -74,8 +74,8 @@ no ambiente do projeto, sem depender de uma instalação global de `pip` ou `adk
 git clone https://github.com/saulostopa/harnesses.git
 cd adk-rag-harness
 uv sync --extra adk --extra ollama --extra jev-sdk
-HARNESS_CHAT_PROVIDER=ollama HARNESS_DECISION_PROVIDER=ollama-system-one \
-OLLAMA_MODEL=llama3.1:8b uv run adk web
+HARNESS_CHAT_PROVIDER=ollama HARNESS_DECISION_PROVIDER=ollama \
+HARNESS_CHAT_MODEL=llama3.1:8b uv run adk web
 ```
 
 Abra [http://127.0.0.1:8000/dev-ui/?app=adk_app](http://127.0.0.1:8000/dev-ui/?app=adk_app)
@@ -130,11 +130,11 @@ uv run adk web
 HARNESS_DECISION_PROVIDER=demo uv run adk web
 
 # Decisões tipadas locais com Ollama
-HARNESS_DECISION_PROVIDER=ollama-system-one \
-OLLAMA_DECISION_MODEL=qwen2.5:14b uv run adk web
+HARNESS_DECISION_PROVIDER=ollama \
+HARNESS_DECISION_MODEL=qwen2.5:14b uv run adk web
 
 # Decisões no OpenRouter com outro modelo hospedado
-OPENROUTER_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 uv run adk web
+HARNESS_DECISION_MODEL=deepseek/deepseek-v4-flash-0731 uv run adk web
 ```
 
 Os dois modos compatíveis com OpenAI preservam o contrato tipado, mas não são o
@@ -155,21 +155,21 @@ o índice dos documentos do curso:
 
 ```sh
 ollama pull nomic-embed-text
-RAG_EMBEDDER=ollama OLLAMA_EMBED_MODEL=nomic-embed-text \
+HARNESS_EMBED_PROVIDER=ollama HARNESS_EMBED_MODEL=nomic-embed-text \
 PYTHONPATH=rag-harness python3 -m rag_harness index docs --verbose
 ```
 
 Depois inicie o app com:
 
 ```sh
-HARNESS_RAG_PROVIDER=rag-harness uv run adk web
+HARNESS_RAG_PROVIDER=index uv run adk web
 ```
 
 O índice é local e ignorado pelo Git. Um índice ausente ou falha de recuperação
 produz `blocked`, evitando que o assistente apresente evidências inventadas.
 O modelo `nomic-embed-text` fornece embeddings semânticos pela API local do
 Ollama. Para validar a arquitetura totalmente offline, use
-`RAG_EMBEDDER=ngram`; recrie o índice ao trocar o provider de embeddings.
+`HARNESS_EMBED_PROVIDER=ngram`; recrie o índice ao trocar o provider de embeddings.
 
 Em um repositório de aplicação, crie um índice por coleção com
 `--profile docs` (Markdown, JSON, YAML) e `--profile code` (Python, shell,
@@ -177,7 +177,7 @@ TypeScript, JavaScript), e aponte `HARNESS_RAG_DOCS_INDEX` e
 `HARNESS_RAG_CODE_INDEX` para `.rag_index/docs` e `.rag_index/code`. Só as
 coleções com índice são oferecidas ao provider de decisões. Dentro de um
 repositório Git, o indexador lê apenas os arquivos versionados, sempre ignora
-lockfiles e respeita um `.ragignore` na raiz. `RAG_EMBEDDER=openrouter` troca o
+lockfiles e respeita um `.ragignore` na raiz. `HARNESS_EMBED_PROVIDER=openrouter` troca o
 Ollama por um modelo de embeddings hospedado (padrão `voyageai/voyage-code-4`);
 cada índice registra o seu embedder, então uma busca com outro embedder falha
 de forma segura. O README do `adk-rag-harness` traz a referência completa.
@@ -185,14 +185,14 @@ de forma segura. O README do `adk-rag-harness` traz a referência completa.
 Combine com as decisões padrão do OpenRouter ao testar o caminho completo:
 
 ```sh
-HARNESS_RAG_PROVIDER=rag-harness uv run adk web
+HARNESS_RAG_PROVIDER=index uv run adk web
 ```
 
 Depois que o contrato offline passar, exercite o caminho do modelo real com
 Ollama:
 
 ```sh
-HARNESS_OFFLINE=1 OLLAMA_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.py
+HARNESS_CHAT_MODEL=llama3.1:8b uv run python evals/run_ollama_evals.py
 ```
 
 Essa verificação opt-in falha se o modelo não chamar `run_workflow`, retornar a
@@ -265,7 +265,7 @@ adk_rag_router
 | `ollama ps` fica vazio depois da resposta | O modelo pode ter sido descarregado; inspecione durante um pedido ativo ou rode `ollama list`. |
 | A UI abre, mas o app não aparece | Inicie o servidor a partir do diretório do repositório com o diretório do app disponível e atualize a página. |
 | A rota é sempre de demonstração | Confira se `HARNESS_DECISION_PROVIDER` não está definido como `demo`. |
-| O trace não mostra Ollama | Confirme `OLLAMA_MODEL` e `OLLAMA_API_BASE`, depois reinicie `adk web`. |
+| O trace não mostra Ollama | Confirme `HARNESS_CHAT_MODEL` e `OLLAMA_BASE_URL`, depois reinicie `adk web`. |
 
 ## Checklist de evidências
 

@@ -76,10 +76,10 @@ adk-rag-harness/
 A fatia local está no [projeto standalone `adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) e inclui o entrypoint do Dev UI do
 ADK. Depois de clonar o catálogo standalone, instale com `uv sync --extra adk --extra openrouter` e inicie
 com `uv run adk web`. Por padrão, tanto o modelo de conversa quanto o provider
-de decisão tipada (`openrouter-system-one`) usam o Jev pelo OpenRouter
+de decisão tipada (`openrouter`) usam o Jev pelo OpenRouter
 (`typesafe/jev-router`); basta uma chave do OpenRouter em `OPENROUTER_API_KEY`
 ou em `~/.local/share/opencode/auth.json`.
-Defina `HARNESS_RAG_PROVIDER=rag-harness` depois de criar o índice local do
+Defina `HARNESS_RAG_PROVIDER=index` depois de criar o índice local do
 curso para trocar a evidência de demonstração por fontes reais do repositório.
 A [aula do Dev UI com Ollama](/pt-BR/lectures/lecture-18) roda o mesmo app
 totalmente local e traz a sequência completa de prompts, screenshots e

@@ -102,10 +102,14 @@ The core agents receive an injectable provider
 # default (same flow as this session):
 OPENROUTER_API_KEY=... PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
-# optional — local:
-OLLAMA_API_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+# without OPENROUTER_API_KEY, the key comes from ~/.local/share/opencode/auth.json
+# (or OPENROUTER_AUTH_FILE), and the terminal says so because it bills:
+PYTHONPATH=. python3 examples/basic_workflow/workflow.py
 
-# no env: deterministic stub (clear warning), perfect for tests/offline
+# optional — local:
+OLLAMA_BASE_URL=http://localhost:11434 PYTHONPATH=. python3 examples/basic_workflow/workflow.py
+
+# no key and no Ollama: deterministic stub (clear warning), perfect for tests/offline
 ```
 
 - **OpenRouterProvider** — OpenAI-compatible API (stdlib urllib), default

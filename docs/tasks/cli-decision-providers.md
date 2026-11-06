@@ -52,7 +52,7 @@ never run an unrestricted interactive session inside `run_workflow`.
 
 Run the golden prompts for direct, retrieved, clarification and blocked cases.
 Compare route, confidence calibration, collection, strategy, evidence and
-latency against `ollama-system-one` and official Jev when available. Record the
+latency against `ollama` and official Jev when available. Record the
 CLI version and command configuration with every result.
 
 ## Acceptance criteria
@@ -60,5 +60,5 @@ CLI version and command configuration with every result.
 - Each CLI provider passes the shared `DecisionProvider` contract tests.
 - Malformed, truncated and out-of-schema output is rejected.
 - A hung or unavailable CLI reaches the deterministic fallback.
-- The default provider remains `ollama-system-one`; enabling a CLI is explicit.
+- The default provider remains `ollama`; enabling a CLI is explicit.
 - The integration does not modify the workspace or create persistent sessions.

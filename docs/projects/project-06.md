@@ -77,12 +77,12 @@ The local slice is available in the [standalone `adk-rag-harness` project](https
 entrypoint. Install it with `uv sync --extra adk --extra openrouter`
 from the cloned standalone repository and start it with `uv run adk web`. By
 default, both the conversation model and the typed decision provider
-(`openrouter-system-one`) use Jev through OpenRouter (`typesafe/jev-router`),
+(`openrouter`) use Jev through OpenRouter (`typesafe/jev-router`),
 so the only requirement is an OpenRouter key in `OPENROUTER_API_KEY` or in
 `~/.local/share/opencode/auth.json`. The [Ollama Dev UI lesson](/lectures/lecture-18)
 runs the same app fully locally and contains the complete prompt sequence,
 screenshots and evidence checklist.
-Set `HARNESS_RAG_PROVIDER=rag-harness` after creating the local course index to
+Set `HARNESS_RAG_PROVIDER=index` after creating the local course index to
 replace the demo evidence with real repository sources.
 
 Run the full offline suite with `python3 -m unittest discover -s tests -v` from

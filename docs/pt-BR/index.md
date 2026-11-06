@@ -15,6 +15,10 @@ hero:
     - theme: alt
       text: Ver os projetos práticos
       link: /pt-BR/projects/
+    - theme: alt
+      text: 'Quick View: How it Works'
+      link: /demos/code-memory-postgres-jev.html
+      target: _blank
 features:
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 5.5A1.5 1.5 0 0 1 4.5 4H8c1.6 0 3 .7 4 1.8A5.2 5.2 0 0 1 16 4h3.5A1.5 1.5 0 0 1 21 5.5v11a1.5 1.5 0 0 1-1.5 1.5H16c-1.2 0-2.3.5-3 1.4a1.2 1.2 0 0 1-2 0c-.7-.9-1.8-1.4-3-1.4H4.5A1.5 1.5 0 0 1 3 16.5v-11ZM11 8.2A3.2 3.2 0 0 0 8 6H5v10h3c1.1 0 2.1.3 3 .8V8.2Zm2 8.6c.9-.5 1.9-.8 3-.8h3V6h-3a3.2 3.2 0 0 0-3 2.2v8.6Z" clip-rule="evenodd"/></svg>'
     title: Aulas
