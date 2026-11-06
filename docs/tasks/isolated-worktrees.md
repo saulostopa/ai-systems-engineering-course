@@ -76,9 +76,11 @@ amend of a published commit. A divergence is a stop-and-ask condition.
 1. Add this contract in English and Portuguese to the course backlog.
 2. Add the generated Basic harness policy and router section.
 3. Add the PostgreSQL RAG worktree and pinned-service section.
-4. Validate that the current checkouts were not modified and that the new files
+4. Add the provider-neutral `git-safe` command guard and pre-push fast-forward
+   guard to the Basic distribution and the PostgreSQL RAG harness.
+5. Validate that the current checkouts were not modified and that the new files
    contain no secrets or environment values.
-5. Run the relevant structural tests in each isolated implementation worktree.
+6. Run the relevant structural tests in each isolated implementation worktree.
 
 ## Acceptance criteria
 
@@ -88,6 +90,9 @@ amend of a published commit. A divergence is a stop-and-ask condition.
   service database.
 - Both harnesses document cleanup, branch uniqueness and the destructive Git
   command prohibition.
+- The Basic and PostgreSQL RAG distributions mechanically reject destructive
+  commands through `git-safe`, and their pre-push hooks reject ref deletion and
+  non-fast-forward updates.
 - The course links the contract to both project harnesses.
 - No `.env*` value is read, copied or committed.
 - The implementation remains confined to documentation and harness policies.
@@ -105,6 +110,8 @@ amend of a published commit. A divergence is a stop-and-ask condition.
 - `adk-rag-postgres-harness`: `uv run --with pytest --with
   'psycopg[binary]' --with tree-sitter --with tree-sitter-javascript --with
   tree-sitter-typescript pytest -q` passed with `2 passed`.
+- The Git policy tests cover the destructive command list, ref deletion and
+  fast-forward/non-fast-forward pre-push behavior (`17/17`).
 - Both implementation worktrees passed `git diff --check`.
 - The original course and harness checkouts remained clean.
 

@@ -77,9 +77,11 @@ rebase ou amend de commit publicado. Divergência exige parar e perguntar.
 1. Adicionar este contrato em inglês e português ao backlog do curso.
 2. Adicionar a política e a seção do router geradas pelo Basic.
 3. Adicionar a seção de worktree e serviço fixo ao RAG com PostgreSQL.
-4. Verificar que os checkouts atuais não foram modificados e que os novos
+4. Adicionar o guard provider-neutral `git-safe` e o guard de fast-forward do
+   pre-push ao Basic e ao RAG com PostgreSQL.
+5. Verificar que os checkouts atuais não foram modificados e que os novos
    arquivos não contêm secrets nem valores de ambiente.
-5. Executar os testes estruturais relevantes em cada worktree isolada.
+6. Executar os testes estruturais relevantes em cada worktree isolada.
 
 ## Critérios de aceite
 
@@ -88,6 +90,8 @@ rebase ou amend de commit publicado. Divergência exige parar e perguntar.
 - O README do RAG PostgreSQL explica o isolamento da pasta indexada e do banco.
 - Os dois harnesses documentam limpeza, unicidade de branch e proibição de
   comandos Git destrutivos.
+- O Basic e o RAG PostgreSQL recusam mecanicamente comandos destrutivos por
+  `git-safe`, e seus hooks pre-push recusam exclusões e updates non-fast-forward.
 - O curso referencia o contrato nos dois harnesses de projeto.
 - Nenhum valor de `.env*` é lido, copiado ou commitado.
 - A implementação fica limitada a documentação e políticas do harness.
@@ -106,6 +110,8 @@ rebase ou amend de commit publicado. Divergência exige parar e perguntar.
 - `adk-rag-postgres-harness`: `uv run --with pytest --with
   'psycopg[binary]' --with tree-sitter --with tree-sitter-javascript --with
   tree-sitter-typescript pytest -q` passou com `2 passed`.
+- Os testes da política Git cobrem a lista de comandos destrutivos, exclusão de
+  refs e o comportamento fast-forward/non-fast-forward do pre-push (`17/17`).
 - As duas worktrees de implementação passaram em `git diff --check`.
 - Os checkouts originais do curso e dos harnesses permaneceram limpos.
 
