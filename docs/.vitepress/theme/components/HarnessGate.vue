@@ -406,7 +406,7 @@ onMounted(() => {
     ctx.fillStyle = tileFill
     ctx.fill()
     if (hPath) {
-      ctx.translate(8.5, 0.16)
+      ctx.translate(2.8, 0.14)
       ctx.scale(0.33, 0.33)
       ctx.fillStyle = '#ffffff'
       ctx.fill(hPath)
