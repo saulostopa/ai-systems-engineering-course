@@ -47,7 +47,7 @@ suspeitar que a skill tivesse se perdido. Não tinha — o
 saber se você escreve skills:
 
 O `feature-animation` manda splicar o `system.css` e o `skeleton.html` do
-`feature-report`. Quando esses assets foram reescritos para o Eleanor, **o
+`feature-report`. Quando esses assets foram reescritos para o SSTT, **o
 report e o quiz foram levados junto e os estilos de animação não**. O CSS v1
 tinha oito regras `.flow-*`; o v2 tinha zero. A skill continuou apontando para
 um design system que já não sabia estilizar o que ela produzia.
@@ -60,7 +60,7 @@ frente.**
 Dois defeitos vieram junto, ambos corrigidos:
 
 - **O accent era o azul `#2554c7`.** Todo o resto do catálogo já tinha migrado
-  para o vermelho Eleanor. Portado: a demo acima mede `rgb(216, 31, 65)`.
+  para o vermelho SSTT. Portado: a demo acima mede `rgb(216, 31, 65)`.
 - **A track rolava horizontalmente.** A 1440px a linha tinha 1355px dentro de
   uma caixa de 1040px, então o último estágio ficava fora da tela no
   carregamento — um estágio que o leitor nunca soube que existia. Agora os

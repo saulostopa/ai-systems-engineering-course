@@ -2,7 +2,7 @@
 """build-report-g4.py — final G4 report rendered with the v2 assets (F1).
 
 Dogfooding: the project's final report uses the same skill the course teaches
-(feature-report v2 — Eleanor, a11y, i18n). Usage: python3 report.py
+(feature-report v2 — SSTT, a11y, i18n). Usage: python3 report.py
 """
 
 from __future__ import annotations

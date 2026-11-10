@@ -22,7 +22,7 @@ Quatro seções, nesta ordem, porque a ordem é o argumento:
 4. **Perguntas abertas** — o que a entrega *não* resolveu.
 
 Experimente o **toggle PT/EN** e o **tema** no cabeçalho: o artefato carrega os
-tokens Eleanor, então lê como o resto do ecossistema, e funciona nos dois
+tokens SSTT, então lê como o resto do ecossistema, e funciona nos dois
 idiomas sem um segundo arquivo.
 
 ## Como o harness chama a skill
@@ -62,7 +62,7 @@ seções seguintes. O tamanho do arquivo parecia certo. Ninguém abriu.
 | Peça | O que é |
 |---|---|
 | `skills-artifacts/feature-report/SKILL.md` | A skill: Gather → Write → Output, com checklist de acessibilidade |
-| `skills-artifacts/assets/system.css` | Tokens Eleanor, light/dark, `:focus-visible`, contraste AA |
+| `skills-artifacts/assets/system.css` | Tokens SSTT, light/dark, `:focus-visible`, contraste AA |
 | `skills-artifacts/assets/skeleton.html` | Casca acessível: `aria-live`, toggle PT/EN, progresso |
 | `skills-artifacts/scripts/build-demo.py` | O gerador — e o `verify()`, que se recusa a escrever um artefato cujo conteúdo está invisível |
 

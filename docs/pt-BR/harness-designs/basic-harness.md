@@ -95,7 +95,7 @@ A distribuição padrão do curso instala estas skills em `.agents/skills/`:
 | `qa-perf-triage` | Diagnóstico de concorrência e regressões de latência |
 | `agentic-navigation` | Aceite visual de um fluxo real da aplicação |
 
-`feature-report` e `feature-quiz` compartilham os assets Eleanor em
+`feature-report` e `feature-quiz` compartilham os assets SSTT em
 `.agents/skills/assets/`. `feature-archify` é o wrapper do curso; a renderização
 também precisa da skill de terceiros `archify`, instalada somente depois do
 `skill-guard`. O gate E2E permanece inativo até `.harness/config.yaml` conter

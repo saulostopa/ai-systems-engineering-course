@@ -86,11 +86,11 @@ O fluxo `hotfix` declara `artifacts: []` de propósito — um incidente não dev
 esperar por um diagrama, e o item de melhoria seguinte é onde a explicação é
 feita.
 
-## A paleta Eleanor
+## A paleta SSTT
 
 O Archify não tem campo de tema: `visual_preset` oferece quatro visuais fixos e
 `brandMark` é um logo por nó. O que ele **expõe** são 38 custom properties CSS no
-HTML entregue, então o `scripts/eleanor-theme.css` sobrescreve depois do
+HTML entregue, então o `scripts/sstt-theme.css` sobrescreve depois do
 `archify deliver` — sem tocar na geometria, que é justamente o que o validador
 aprovou.
 
@@ -99,7 +99,7 @@ Dois detalhes custaram uma rodada de depuração cada:
 - O Archify escopa a paleta como `[data-preset="signal-flow"][data-theme="light"]`,
   que **tem especificidade maior que um `:root`** puro. A primeira tentativa
   parecia aplicada e não mudava nada.
-- O Eleanor é um sistema de dois modos e o artefato tem um toggle light/dark
+- O SSTT é um sistema de dois modos e o artefato tem um toggle light/dark
   funcionando, então entregar só a paleta escura transformaria o toggle num
   botão inútil.
 
@@ -109,7 +109,7 @@ percorre os dois blocos e falha abaixo do piso — 4,5:1 para texto (WCAG 1.4.3)
 um deles em 2,7:1.
 
 ```sh
-python3 scripts/check-contrast.py scripts/eleanor-theme.css
+python3 scripts/check-contrast.py scripts/sstt-theme.css
 # 28 token(s) checked, 0 below floor
 ```
 
