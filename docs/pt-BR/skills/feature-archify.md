@@ -86,7 +86,7 @@ O fluxo `hotfix` declara `artifacts: []` de propósito — um incidente não dev
 esperar por um diagrama, e o item de melhoria seguinte é onde a explicação é
 feita.
 
-## A paleta Webmotors
+## A paleta Eleanor
 
 O Archify não tem campo de tema: `visual_preset` oferece quatro visuais fixos e
 `brandMark` é um logo por nó. O que ele **expõe** são 38 custom properties CSS no

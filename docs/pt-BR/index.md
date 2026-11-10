@@ -3,11 +3,11 @@ layout: home
 title: Harness Foundation Course
 hero:
   name: Harness Foundation Course
-  text: Engenharia de Harnesses para a Webmotors
+  text: Engenharia de Harnesses para times de produto
   tagline: Um agente é modelo + harness. Aprenda a construir o ambiente que transforma modelos em trabalhadores confiáveis — para dev, QA, games, finanças e comercial.
   image:
     src: /wm-mark.svg
-    alt: Webmotors
+    alt: Times de produto
   actions:
     - theme: brand
       text: Começar pelas aulas
@@ -22,7 +22,7 @@ hero:
 features:
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 5.5A1.5 1.5 0 0 1 4.5 4H8c1.6 0 3 .7 4 1.8A5.2 5.2 0 0 1 16 4h3.5A1.5 1.5 0 0 1 21 5.5v11a1.5 1.5 0 0 1-1.5 1.5H16c-1.2 0-2.3.5-3 1.4a1.2 1.2 0 0 1-2 0c-.7-.9-1.8-1.4-3-1.4H4.5A1.5 1.5 0 0 1 3 16.5v-11ZM11 8.2A3.2 3.2 0 0 0 8 6H5v10h3c1.1 0 2.1.3 3 .8V8.2Zm2 8.6c.9-.5 1.9-.8 3-.8h3V6h-3a3.2 3.2 0 0 0-3 2.2v8.6Z" clip-rule="evenodd"/></svg>'
     title: Aulas
-    details: Teoria aplicada — por que agentes capazes ainda falham e o que um harness muda no resultado. 14 aulas adaptadas à realidade Webmotors.
+    details: Teoria aplicada — por que agentes capazes ainda falham e o que um harness muda no resultado. 14 aulas adaptadas à realidade de times de produto.
     link: /pt-BR/lectures/
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3.5 5A1.5 1.5 0 0 0 2 6.5v11A1.5 1.5 0 0 0 3.5 19h17a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 20.5 5h-17ZM4 17V7h16v10H4Zm3.7-7.7a1 1 0 0 0-1.4 1.4L8 12.4l-1.7 1.7a1 1 0 1 0 1.4 1.4l2.4-2.4a1 1 0 0 0 0-1.4L7.7 9.3ZM12.5 14a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd"/></svg>'
     title: Projetos
@@ -42,6 +42,6 @@ features:
     link: /pt-BR/harness-designs/
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm4.3 3.7a1 1 0 0 0-1.1-.2l-5 2.2a1 1 0 0 0-.5.5l-2.2 5a1 1 0 0 0 1.3 1.3l5-2.2a1 1 0 0 0 .5-.5l2.2-5a1 1 0 0 0-.2-1.1Zm-2.5 2.5-1.2 2.8-2.8 1.2 1.2-2.8 2.8-1.2Z" clip-rule="evenodd"/></svg>'
     title: Referência
-    details: 'O plano original e os repositórios do ecossistema: webmotors-harness-factory, harness-agent-skills, agenfk e mais.'
+    details: 'O plano original e os repositórios do ecossistema: harness-factory, harness-agent-skills, agenfk e mais.'
     link: /pt-BR/reference/
 ---

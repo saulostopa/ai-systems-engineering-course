@@ -86,7 +86,7 @@ ANIMATION_BODY = """\
     </section>
 """
 
-# The consent-to-identity journey, as the Webmotors bridge actually implements
+# The consent-to-identity journey, as the product team bridge actually implements
 # it — the Fuse CMP over IAB TCF v2, not the AdFixus sample banner. Grounded in
 # ignition-adfixus-tag-docs; the caveat card is the measured Brazilian result,
 # and it is the whole reason this artifact is worth having.

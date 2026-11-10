@@ -24,7 +24,7 @@ Sem observabilidade, o harness é uma caixa preta que "parece que está ajudando
 
 ## O `log-friction` do factory
 
-O `webmotors-harness-factory` tem uma skill dedicada: **`log-friction`** — registra cada atrito do fluxo (agente travou, comandou em loop, o contexto estourou, o gate bloqueou algo errado). A regra de ouro:
+O `harness-factory` tem uma skill dedicada: **`log-friction`** — registra cada atrito do fluxo (agente travou, comandou em loop, o contexto estourou, o gate bloqueou algo errado). A regra de ouro:
 
 > "Não existe 'o harness está bom' — existe 'o harness está bom *até agora*'. Fricção não registrada é dívida de observabilidade."
 

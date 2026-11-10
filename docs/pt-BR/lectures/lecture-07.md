@@ -19,7 +19,7 @@ Os dois lados são o mesmo erro: **a autonomia sem limites não é poder, é des
 
 ### 1. Declare o escopo antes de editar
 
-O `webmotors-harness-factory` exige (via `policies/scope-control.md`):
+O `harness-factory` exige (via `policies/scope-control.md`):
 
 > "Registre seu escopo antes de implementar: **O que estou mudando? Por quê? Quais arquivos são esperados? O que está explicitamente fora do escopo? Como o sucesso será verificado?**"
 
@@ -62,7 +62,7 @@ Autonomia excessiva também é **quando** o agente age. Por isso o harness defin
 - o que exige aprovação humana (deploys, merges, mudanças de escopo);
 - o que é proibido (fora do escopo declarado, editar arquivos alheios à feature).
 
-## Na Webmotors — o espírito, não a letra
+## Na prática — o espírito, não a letra
 
 O objetivo do harness não é engessar — é dar **liberdade dentro de limites conhecidos**. O time de QA ganha gates de E2E que protegem o app; o time de finanças ganha validação de planilha antes do relatório subir; o time de games ganha validação de publish antes de subir o build para a plataforma. Cada área declara o que é "demais" e o que é "pela metade" — e o harness impede os dois.
 

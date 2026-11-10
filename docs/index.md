@@ -3,11 +3,11 @@ layout: home
 title: Harness Foundation Course
 hero:
   name: Harness Foundation Course
-  text: Harness Engineering for Webmotors
+  text: Harness Engineering for Product Teams
   tagline: An agent is model + harness. Learn to build the environment that turns models into reliable workers — for dev, QA, games, finance and sales.
   image:
     src: /wm-mark.svg
-    alt: Webmotors
+    alt: Product Teams
   actions:
     - theme: brand
       text: Start with the lessons
@@ -22,7 +22,7 @@ hero:
 features:
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 5.5A1.5 1.5 0 0 1 4.5 4H8c1.6 0 3 .7 4 1.8A5.2 5.2 0 0 1 16 4h3.5A1.5 1.5 0 0 1 21 5.5v11a1.5 1.5 0 0 1-1.5 1.5H16c-1.2 0-2.3.5-3 1.4a1.2 1.2 0 0 1-2 0c-.7-.9-1.8-1.4-3-1.4H4.5A1.5 1.5 0 0 1 3 16.5v-11ZM11 8.2A3.2 3.2 0 0 0 8 6H5v10h3c1.1 0 2.1.3 3 .8V8.2Zm2 8.6c.9-.5 1.9-.8 3-.8h3V6h-3a3.2 3.2 0 0 0-3 2.2v8.6Z" clip-rule="evenodd"/></svg>'
     title: Lessons
-    details: Applied theory — why capable agents still fail and what a harness changes in the outcome. 14 lessons adapted to the Webmotors reality.
+    details: Applied theory — why capable agents still fail and what a harness changes in the outcome. 14 lessons adapted to the product team reality.
     link: /lectures/
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3.5 5A1.5 1.5 0 0 0 2 6.5v11A1.5 1.5 0 0 0 3.5 19h17a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 20.5 5h-17ZM4 17V7h16v10H4Zm3.7-7.7a1 1 0 0 0-1.4 1.4L8 12.4l-1.7 1.7a1 1 0 1 0 1.4 1.4l2.4-2.4a1 1 0 0 0 0-1.4L7.7 9.3ZM12.5 14a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd"/></svg>'
     title: Projects
@@ -42,6 +42,6 @@ features:
     link: /harness-designs/
   - icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm4.3 3.7a1 1 0 0 0-1.1-.2l-5 2.2a1 1 0 0 0-.5.5l-2.2 5a1 1 0 0 0 1.3 1.3l5-2.2a1 1 0 0 0 .5-.5l2.2-5a1 1 0 0 0-.2-1.1Zm-2.5 2.5-1.2 2.8-2.8 1.2 1.2-2.8 2.8-1.2Z" clip-rule="evenodd"/></svg>'
     title: Reference
-    details: 'The original plan and the ecosystem repositories: webmotors-harness-factory, harness-agent-skills, agenfk and more.'
+    details: 'The original plan and the ecosystem repositories: harness-factory, harness-agent-skills, agenfk and more.'
     link: /reference/
 ---

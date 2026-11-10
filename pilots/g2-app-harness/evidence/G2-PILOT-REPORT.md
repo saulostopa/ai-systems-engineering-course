@@ -24,7 +24,7 @@ the corresponding test** — E2E is a commit contract, not an intention.
 
 ## Agentic layer — vision-based navigation (protocol C2 executed)
 
-> App served at `http://localhost:3100` (3000 was taken by the Webmotors
+> App served at `http://localhost:3100` (3000 was taken by the product team
 > catalog dev server — environment finding).
 
 | Protocol step | Evidence |

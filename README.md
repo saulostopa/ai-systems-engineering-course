@@ -1,7 +1,7 @@
-# Harness Foundation Course — Webmotors
+# Harness Foundation Course
 
 A **Harness Engineering** course + **seven functional harnesses** for
-Webmotors: basic, large (multi-team), App, code RAG, Area Copilot,
+Harnesses for product teams: basic, large (multi-team), App, code RAG, Area Copilot,
 multi-domain (games/finance/commercial), artifact skills, and intranet.
 
 An agent is model + harness: this project delivers both sides — the

@@ -28,11 +28,11 @@ Take the same person (or the same model) and put them in two environments:
 
 The same person produces dramatically different results. The model is the same; the **harness** is what changes.
 
-## At Webmotors
+## In practice
 
 Our own course repository is a living example. In `harness-plannig`, the `.claude/CLAUDE.md`, the `AGENTS.md` and the `feature_list.json` are "Environment B" for the agent building the course with us. When the gatekeeper blocked story A1 from going to DONE without a build and evidence, it was correcting exactly the symptom of this lesson: **the agent felt ready; the environment demanded proof**.
 
-And in `webmotors-harness-factory`, the same principle appears mechanized: pre-commit hooks that block, `scripts/validate-harness.sh` that verifies, `policies/definition-of-done.md` that defines acceptance. None of these files make the model smarter — they make the work more reliable.
+And in `harness-factory`, the same principle appears mechanized: pre-commit hooks that block, `scripts/validate-harness.sh` that verifies, `policies/definition-of-done.md` that defines acceptance. None of these files make the model smarter — they make the work more reliable.
 
 ## What a harness does (summary)
 

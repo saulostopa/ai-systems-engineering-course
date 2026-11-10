@@ -1,7 +1,7 @@
 # Basic harness package — templates
 
 Copy this package to the root of a small project to deliver the minimal
-harness in minutes. Modeled after the `webmotors-harness-factory`.
+harness in minutes. Modeled after the `harness-factory`.
 
 ## Installation
 

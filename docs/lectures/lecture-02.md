@@ -39,7 +39,7 @@ Concrete example: the `feature-quiz` skill is a harness component. It is not "th
 
 ## A harness is not a product; it is a layer
 
-The `webmotors-harness-factory` is explicit about this in its `AGENTS.md`:
+The `harness-factory` is explicit about this in its `AGENTS.md`:
 
 > "A reusable **Harness Factory**: the operating system that defines *how* agentic engineering work is executed. **It is NOT a product repository.**"
 
@@ -58,9 +58,9 @@ AGENT ──acts──▶ WORLD (files, tests, git)
 
 Without the verification loop, the agent is a box that only emits text. With the loop, it is a worker that acts, observes the result and corrects — what Lesson 13 formalizes as *loop engineering*.
 
-## At Webmotors
+## In practice
 
-- **`webmotors-harness-factory`** — the process skeleton: hooks, policies, scripts.
+- **`harness-factory`** — the process skeleton: hooks, policies, scripts.
 - **`harness-agent-skills`** — the skill catalog: artifacts + QA + perf.
 - **a workflow engine** — the management layer: items, flows, gatekeeper, telemetry and Kanban. Optional, and interchangeable: see [enterprise harness](/harness-designs/enterprise-harness).
 - **`harness-plannig`** — **this course**, which is a harness running on top of the other three (dogfooding).

@@ -19,7 +19,7 @@ The E2E test transforms the harness from a "process that asks for verification" 
 
 ## E2E as a mechanical gate
 
-The `webmotors-harness-factory` makes E2E **part of the commit contract**:
+The `harness-factory` makes E2E **part of the commit contract**:
 
 > "A frontend change without E2E coverage is blocked by the pre-commit hook (`scripts/frontend-qa-gate.sh`)."
 
@@ -53,9 +53,9 @@ Agentic navigation → the agent sees and validates the real app, from build to 
 
 The e2e asks "does the flow work?"; agentic navigation asks "is the app acceptable?" — and both are gates.
 
-## At Webmotors — the real case
+## In practice — the real case
 
-Our own ecosystem has the pattern in production: `webmotors-harness-factory` blocks frontend commits without E2E; `harness-agent-skills` delivers the skill that writes and reviews those tests; the workflow records the result as a flow step (test PASSED before DONE). The entire course is built on this same loop — every lesson ends with verification, and the site only goes up if the build passes.
+Our own ecosystem has the pattern in production: `harness-factory` blocks frontend commits without E2E; `harness-agent-skills` delivers the skill that writes and reviews those tests; the workflow records the result as a flow step (test PASSED before DONE). The entire course is built on this same loop — every lesson ends with verification, and the site only goes up if the build passes.
 
 ## Key takeaways
 

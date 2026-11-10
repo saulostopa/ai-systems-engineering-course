@@ -1,6 +1,6 @@
 # Aulas
 
-A teoria por trás de harness engineering, adaptada para a realidade da Webmotors.
+A teoria por trás de harness engineering, adaptada para a realidade de times de produto.
 Cada aula termina com um `feature-quiz` gerado pela própria skill — você aprende
 harness engineering consumindo os artefatos que o harness produz.
 

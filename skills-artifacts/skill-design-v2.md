@@ -1,8 +1,8 @@
-# Design system v2 — Eleanor (Webmotors)
+# Design system v2 — Eleanor
 
 The evolution of the artifact skills' design: the v1 principles (Carbon,
 Lightning, Fluent, Material, GOV.UK, Atlassian — see v1 in
-`harness-agent-skills`) now on top of the Webmotors **Eleanor design system
+`harness-agent-skills`) now on top of the **Eleanor design system
 tokens**, with accessibility as a first-class pillar.
 
 ## What changed from v1 to v2

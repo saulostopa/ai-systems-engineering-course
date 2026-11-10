@@ -19,7 +19,7 @@ The agent opens the repo and starts editing. The impression of productivity is m
 
 ## Initialization as a protocol
 
-The `webmotors-harness-factory` defines the boot with `./init.sh`:
+The `harness-factory` defines the boot with `./init.sh`:
 
 > "`init.sh` checks the working directory, validates the tools, runs the baseline validation and prints the recommended next commands. **Never starts long-running processes by default.**"
 
@@ -45,7 +45,7 @@ Once a project runs on a [workflow engine](/harness-designs/enterprise-harness),
 
 And the gatekeeper extends the boot into the middle of the session: on every edit, it checks whether the file is inside a managed project and whether there is an active item. **The agent cannot work "without knowing where it is"** — the harness remembers for it.
 
-## At Webmotors — the case of our scoping
+## In practice — the case of our scoping
 
 When we scoped the workflow engine for this course, the "boot" was literally redone: we removed global rules, installed the rules **in the project** and verified that, inside `harness-plannig`, the project resolves and the workflow activates — and outside it, nothing. Correct initialization is what guarantees that every agent, in every repo, starts with the right harness.
 

@@ -24,7 +24,7 @@ Without observability, the harness is a black box that "seems to be helping". Wi
 
 ## The factory's `log-friction`
 
-The `webmotors-harness-factory` has a dedicated skill: **`log-friction`** — it records every friction point in the flow (agent stuck, command looping, context overflow, gate blocking something wrong). The golden rule:
+The `harness-factory` has a dedicated skill: **`log-friction`** — it records every friction point in the flow (agent stuck, command looping, context overflow, gate blocking something wrong). The golden rule:
 
 > "There is no 'the harness is good' — there is 'the harness is good *so far*'. Unrecorded friction is observability debt."
 

@@ -18,7 +18,7 @@ SKELETON = open(os.path.join(ASSETS, "skeleton.html"), encoding="utf-8").read()
 METRICS = """\
     <section class="card" aria-label="What was delivered">
       <h2 data-i18n-pt="O que foi entregue" data-i18n-en="What was delivered">What was delivered</h2>
-      <p>The Harness Foundation Course — a complete course and <b>seven functional harnesses</b> for Webmotors, built and validated with the very method they teach.</p>
+      <p>The Harness Foundation Course — a complete course and <b>seven functional harnesses</b> for product teams, built and validated with the very method they teach.</p>
       <p><span class="badge badge-solid">7 EPICs</span> <span class="badge badge-solid">21 stories</span> <span class="badge badge-soft">19 PRs</span> <span class="badge badge-soft">26/28 items DONE</span></p>
     </section>
     <section class="card" aria-label="Metrics per harness">
@@ -57,7 +57,7 @@ METRICS = """\
     </section>
     <section class="card" aria-label="Open questions">
       <h2 data-i18n-pt="Perguntas abertas" data-i18n-en="Open questions">Open questions</h2>
-      <p>When does the business RAG get real data from a Webmotors area? Which area pilots Area Copilot first (finance, commercial, games)? Does the basic harness become an npm package/global team installer?</p>
+      <p>When does the business RAG get real data from a team area? Which area pilots Area Copilot first (finance, commercial, games)? Does the basic harness become an npm package/global team installer?</p>
     </section>
 """
 

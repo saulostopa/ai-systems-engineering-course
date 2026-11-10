@@ -17,7 +17,7 @@ Montar o **App Harness** em duas camadas:
 
 ## Pré-requisitos
 
-- Um app (pode ser o repo de um app Webmotors ou um app de teste) com `npm run dev`/build funcionando.
+- Um app de produto ou um app de teste com `npm run dev`/build funcionando.
 - Playwright instalado (a skill usa Python + Playwright).
 - Um agente com capacidade de visão (Claude, GPT-4o, Gemini).
 

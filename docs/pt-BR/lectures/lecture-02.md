@@ -39,7 +39,7 @@ Exemplo concreto: a skill `feature-quiz` é um harness-component. Ela não é "o
 
 ## Harness não é um produto; é uma camada
 
-O `webmotors-harness-factory` é explícito sobre isso no `AGENTS.md`:
+O `harness-factory` é explícito sobre isso no `AGENTS.md`:
 
 > "Uma **Harness Factory** reutilizável: o sistema operacional que define *como* o trabalho de engenharia agêntica é executado. **NÃO é um repositório de produto.**"
 
@@ -58,9 +58,9 @@ AGENTE ──age──▶ MUNDO (arquivos, testes, git)
 
 Sem o laço de verificação, o agente é uma caixa que só emite texto. Com o laço, ele é um trabalhador que age, observa o resultado e corrige — o que a Aula 13 formaliza como *loop engineering*.
 
-## Na Webmotors
+## Na prática
 
-- **`webmotors-harness-factory`** — o esqueleto de processo: hooks, policies, scripts.
+- **`harness-factory`** — o esqueleto de processo: hooks, policies, scripts.
 - **`harness-agent-skills`** — o catálogo de skills: artefatos + QA + perf.
 - **um workflow engine** — a camada de gestão: itens, flows, gatekeeper, telemetria e Kanban. Opcional, e intercambiável: veja [harness grande](/pt-BR/harness-designs/enterprise-harness).
 - **`harness-plannig`** — **este curso**, que é um harness rodando sobre os outros três (dogfooding).

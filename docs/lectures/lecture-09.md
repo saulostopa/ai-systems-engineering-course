@@ -25,7 +25,7 @@ The agent doesn't lie on purpose — it **completes the reasoning in its head** 
 
 ## Evidence before "done"
 
-The `webmotors-harness-factory` turns this into policy (`policies/evidence-required.md`):
+The `harness-factory` turns this into policy (`policies/evidence-required.md`):
 
 > "Completion requires recorded evidence: commands executed, expected vs. actual. Never claim 'done' without proof."
 
@@ -64,7 +64,7 @@ Before any "done", the harness asks four questions — and the answer is always 
 | Is it in scope? | `git diff` showing only what was declared |
 | Is it integrated? | E2E/gates/hooks passing |
 
-## At Webmotors
+## In practice
 
 - **Dev**: the "done" of a screen includes the `qa-playwright-e2e` e2e passing in the gate — not the agent's opinion.
 - **QA**: flaky triage doesn't accept "must be the network flakiness" — it requires the trace viewer and test evidence.

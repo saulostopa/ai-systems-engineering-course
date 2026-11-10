@@ -76,7 +76,7 @@ Exemplo finanças: *"analisa a planilha de metas do mês passado e gera o resumo
 
 ### 5. (Opcional) Evolua para RAG real
 
-Quando o volume crescer, migre o índice manual para **RAG híbrido** (vetores + busca textual) — a arquitetura está no `rag-harness.md` do `webmotors-harness-factory`: chunking por estrutura, pgvector + full-text com fusão RRF, e recuperação agêntica (o agente decide qual ferramenta de busca usar). O gatilho para migrar: o índice manual começou a falhar (Aula 11 — decida por evidência).
+Quando o volume crescer, migre o índice manual para **RAG híbrido** (vetores + busca textual) — a arquitetura está no `rag-harness.md` do `harness-factory`: chunking por estrutura, pgvector + full-text com fusão RRF, e recuperação agêntica (o agente decide qual ferramenta de busca usar). O gatilho para migrar: o índice manual começou a falhar (Aula 11 — decida por evidência).
 
 ## Verificação
 

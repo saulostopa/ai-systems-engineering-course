@@ -19,7 +19,7 @@ That structure is the **feature list**: a versioned file (typically JSON) where 
 
 ## The factory's `feature_list.json`
 
-The `webmotors-harness-factory` uses exactly this pattern:
+The `harness-factory` uses exactly this pattern:
 
 ```json
 {

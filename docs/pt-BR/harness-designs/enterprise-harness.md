@@ -237,7 +237,7 @@ reversível — e mais de uma opção funciona:
 ::: tip Referência interna — AgEnFK
 O `agenfk` é um engine construído pelo time de Car Sales que cobre as camadas 3
 e 4 (itens, fluxos, gatekeeper, evidência, telemetria, UI Kanban). Se você é da
-Webmotors e quer uma implementação pronta, vale olhar.
+um time e quer uma implementação pronta, vale olhar.
 
 É **referência, não requisito**: nenhum harness deste curso depende dele, e
 nenhuma aula o exige. Dois pontos para conferir contra a regra acima antes de

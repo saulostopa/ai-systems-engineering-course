@@ -33,7 +33,7 @@ When the truth lives in the repo, the agent (and any future agent, from any tool
 
 ## The system of record in our ecosystem
 
-The `webmotors-harness-factory` defines the hierarchy of state files:
+The `harness-factory` defines the hierarchy of state files:
 
 | File | Role | Who reads it |
 |---|---|---|
@@ -48,7 +48,7 @@ Note the factory's requirement:
 
 That is the system of record at work: **narration is not evidence**; the repo is.
 
-## At Webmotors — the A1 case
+## In practice — the A1 case
 
 In the first story of this project (A1 — course setup), the agent scaffolded VitePress and tried to mark the story as DONE. The gatekeeper **refused**: there is no direct transition to DONE — only via `validate_progress` with evidence. What unlocked it was not the word "done" in the conversation, it was:
 

@@ -1,6 +1,6 @@
 # Skills
 
-O catálogo de skills do ecossistema Webmotors. Skills são pacotes de instrução
+O catálogo de skills do ecossistema de times de produto. Skills são pacotes de instrução
 (`SKILL.md`) que o harness carrega quando a tarefa combina com a descrição —
 versionados, revisáveis em PR e instaláveis em qualquer harness que leia
 `SKILL.md` (Claude Code, Cursor, Codex, Gemini, OpenCode...).

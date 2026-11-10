@@ -6,7 +6,7 @@ problems: if something is correct, say it is correct.
 
 ## Context
 
-A harness engineering repository (course + working harnesses for Webmotors)
+A harness engineering repository (course + working harnesses for product teams)
 just gained a **security gate for skill installation**.
 
 A "skill" is an instruction package (`SKILL.md` + scripts) that an AI agent
