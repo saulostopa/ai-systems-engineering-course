@@ -6,10 +6,10 @@
 
 :root {
   /* ── Eleanor Primitives ── */
-  --ds-red-500: #d81f41;
-  --ds-red-400: #e53858;
-  --ds-red-300: #e45770;
-  --ds-red-700: #490916;
+  --ds-red-500: #2563eb;
+  --ds-red-400: #3b82f6;
+  --ds-red-300: #60a5fa;
+  --ds-red-700: #1e3a8a;
 
   --ds-gray-50: #ffffff;
   --ds-gray-100: #f4f4f8;
@@ -35,7 +35,7 @@
   --vp-c-brand-1: var(--ds-red-500);
   --vp-c-brand-2: var(--ds-red-400);
   --vp-c-brand-3: var(--ds-red-300);
-  --vp-c-brand-soft: rgba(216, 31, 65, 0.12);
+  --vp-c-brand-soft: rgba(37, 99, 235, 0.12);
 }
 
 /* ═══ LIGHT theme (default) — Eleanor Color Mode Light ═══ */
