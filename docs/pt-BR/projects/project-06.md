@@ -73,7 +73,7 @@ adk-rag-harness/
 
 ## Implementação atual
 
-A fatia local está no [projeto standalone `adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) e inclui o entrypoint do Dev UI do
+A fatia local está no [projeto standalone `adk-rag-harness`](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness) e inclui o entrypoint do Dev UI do
 ADK. Depois de clonar o catálogo standalone, instale com `uv sync --extra adk --extra openrouter` e inicie
 com `uv run adk web`. Por padrão, tanto o modelo de conversa quanto o provider
 de decisão tipada (`openrouter`) usam o Jev pelo OpenRouter

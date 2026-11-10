@@ -120,6 +120,6 @@ rebase ou amend de commit publicado. Divergência exige parar e perguntar.
 - Contrato do curso: esta tarefa e sua versão em inglês.
 - Distribuição Basic: `harness-basic/templates/AGENTS.md` e
   `harness-basic/templates/policies/git-worktrees.md` no
-  [repositório de harnesses](https://github.com/saulostopa/harnesses).
+  [repositório de harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses).
 - Distribuição RAG PostgreSQL: `adk-rag-postgres-harness/README.md` no
-  [repositório de harnesses](https://github.com/saulostopa/harnesses).
+  [repositório de harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses).

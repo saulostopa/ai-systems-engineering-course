@@ -120,6 +120,6 @@ amend of a published commit. A divergence is a stop-and-ask condition.
 - Course contract: this task and its Portuguese counterpart.
 - Basic distribution: `harness-basic/templates/AGENTS.md` and
   `harness-basic/templates/policies/git-worktrees.md` in the standalone
-  [harnesses repository](https://github.com/saulostopa/harnesses).
+  [harnesses repository](https://github.com/saulostopa/ai-systems-engineering-harnesses).
 - PostgreSQL RAG distribution: `adk-rag-postgres-harness/README.md` in the
-  [harnesses repository](https://github.com/saulostopa/harnesses).
+  [harnesses repository](https://github.com/saulostopa/ai-systems-engineering-harnesses).

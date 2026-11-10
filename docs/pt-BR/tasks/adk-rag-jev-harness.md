@@ -49,7 +49,7 @@ Avalia três decisões delimitadas:
 3. Interceptar execuções de ferramentas com o portão de política `permite` / `pergunta` / `nega`.
 4. Aplicar avaliação inline de resposta para detectar alucinações antes de responder na UI.
 
-A implementação inicial está disponível no [projeto independente `adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness). Ela fornece os contratos neutros em relação a provedor, política determinística de recuperação, um adaptador Jev sem dependências para o contrato `/v1/systemone` da TypeSafe, um adaptador opcional para o pacote Python oficial `typesafe-sdk`, um adaptador com lista de permissões para o `rag-harness` existente, fallback para falha do provedor e trinta e três testes offline. O adaptador opcional de runtime do Google ADK expõe o workflow delimitado como uma ferramenta estruturada de `LlmAgent` e uma `App`; seu `adk_app/agent.py` é um ponto de entrada ADK executável com o Jev pelo OpenRouter (`typesafe/jev-router`) como modelo padrão de conversa e de decisões tipadas, o Ollama (`llama3.1:8b` e `qwen2.5:14b`) como alternativa local opcional e um provedor opcional com o `rag-harness` real. Instale os extras `adk` e `openrouter` para a aplicação padrão, e acrescente `ollama` e `jev-sdk` para os modos local e TypeSafe oficial.
+A implementação inicial está disponível no [projeto independente `adk-rag-harness`](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness). Ela fornece os contratos neutros em relação a provedor, política determinística de recuperação, um adaptador Jev sem dependências para o contrato `/v1/systemone` da TypeSafe, um adaptador opcional para o pacote Python oficial `typesafe-sdk`, um adaptador com lista de permissões para o `rag-harness` existente, fallback para falha do provedor e trinta e três testes offline. O adaptador opcional de runtime do Google ADK expõe o workflow delimitado como uma ferramenta estruturada de `LlmAgent` e uma `App`; seu `adk_app/agent.py` é um ponto de entrada ADK executável com o Jev pelo OpenRouter (`typesafe/jev-router`) como modelo padrão de conversa e de decisões tipadas, o Ollama (`llama3.1:8b` e `qwen2.5:14b`) como alternativa local opcional e um provedor opcional com o `rag-harness` real. Instale os extras `adk` e `openrouter` para a aplicação padrão, e acrescente `ollama` e `jev-sdk` para os modos local e TypeSafe oficial.
 
 ## Contratos
 
@@ -78,7 +78,7 @@ O adaptador de RAG expõe um contrato tipado de recuperação contendo query, co
 
 Mover de planejado para ativo somente após medir classificação de necessidade de busca, roteamento de coleção e estratégia, suficiência de evidências, falsos negativos e positivos, latência, custo, taxa de fallback, completude de citações e qualidade da resposta final.
 
-A decisão é visualizada na [arquitetura ADK + RAG + Jev](https://github.com/svslwm/harness-plannig/blob/develop/docs/architecture/adk-harness-architecture.html).
+A decisão é visualizada na [arquitetura ADK + RAG + Jev](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/docs/architecture/adk-harness-architecture.html).
 
 ## Referências
 

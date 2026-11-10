@@ -63,13 +63,13 @@ is insufficient, so the model cannot turn an unsupported answer into success.
 ## Reference project
 
 The implementation is available in
-[`adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness).
+[`adk-rag-harness`](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness).
 The [ADK + RAG + Jev project](/projects/project-06) explains installation,
 providers, prompts and evaluations.
 
 The foundational design principles are documented in the [Jev decision architecture reference](/reference/jev).
 The architecture diagram is available as
-[`adk-harness-architecture.html`](https://github.com/svslwm/harness-plannig/blob/develop/docs/architecture/adk-harness-architecture.html).
+[`adk-harness-architecture.html`](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/docs/architecture/adk-harness-architecture.html).
 
 ## When to use it
 

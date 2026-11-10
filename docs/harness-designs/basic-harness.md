@@ -5,7 +5,7 @@ title: Basic harness (download)
 # Basic harness (download)
 
 > The installable control layer for a small repository. The runnable core is
-> published in the [standalone harness catalog](https://github.com/saulostopa/harnesses/tree/main/harness-basic).
+> published in the [standalone harness catalog](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/harness-basic).
 
 ## Who it's for
 

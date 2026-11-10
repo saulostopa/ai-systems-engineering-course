@@ -13,11 +13,11 @@ only the path with Jev has a cost.
 ## 1. Install and index
 
 The project is in
-[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/feature/code-memory-postgres/adk-rag-postgres-harness),
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/feature/code-memory-postgres/adk-rag-postgres-harness),
 on the `feature/code-memory-postgres` branch until it is merged.
 
 ```bash
-git clone -b feature/code-memory-postgres https://github.com/saulostopa/harnesses.git
+git clone -b feature/code-memory-postgres https://github.com/saulostopa/ai-systems-engineering-harnesses.git
 cd harnesses/adk-rag-postgres-harness
 uv sync --extra postgres
 docker compose up -d postgres

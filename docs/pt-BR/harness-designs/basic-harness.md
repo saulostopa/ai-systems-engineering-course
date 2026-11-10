@@ -5,7 +5,7 @@ title: Harness básico (download)
 # Harness básico (download)
 
 > A camada de controle instalável para um repositório pequeno. O núcleo
-> executável está publicado no [catálogo standalone de harnesses](https://github.com/saulostopa/harnesses/tree/main/harness-basic).
+> executável está publicado no [catálogo standalone de harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/harness-basic).
 
 ## Para quem é
 
