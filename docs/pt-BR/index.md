@@ -6,7 +6,7 @@ hero:
   text: Engenharia de Harnesses para times de produto
   tagline: Um agente é modelo + harness. Aprenda a construir o ambiente que transforma modelos em trabalhadores confiáveis — para dev, QA, games, finanças e comercial.
   image:
-    src: /wm-mark.svg
+    src: /h-mark.svg
     alt: Times de produto
   actions:
     - theme: brand
