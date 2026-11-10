@@ -16,6 +16,9 @@ function pathForLocale(relativePath: string, localeKey: string): string {
 }
 
 export default defineConfig({
+  // GitHub Pages publishes this project under /<repository>/. Keep local
+  // development at / while making generated links and assets portable.
+  base: process.env.GITHUB_ACTIONS ? '/ai-systems-engineering-course/' : '/',
   lang: 'en',
   title: 'Harness Foundation Course',
   description:
