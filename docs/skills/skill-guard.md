@@ -109,7 +109,7 @@ review later.
 
 **Never suppress a finding you haven't opened.** In the pilot, 57 of the 59 `archify`
 findings were noise — but that is only a legitimate claim because all 59 were
-read one by one. See [`pilots/skillspector-demo/scan-results.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/scan-results.md).
+read one by one. See [`pilots/skillspector-demo/scan-results.md`](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/pilots/skillspector-demo/scan-results.md).
 
 ::: tip The gate failed itself
 In the first sweep, `skill-guard` itself scored 33/100 — two `SC2`
@@ -159,7 +159,7 @@ measuring — and a non-integer `SKILL_GUARD_MAX_SCORE` silently disarmed the
 gate, approving score 70.
 
 The full report (11 findings, with the failure scenarios reproduced) is in
-[`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/REVISAO-EXTERNA.md),
+[`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/pilots/skillspector-demo/REVISAO-EXTERNA.md),
 alongside the prompt that produced it.
 
 It is the most instructive part of the pilot: **a security gate written with

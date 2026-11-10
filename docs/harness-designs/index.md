@@ -17,5 +17,5 @@ The blueprints cover the local, shared-storage and executable-orchestration vari
 :::
 
 ::: tip Download the runnable projects
-The complete standalone catalog is available at [github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses). It contains the runnable harness directories and their installation instructions without requiring a clone of this course repository.
+The complete standalone catalog is available at [github.com/saulostopa/ai-systems-engineering-harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses). It contains the runnable harness directories and their installation instructions without requiring a clone of this course repository.
 :::

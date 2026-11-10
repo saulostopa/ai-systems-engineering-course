@@ -3,7 +3,7 @@
 A parte prática: cada projeto entrega um harness funcional. Ao final do curso,
 você terá um harness completo no seu próprio repositório — ou no da sua área.
 
-Se quiser apenas os pacotes executáveis, use o [catálogo standalone de harnesses](https://github.com/saulostopa/harnesses). O repositório do curso contém as aulas e as explicações; o catálogo contém os projetos executáveis e seus READMEs locais.
+Se quiser apenas os pacotes executáveis, use o [catálogo standalone de harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses). O repositório do curso contém as aulas e as explicações; o catálogo contém os projetos executáveis e seus READMEs locais.
 
 | Projeto | Entrega |
 |---------|---------|

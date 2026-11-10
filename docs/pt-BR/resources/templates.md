@@ -27,7 +27,7 @@ cópia bruta de `templates/`.
 
 | Arquivo | Papel | Aula relacionada |
 |---|---|---|
-| [`AGENTS.md`](https://github.com/svslwm/harness-plannig/tree/develop/templates/AGENTS.md) | Roteador: o que ler, como escolher, como verificar, como terminar | 04 |
+| [`AGENTS.md`](https://github.com/saulostopa/ai-systems-engineering-course/tree/main/templates/AGENTS.md) | Roteador: o que ler, como escolher, como verificar, como terminar | 04 |
 | `feature_list.json` | Fonte de verdade do escopo (estado por feature) | 08 |
 | `progress.md` | Diário da sessão atual | 05 |
 | `session-handoff.md` | Bilhete para a próxima sessão (cabeçalho obrigatório) | 05 |

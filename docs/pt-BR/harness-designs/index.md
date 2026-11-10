@@ -17,5 +17,5 @@ Os blueprints cobrem as variantes local, compartilhada e de orquestração execu
 :::
 
 ::: tip Baixe apenas os projetos executáveis
-O catálogo standalone completo está em [github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses). Ele contém os diretórios executáveis dos harnesses e as instruções de instalação sem exigir o clone deste repositório do curso.
+O catálogo standalone completo está em [github.com/saulostopa/ai-systems-engineering-harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses). Ele contém os diretórios executáveis dos harnesses e as instruções de instalação sem exigir o clone deste repositório do curso.
 :::

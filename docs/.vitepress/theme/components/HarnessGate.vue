@@ -34,9 +34,12 @@ const LANES = 6
 const LANE_GAP = 0.108
 const CHAOS_COUNT = 72
 
-/*product teams monogram, straight from /wm-mark.svg (32-unit viewBox space). */
-const WM_D =
+/* Retained legacy path for backwards compatibility; the hero renders H_MARK. */
+const LEGACY_W_MARK =
   'm74.872 63.939c0 2.2646-1.8947 4.0833-4.187 3.9623-2.1506-0.11064-3.7617-2.0399-3.7617-4.1836v-8.7682a2.9803 2.9803 0 0 0-2.9838-2.9803h-8.9549a2.9803 2.9803 0 0 0-2.9838 2.9803v11.97c0 2.2646-1.8982 4.0798-4.1905 3.9623-2.1471-0.1141-3.7583-2.0399-3.7583-4.187v-11.745a2.9838 2.9838 0 0 0-2.9873-2.9803h-8.948a2.9838 2.9838 0 0 0-2.9838 2.9803v8.9894c0 2.2646-1.8982 4.0833-4.1905 3.9623-2.1506-0.11064-3.7617-2.0399-3.7617-4.1836v-31.66c0-2.2612 1.8947-4.0833 4.187-3.9623 2.154 0.11064 3.7687 2.0399 3.7687 4.187v8.7647c0 1.6458 1.3311 2.9803 2.9803 2.9803h8.9549a2.9838 2.9838 0 0 0 2.9838-2.9803v-11.966c0-2.2612 1.8947-4.0798 4.1836-3.9623 2.154 0.11064 3.7687 2.0399 3.7687 4.187v11.745c0 1.6458 1.3311 2.9803 2.9803 2.9803h8.9549a2.9838 2.9838 0 0 0 2.9838-2.9803v-8.7647c0-2.1506 1.6112-4.0764 3.7617-4.187a3.9726 3.9726 0 0 1 4.187 3.9623v31.878z'
+
+/* Harness monogram, drawn in the same source space as the tile. */
+const H_MARK = 'M18 16h12v24h20V16h12v64H50V56H30v24H18V16z'
 
 type Pt = { x: number; y: number }
 
@@ -55,25 +58,25 @@ type Palette = {
 const LIGHT: Palette = {
   dot: 'rgba(114,114,122,0.20)',
   chaos: [114, 114, 122],
-  railLit: 'rgba(216,31,65,0.32)',
-  flow: [216, 31, 65],
-  ring: 'rgba(216,31,65,0.30)',
-  glow0: 'rgba(216,31,65,0.11)',
-  glow1: 'rgba(216,31,65,0)',
-  tileTop: '#e53858',
-  tileBottom: '#c4143a'
+  railLit: 'rgba(37,99,235,0.32)',
+  flow: [37, 99, 235],
+  ring: 'rgba(37,99,235,0.30)',
+  glow0: 'rgba(37,99,235,0.11)',
+  glow1: 'rgba(37,99,235,0)',
+  tileTop: '#3b82f6',
+  tileBottom: '#1d4ed8'
 }
 
 const DARK: Palette = {
   dot: 'rgba(162,162,169,0.17)',
   chaos: [162, 162, 169],
-  railLit: 'rgba(229,56,88,0.34)',
-  flow: [229, 56, 88],
-  ring: 'rgba(229,56,88,0.34)',
-  glow0: 'rgba(229,56,88,0.18)',
-  glow1: 'rgba(229,56,88,0)',
-  tileTop: '#e8455f',
-  tileBottom: '#c4143a'
+  railLit: 'rgba(59,130,246,0.34)',
+  flow: [59, 130, 246],
+  ring: 'rgba(59,130,246,0.34)',
+  glow0: 'rgba(59,130,246,0.18)',
+  glow1: 'rgba(59,130,246,0)',
+  tileTop: '#60a5fa',
+  tileBottom: '#1e40af'
 }
 
 /* ── Path helpers ── */
@@ -185,7 +188,7 @@ onMounted(() => {
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
   const rails = buildRails()
-  const wmPath = typeof Path2D !== 'undefined' ? new Path2D(WM_D) : null
+  const hPath = typeof Path2D !== 'undefined' ? new Path2D(H_MARK) : null
 
   let palette: Palette = LIGHT
   let chaosSprite = makeSprite(LIGHT.chaos)
@@ -402,11 +405,11 @@ onMounted(() => {
     roundRectPath(ctx, 0, 0, 32, 32, 8)
     ctx.fillStyle = tileFill
     ctx.fill()
-    if (wmPath) {
-      ctx.translate(0.15, 0.16)
+    if (hPath) {
+      ctx.translate(2.8, 0.14)
       ctx.scale(0.33, 0.33)
       ctx.fillStyle = '#ffffff'
-      ctx.fill(wmPath)
+      ctx.fill(hPath)
     }
     ctx.restore()
 

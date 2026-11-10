@@ -73,7 +73,7 @@ adk-rag-harness/
 
 ## Current implementation
 
-The local slice is available in the [standalone `adk-rag-harness` project](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) and includes the ADK Dev UI
+The local slice is available in the [standalone `adk-rag-harness` project](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness) and includes the ADK Dev UI
 entrypoint. Install it with `uv sync --extra adk --extra openrouter`
 from the cloned standalone repository and start it with `uv run adk web`. By
 default, both the conversation model and the typed decision provider

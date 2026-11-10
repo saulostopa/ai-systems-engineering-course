@@ -109,7 +109,7 @@ revisar depois.
 
 **Nunca suprima um achado que você não abriu.** No piloto, 57 dos 59 achados do
 `archify` eram ruído — mas isso só é uma afirmação legítima porque os 59 foram
-lidos um a um. Ver [`pilots/skillspector-demo/scan-results.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/scan-results.md).
+lidos um a um. Ver [`pilots/skillspector-demo/scan-results.md`](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/pilots/skillspector-demo/scan-results.md).
 
 ::: tip O gate reprovou a si mesmo
 Na primeira varredura, a própria `skill-guard` saiu com 33/100 — dois `SC2`
@@ -159,7 +159,7 @@ medindo — e um `SKILL_GUARD_MAX_SCORE` não-inteiro desarmava o gate em
 silêncio, aprovando score 70.
 
 O relatório completo (11 achados, com os cenários de falha reproduzidos) está
-em [`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/svslwm/harness-plannig/blob/develop/pilots/skillspector-demo/REVISAO-EXTERNA.md),
+em [`pilots/skillspector-demo/REVISAO-EXTERNA.md`](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/pilots/skillspector-demo/REVISAO-EXTERNA.md),
 junto do prompt que a produziu.
 
 É a parte mais instrutiva do piloto: **um gate de segurança escrito com

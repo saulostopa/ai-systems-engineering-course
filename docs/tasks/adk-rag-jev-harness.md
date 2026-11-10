@@ -49,7 +49,7 @@ Evaluates three bounded questions:
 3. Intercept tool executions with the `allow` / `ask` / `deny` policy gate.
 4. Apply inline answer evaluation to catch hallucinations prior to UI response.
 
-The initial implementation is available in the [standalone `adk-rag-harness` project](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness). It provides the provider-neutral contracts, deterministic retrieval policy, a dependency-free Jev adapter for TypeSafe's `/v1/systemone` contract, an optional adapter for the official `typesafe-sdk` Python package, an allowlisted adapter for the existing `rag-harness`, provider-failure fallback and thirty-three offline tests. The optional Google ADK runtime adapter exposes the bounded workflow as a structured `LlmAgent` tool and an `App`; its `adk_app/agent.py` is an executable ADK entrypoint with Jev through OpenRouter (`typesafe/jev-router`) as the default conversation model and typed decision model, Ollama (`llama3.1:8b` and `qwen2.5:14b`) as the opt-in local alternative and an opt-in real `rag-harness` retrieval provider. Install the `adk` and `openrouter` extras for the default app, and add `ollama` and `jev-sdk` for the local and official TypeSafe modes.
+The initial implementation is available in the [standalone `adk-rag-harness` project](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness). It provides the provider-neutral contracts, deterministic retrieval policy, a dependency-free Jev adapter for TypeSafe's `/v1/systemone` contract, an optional adapter for the official `typesafe-sdk` Python package, an allowlisted adapter for the existing `rag-harness`, provider-failure fallback and thirty-three offline tests. The optional Google ADK runtime adapter exposes the bounded workflow as a structured `LlmAgent` tool and an `App`; its `adk_app/agent.py` is an executable ADK entrypoint with Jev through OpenRouter (`typesafe/jev-router`) as the default conversation model and typed decision model, Ollama (`llama3.1:8b` and `qwen2.5:14b`) as the opt-in local alternative and an opt-in real `rag-harness` retrieval provider. Install the `adk` and `openrouter` extras for the default app, and add `ollama` and `jev-sdk` for the local and official TypeSafe modes.
 
 ## Contracts
 
@@ -78,7 +78,7 @@ The RAG adapter exposes a typed retrieval contract containing the query, collect
 
 Move from planned to active only after measuring retrieval-needed classification, collection and strategy routing, evidence sufficiency, false negatives and positives, latency, cost, fallback rate, citation completeness and final answer quality.
 
-The decision is visualized in the [ADK + RAG + Jev architecture](https://github.com/svslwm/harness-plannig/blob/develop/docs/architecture/adk-harness-architecture.html).
+The decision is visualized in the [ADK + RAG + Jev architecture](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/docs/architecture/adk-harness-architecture.html).
 
 ## References
 

@@ -37,7 +37,7 @@ repeatable.
 - Python 3.10 or newer;
 - [`uv`](https://docs.astral.sh/uv/);
 - [Ollama](https://ollama.com/) running locally;
-- the [standalone `adk-rag-harness` project](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness) checked out.
+- the [standalone `adk-rag-harness` project](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness) checked out.
 
 Check that the model is installed:
 
@@ -70,7 +70,7 @@ Use `uv` for both installation and execution. This keeps the `adk` command in
 the project environment, so a global `pip` or `adk` installation is not needed.
 
 ```sh
-git clone https://github.com/saulostopa/harnesses.git
+git clone https://github.com/saulostopa/ai-systems-engineering-harnesses.git
 cd adk-rag-harness
 uv sync --extra adk --extra ollama --extra jev-sdk
 HARNESS_CHAT_PROVIDER=ollama HARNESS_DECISION_PROVIDER=ollama \

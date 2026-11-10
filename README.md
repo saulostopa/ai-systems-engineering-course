@@ -8,7 +8,7 @@ An agent is model + harness: this project delivers both sides — the
 knowledge to build harnesses and the ready-to-adopt harnesses.
 
 The runnable projects are also published separately at
-[github.com/saulostopa/harnesses](https://github.com/saulostopa/harnesses), for
+[github.com/saulostopa/ai-systems-engineering-harnesses](https://github.com/saulostopa/ai-systems-engineering-harnesses), for
 teams that want to download and use the harnesses without cloning the course.
 
 ## Quick View: How it Works
@@ -70,7 +70,7 @@ preserved fixture data, historical examples, or source quotations.
 ## Runnable harness projects
 
 The executable harnesses are maintained in the separate
-[standalone catalog](https://github.com/saulostopa/harnesses). Clone that
+[standalone catalog](https://github.com/saulostopa/ai-systems-engineering-harnesses). Clone that
 repository when you want to install or run a harness without the course site.
 Each project has its own README with dependencies, configuration and tests.
 
@@ -104,7 +104,7 @@ first run. See `docs/skills/skill-guard.md` and
 | `skills-artifacts/` | v2 artifact skills + quiz (Eleanor, a11y, adaptive) |
 | `templates/` | Template package for the basic harness |
 | `pilots/` | Evidence from pilots G1–G4 + final demo |
-| [Standalone harness catalog](https://github.com/saulostopa/harnesses) | Runnable basic, App, RAG, domain, ADK, PostgreSQL and enterprise harnesses |
+| [Standalone harness catalog](https://github.com/saulostopa/ai-systems-engineering-harnesses) | Runnable basic, App, RAG, domain, ADK, PostgreSQL and enterprise harnesses |
 
 ## Workflow
 

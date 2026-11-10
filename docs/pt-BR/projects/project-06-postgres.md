@@ -13,11 +13,11 @@ localmente, então só o caminho com Jev tem custo.
 ## 1. Instalar e indexar
 
 O projeto está em
-[`adk-rag-postgres-harness`](https://github.com/saulostopa/harnesses/tree/feature/code-memory-postgres/adk-rag-postgres-harness),
+[`adk-rag-postgres-harness`](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/feature/code-memory-postgres/adk-rag-postgres-harness),
 na branch `feature/code-memory-postgres` até o merge.
 
 ```bash
-git clone -b feature/code-memory-postgres https://github.com/saulostopa/harnesses.git
+git clone -b feature/code-memory-postgres https://github.com/saulostopa/ai-systems-engineering-harnesses.git
 cd harnesses/adk-rag-postgres-harness
 uv sync --extra postgres
 docker compose up -d postgres

@@ -27,7 +27,7 @@ of a raw `templates/` copy.
 
 | File | Role | Related lesson |
 |---|---|---|
-| [`AGENTS.md`](https://github.com/svslwm/harness-plannig/tree/develop/templates/AGENTS.md) | Router: what to read, how to choose, how to verify, how to finish | 04 |
+| [`AGENTS.md`](https://github.com/saulostopa/ai-systems-engineering-course/tree/main/templates/AGENTS.md) | Router: what to read, how to choose, how to verify, how to finish | 04 |
 | `feature_list.json` | Scope source of truth (state per feature) | 08 |
 | `progress.md` | Current session diary | 05 |
 | `session-handoff.md` | Note for the next session (required header) | 05 |

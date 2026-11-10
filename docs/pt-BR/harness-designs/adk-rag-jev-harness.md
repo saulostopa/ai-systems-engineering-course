@@ -63,13 +63,13 @@ evidência é insuficiente, impedindo uma resposta sem suporte.
 ## Projeto de referência
 
 A implementação está disponível em
-[`adk-rag-harness`](https://github.com/saulostopa/harnesses/tree/main/adk-rag-harness).
+[`adk-rag-harness`](https://github.com/saulostopa/ai-systems-engineering-harnesses/tree/main/adk-rag-harness).
 O [projeto ADK + RAG + Jev](/pt-BR/projects/project-06) explica instalação,
 providers, prompts e avaliações.
 
 Os princípios fundamentais de design estão documentados na [referência de decisão operacional Jev](/pt-BR/reference/jev).
 O diagrama de arquitetura está disponível em
-[`adk-harness-architecture.html`](https://github.com/svslwm/harness-plannig/blob/develop/docs/architecture/adk-harness-architecture.html).
+[`adk-harness-architecture.html`](https://github.com/saulostopa/ai-systems-engineering-course/blob/main/docs/architecture/adk-harness-architecture.html).
 
 ## Quando usar
 
