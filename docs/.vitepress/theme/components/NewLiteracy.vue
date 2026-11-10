@@ -159,7 +159,7 @@ onBeforeUnmount(() => io?.disconnect())
   border-radius: 20px;
   padding: 56px 40px 48px;
   background:
-    radial-gradient(120% 140% at 82% 0%, rgba(216, 31, 65, 0.28) 0%, rgba(216, 31, 65, 0) 58%),
+    radial-gradient(120% 140% at 82% 0%, rgba(37, 99, 235, 0.28) 0%, rgba(37, 99, 235, 0) 58%),
     radial-gradient(90% 120% at 0% 100%, rgba(76, 76, 160, 0.22) 0%, rgba(76, 76, 160, 0) 55%),
     var(--ds-gray-950);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -203,7 +203,7 @@ onBeforeUnmount(() => io?.disconnect())
   text-transform: uppercase;
   color: var(--ds-red-300);
   padding: 5px 10px;
-  border: 1px solid rgba(228, 87, 112, 0.35);
+  border: 1px solid rgba(96, 165, 250, 0.35);
   border-radius: 999px;
   margin-bottom: 26px;
 }
@@ -255,8 +255,8 @@ onBeforeUnmount(() => io?.disconnect())
 }
 
 .col-good {
-  background: rgba(216, 31, 65, 0.1);
-  border-color: rgba(228, 87, 112, 0.28);
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(96, 165, 250, 0.28);
 }
 
 .col-label {
@@ -364,7 +364,7 @@ onBeforeUnmount(() => io?.disconnect())
 .btn-primary {
   background: var(--ds-red-500);
   color: #fff;
-  box-shadow: 0 6px 24px rgba(216, 31, 65, 0.35);
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.35);
 }
 
 .btn-primary:hover {

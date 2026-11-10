@@ -55,25 +55,25 @@ type Palette = {
 const LIGHT: Palette = {
   dot: 'rgba(114,114,122,0.20)',
   chaos: [114, 114, 122],
-  railLit: 'rgba(216,31,65,0.32)',
-  flow: [216, 31, 65],
-  ring: 'rgba(216,31,65,0.30)',
-  glow0: 'rgba(216,31,65,0.11)',
-  glow1: 'rgba(216,31,65,0)',
-  tileTop: '#e53858',
-  tileBottom: '#c4143a'
+  railLit: 'rgba(37,99,235,0.32)',
+  flow: [37, 99, 235],
+  ring: 'rgba(37,99,235,0.30)',
+  glow0: 'rgba(37,99,235,0.11)',
+  glow1: 'rgba(37,99,235,0)',
+  tileTop: '#3b82f6',
+  tileBottom: '#1d4ed8'
 }
 
 const DARK: Palette = {
   dot: 'rgba(162,162,169,0.17)',
   chaos: [162, 162, 169],
-  railLit: 'rgba(229,56,88,0.34)',
-  flow: [229, 56, 88],
-  ring: 'rgba(229,56,88,0.34)',
-  glow0: 'rgba(229,56,88,0.18)',
-  glow1: 'rgba(229,56,88,0)',
-  tileTop: '#e8455f',
-  tileBottom: '#c4143a'
+  railLit: 'rgba(59,130,246,0.34)',
+  flow: [59, 130, 246],
+  ring: 'rgba(59,130,246,0.34)',
+  glow0: 'rgba(59,130,246,0.18)',
+  glow1: 'rgba(59,130,246,0)',
+  tileTop: '#60a5fa',
+  tileBottom: '#1e40af'
 }
 
 /* ── Path helpers ── */
