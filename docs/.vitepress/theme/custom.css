@@ -1,11 +1,11 @@
 /**
- * Course theme — tokens from the Eleanor design system ( product teams)
- * Source: eleanor.design.tokens (Color Mode Light/Dark + primitives)
+ * Course theme — tokens from the SSTT design system ( product teams)
+ * Source: sstt.design.tokens (Color Mode Light/Dark + primitives)
  * Structure: :root = LIGHT theme · html.dark = DARK theme
  */
 
 :root {
-  /* ── Eleanor Primitives ── */
+  /* ── SSTT Primitives ── */
   --ds-red-500: #2563eb;
   --ds-red-400: #3b82f6;
   --ds-red-300: #60a5fa;
@@ -38,7 +38,7 @@
   --vp-c-brand-soft: rgba(37, 99, 235, 0.12);
 }
 
-/* ═══ LIGHT theme (default) — Eleanor Color Mode Light ═══ */
+/* ═══ LIGHT theme (default) — SSTT Color Mode Light ═══ */
 :root {
   --vp-c-bg: var(--ds-gray-50);
   --vp-c-bg-alt: var(--ds-gray-100);
@@ -83,7 +83,7 @@
   --vp-shadow-3: 0 12px 32px rgba(10, 10, 12, 0.16);
 }
 
-/* ═══ DARK theme — Eleanor Color Mode Dark ═══ */
+/* ═══ DARK theme — SSTT Color Mode Dark ═══ */
 html.dark {
   --vp-c-bg: var(--ds-gray-950);
   --vp-c-bg-alt: var(--ds-gray-900);
@@ -138,13 +138,15 @@ body {
   font-weight: 700;
 }
 
-/* Links with Eleanor red */
+/* Links with SSTT red */
 .vp-doc a {
   color: var(--ds-red-500);
 }
+
 html.dark .vp-doc a {
   color: var(--ds-red-400);
 }
+
 .vp-doc a:hover {
   color: var(--ds-red-400);
 }
@@ -155,21 +157,23 @@ html.dark .vp-doc a {
   color: var(--vp-c-text-2);
 }
 
-/* Callouts aligned with Eleanor semantic tokens */
+/* Callouts aligned with SSTT semantic tokens */
 .custom-block.tip {
   border-color: var(--ds-indigo-400);
   background-color: rgba(76, 76, 160, 0.08);
 }
 
-/* Home hero with Eleanor identity */
+/* Home hero with SSTT identity */
 .VPHero .name,
 .VPHero .text {
   color: var(--vp-c-text-1);
 }
+
 .VPHero .actions .primary {
   background-color: var(--ds-red-500);
   border-color: var(--ds-red-500);
 }
+
 .VPHero .actions .primary:hover {
   background-color: var(--ds-red-400);
   border-color: var(--ds-red-400);
@@ -180,9 +184,11 @@ html.dark .vp-doc a {
   background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-border);
 }
+
 .VPFeature:hover {
   border-color: var(--ds-red-500);
 }
+
 .VPFeature .title {
   color: var(--vp-c-text-1);
 }
@@ -191,6 +197,7 @@ html.dark .vp-doc a {
 .VPNavBarMenuLink.active {
   color: var(--ds-red-500);
 }
+
 html.dark .VPNavBarMenuLink.active {
   color: var(--ds-red-400);
 }
@@ -203,28 +210,34 @@ html.dark .VPNavBarMenuLink.active {
   transform: none;
   padding: 0;
 }
+
 .VPHero .image-bg {
   display: none;
 }
+
 /* Below the two-column breakpoint the visual is a garnish, not the headline. */
 @media (max-width: 639px) {
   .VPHero .image {
     margin: -48px -24px -16px;
   }
+
   .VPHero .image-container {
     max-width: 268px;
   }
 }
+
 @media (min-width: 640px) and (max-width: 959px) {
   .VPHero .image {
     margin: -64px -24px -24px;
   }
+
   .VPHero .image-container {
     width: 100%;
     height: auto;
     max-width: 340px;
   }
 }
+
 @media (min-width: 960px) {
   .VPHero .image-container {
     width: 100%;
@@ -232,23 +245,27 @@ html.dark .VPNavBarMenuLink.active {
   }
 }
 
-/* ═══ Feature icons — Eleanor language, one brand colour, no emoji ═══ */
+/* ═══ Feature icons — SSTT language, one brand colour, no emoji ═══ */
 .VPFeature .icon {
   border-radius: 10px;
   background-color: var(--vp-c-brand-soft);
   color: var(--ds-red-500);
   transition: background-color 0.25s ease, color 0.25s ease;
 }
+
 html.dark .VPFeature .icon {
   color: var(--ds-red-300);
 }
+
 .VPFeature .icon svg {
   display: block;
 }
+
 .VPFeature:hover .icon {
   background-color: var(--ds-red-500);
   color: #ffffff;
 }
+
 html.dark .VPFeature:hover .icon {
   background-color: var(--ds-red-400);
   color: #ffffff;

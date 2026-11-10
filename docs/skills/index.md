@@ -22,7 +22,7 @@ versioned, reviewable in PR and installable in any harness that reads
 The complete course distribution selects seven skills from this ecosystem and
 installs them under `.agents/skills/`: `feature-report`, `feature-quiz`,
 `feature-archify`, `skill-guard`, `qa-playwright-e2e`, `qa-perf-triage` and
-`agentic-navigation` (the App Harness visual-acceptance skill). Shared Eleanor
+`agentic-navigation` (the App Harness visual-acceptance skill). Shared SSTT
 assets live in `.agents/skills/assets/` and are support files, not another
 skill.
 
@@ -31,7 +31,7 @@ This profile is intentionally smaller than the whole catalog. The standalone
 seven-skill profile.
 
 ::: tip Status
-The evolution of these skills (Eleanor design system, accessibility, adaptive quiz)
+The evolution of these skills (SSTT design system, accessibility, adaptive quiz)
 is **EPIC F** of the project. Each skill's page describes its current design.
 :::
 

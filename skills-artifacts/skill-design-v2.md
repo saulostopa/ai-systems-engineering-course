@@ -1,17 +1,17 @@
-# Design system v2 — Eleanor
+# Design system v2 — SSTT
 
 The evolution of the artifact skills' design: the v1 principles (Carbon,
 Lightning, Fluent, Material, GOV.UK, Atlassian — see v1 in
-`harness-agent-skills`) now on top of the **Eleanor design system
+`harness-agent-skills`) now on top of the **SSTT design system
 tokens**, with accessibility as a first-class pillar.
 
 ## What changed from v1 to v2
 
-| Dimension | v1 | v2 (Eleanor) |
+| Dimension | v1 | v2 (SSTT) |
 |---|---|---|
 | Font | Manrope + Source Sans 3 + IBM Plex Mono | **Figtree** (display + body) + IBM Plex Mono (raw data) |
 | Accent | generic | **brand red `#d81f41`** (dark: `#e53858`) |
-| Palette | invented | **Eleanor tokens**: gray dark 50-950, indigo, semantic |
+| Palette | invented | **SSTT tokens**: gray dark 50-950, indigo, semantic |
 | Accessibility | principle cited | **executable checklist**: validated AA contrast, `:focus-visible`, `prefers-reduced-motion`, `aria-live` in the result |
 | Language | pt-BR only | **EN/PT toggle** (`data-i18n` + `data-i18n-pt/en` pairs) |
 | Quiz | 4 fixed levels | **adaptive review mode**: wrong answers enter review automatically |

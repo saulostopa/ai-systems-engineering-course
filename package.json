@@ -2,7 +2,7 @@
   "name": "harness-plannig",
   "version": "0.1.0",
   "private": true,
-  "description": "Harness Foundation Course — Harness Engineering for product teams (VitePress + Eleanor, en)",
+  "description": "Harness Foundation Course — Harness Engineering for product teams (VitePress + SSTT, en)",
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",

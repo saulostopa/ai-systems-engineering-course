@@ -7,7 +7,7 @@ root of this repository.
 
 - **Format**: a harness engineering course in the style of
   [Learn Harness Engineering](https://walkinglabs.github.io/learn-harness-engineering/en/),
-  with the visual identity of the Eleanor design system.
+  with the visual identity of the SSTT design system.
 - **Harnesses**: basic (download), enterprise (multi-team), App (QA + agentic
   navigation), Cursor + RAG (code and business) and domain (games, finance, sales).
 - **Artifact skills + quiz**: the "golden piece" — reports, quizzes,
