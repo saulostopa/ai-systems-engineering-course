@@ -76,7 +76,7 @@ Finance example: *"analyze last month's targets spreadsheet and generate the sum
 
 ### 5. (Optional) Evolve into real RAG
 
-When volume grows, migrate the manual index to **hybrid RAG** (vectors + text search) — the architecture is in the `webmotors-harness-factory`'s `rag-harness.md`: structure-based chunking, pgvector + full-text with RRF fusion, and agentic retrieval (the agent decides which search tool to use). The trigger to migrate: the manual index started failing (Lesson 11 — decide by evidence).
+When volume grows, migrate the manual index to **hybrid RAG** (vectors + text search) — the architecture is in the `harness-factory`'s `rag-harness.md`: structure-based chunking, pgvector + full-text with RRF fusion, and agentic retrieval (the agent decides which search tool to use). The trigger to migrate: the manual index started failing (Lesson 11 — decide by evidence).
 
 ## Verification
 

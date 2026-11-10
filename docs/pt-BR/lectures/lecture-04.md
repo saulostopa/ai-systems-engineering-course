@@ -33,7 +33,7 @@ O agente carrega o roteador, e então **busca** a página certa quando precisa �
 
 ## Evidência do nosso ecossistema
 
-O `webmotors-harness-factory/AGENTS.md` é um roteador exemplar: 9 seções curtas, com uma tabela "Where deeper documentation lives" apontando para `docs/architecture/`, `docs/operations/`, `skills/<nome>/SKILL.md`, `policies/*.md`. Nada de conteúdo copiado — só rotas.
+O `harness-factory/AGENTS.md` é um roteador exemplar: 9 seções curtas, com uma tabela "Where deeper documentation lives" apontando para `docs/architecture/`, `docs/operations/`, `skills/<nome>/SKILL.md`, `policies/*.md`. Nada de conteúdo copiado — só rotas.
 
 O `harness-agent-skills` segue o mesmo padrão no nível de skills: cada skill é um `SKILL.md` curto com frontmatter (`name` + `description`), e o corpo em `Gather → Write → Output`. A descrição é o gatilho de carregamento: a skill só é lida **quando a tarefa combina** — sob demanda, não no boot.
 
@@ -50,7 +50,7 @@ Um arquivo de instruções bem formado deveria ser cortável em ~10% sem perder 
 | "Lembrar de..." no final do arquivo | Instrução que será esquecida; virar policy ou skill |
 | Tabela de conteúdo manual | Sina de que o arquivo já é um livro; quebrar |
 
-## Na Webmotors — o curso como exemplo
+## Na prática — o curso como exemplo
 
 Este curso é um harness de conhecimento, e segue o mesmo princípio: a home e as páginas de seção são **roteadores** (links para aulas, projetos, biblioteca); cada aula é um documento pequeno com escopo único; cada skill é um pacote carregado sob demanda. Quando a biblioteca de templates (A4) for entregue, os templates prontos seguirão o mesmo formato — roteador curto + docs rotadas.
 

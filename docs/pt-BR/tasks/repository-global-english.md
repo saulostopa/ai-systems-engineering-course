@@ -23,7 +23,7 @@ historical references that are intentionally part of the teaching material.
 4. Keep stable technical identifiers unchanged: file paths, package names,
    environment variables, commands, Python and JavaScript identifiers, URLs,
    schema keys, test names, and public API names.
-5. Preserve the meaning of domain terms and explain local Webmotors context in
+5. Preserve the meaning of domain terms and explain local product-team context in
    English where it is needed by a global reader.
 6. Update links, titles, metadata, and navigation labels that still refer to
    Portuguese names after translation.

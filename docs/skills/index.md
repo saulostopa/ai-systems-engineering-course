@@ -1,6 +1,6 @@
 # Skills
 
-The Webmotors ecosystem skill catalog. Skills are instruction packages
+The product-team ecosystem skill catalog. Skills are instruction packages
 (`SKILL.md`) that the harness loads when the task matches the description —
 versioned, reviewable in PR and installable in any harness that reads
 `SKILL.md` (Claude Code, Cursor, Codex, Gemini, OpenCode...).

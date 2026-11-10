@@ -14,7 +14,7 @@ O sintoma clássico: o próximo agente abre o repo, roda os testes, e eles falha
 
 ## O protocolo de encerramento do factory
 
-O `webmotors-harness-factory` define o fim de sessão com precisão (`AGENTS.md` §8):
+O `harness-factory` define o fim de sessão com precisão (`AGENTS.md` §8):
 
 1. Atualizar `feature_list.json` — estados reais das features.
 2. Atualizar `progress.md` — o que foi feito, o que falhou, próxima ação.

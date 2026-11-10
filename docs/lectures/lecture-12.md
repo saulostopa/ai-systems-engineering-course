@@ -14,7 +14,7 @@ The classic symptom: the next agent opens the repo, runs the tests, and they fai
 
 ## The factory's shutdown protocol
 
-The `webmotors-harness-factory` defines the end of session precisely (`AGENTS.md` §8):
+The `harness-factory` defines the end of session precisely (`AGENTS.md` §8):
 
 1. Update `feature_list.json` — real states of the features.
 2. Update `progress.md` — what was done, what failed, next action.

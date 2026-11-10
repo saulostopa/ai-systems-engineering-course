@@ -13,9 +13,9 @@ Os materiais que fundamentam este curso.
 - [Learn Harness Engineering (walkinglabs)](https://walkinglabs.github.io/learn-harness-engineering/en/) — o formato que inspirou este curso.
 - [Awesome Harness Engineering](https://github.com/walkinglabs/awesome-harness-engineering)
 
-## Internas (Webmotors)
+## Internas (times de produto)
 
-- `webmotors-harness-factory` — o "SO" de agentes: policies, hooks e skills de processo.
+- `harness-factory` — o "SO" de agentes: policies, hooks e skills de processo.
 - `harness-agent-skills` — o catálogo de skills compartilháveis.
 - `agenfk` — o framework de engenharia agêntica com itens, flows e telemetria.
 

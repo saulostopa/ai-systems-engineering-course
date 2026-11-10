@@ -238,7 +238,7 @@ choice — and more than one option works:
 ::: tip Internal reference — AgEnFK
 `agenfk` is an engine built by the Car Sales team that covers layers 3 and 4
 (items, flows, gatekeeper, evidence, telemetry, Kanban UI). If you are at
-Webmotors and want a ready implementation, it is worth a look.
+a team and want a ready implementation, it is worth a look.
 
 It is a **reference, not a requirement**: no harness in this course depends on
 it, and none of the lessons require it. Two things to check against the rule

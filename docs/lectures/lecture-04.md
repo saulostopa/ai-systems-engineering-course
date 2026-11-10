@@ -33,7 +33,7 @@ The agent loads the router, and then **fetches** the right page when it needs it
 
 ## Evidence from our ecosystem
 
-The `webmotors-harness-factory/AGENTS.md` is an exemplary router: 9 short sections, with a "Where deeper documentation lives" table pointing to `docs/architecture/`, `docs/operations/`, `skills/<name>/SKILL.md`, `policies/*.md`. No copied content — just routes.
+The `harness-factory/AGENTS.md` is an exemplary router: 9 short sections, with a "Where deeper documentation lives" table pointing to `docs/architecture/`, `docs/operations/`, `skills/<name>/SKILL.md`, `policies/*.md`. No copied content — just routes.
 
 `harness-agent-skills` follows the same pattern at the skill level: each skill is a short `SKILL.md` with frontmatter (`name` + `description`), and the body in `Gather → Write → Output`. The description is the loading trigger: the skill is only read **when the task matches** — on demand, not at boot.
 
@@ -50,7 +50,7 @@ A well-formed instructions file should be cuttable to ~10% without losing any cr
 | "Remember to..." at the end of the file | An instruction that will be forgotten; turn it into a policy or skill |
 | Manual table of contents | Sign that the file is already a book; break it up |
 
-## At Webmotors — the course as an example
+## In practice — the course as an example
 
 This course is a knowledge harness, and it follows the same principle: the home page and the section pages are **routers** (links to lessons, projects, library); each lesson is a small document with a single scope; each skill is a package loaded on demand. When the template library (A4) is delivered, the ready-made templates will follow the same format — short router + routed docs.
 

@@ -19,7 +19,7 @@ export default defineConfig({
   lang: 'en',
   title: 'Harness Foundation Course',
   description:
-    'Webmotors Harness Engineering course — build reliable harnesses for any team: dev, QA, games, finance and commercial.',
+    'Harness Engineering course for product teams — build reliable harnesses for any team: dev, QA, games, finance and commercial.',
   cleanUrls: true,
   lastUpdated: true,
   head: [
@@ -40,14 +40,14 @@ export default defineConfig({
       lang: 'en',
       link: '/',
       description:
-        'Webmotors Harness Engineering course — build reliable harnesses for any team: dev, QA, games, finance and commercial.',
+        'Harness Engineering course for product teams — build reliable harnesses for any team: dev, QA, games, finance and commercial.',
     },
     'pt-BR': {
       label: 'Português',
       lang: 'pt-BR',
       link: '/pt-BR/',
       description:
-        'Curso de Harness Engineering para a Webmotors — construa harnesses confiáveis para qualquer time: dev, QA, games, finanças e comercial.',
+        'Curso de Harness Engineering para times de produto — construa harnesses confiáveis para qualquer time: dev, QA, games, finanças e comercial.',
       themeConfig: {
         nav: [
           { text: 'Aulas', link: '/pt-BR/lectures/' },
@@ -168,7 +168,7 @@ export default defineConfig({
         lightModeSwitchTitle: 'Alternar para o tema claro',
         darkModeSwitchTitle: 'Alternar para o tema escuro',
         footer: {
-          message: 'Harness Foundation Course — Webmotors',
+          message: 'Harness Foundation Course',
           copyright: 'Construído com VitePress e o design system Eleanor.',
         },
       },
@@ -311,7 +311,7 @@ export default defineConfig({
     lightModeSwitchTitle: 'Switch to light theme',
     darkModeSwitchTitle: 'Switch to dark theme',
     footer: {
-      message: 'Harness Foundation Course — Webmotors',
+      message: 'Harness Foundation Course',
       copyright: 'Built with VitePress and the Eleanor design system.',
     },
   },

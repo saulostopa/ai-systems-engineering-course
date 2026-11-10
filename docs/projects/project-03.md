@@ -17,7 +17,7 @@ It is EPIC C of the course — here you build a functional version of it.
 
 ## Prerequisites
 
-- An app (can be a Webmotors app repo or a test app) with `npm run dev`/build working.
+- An app (can be a team app repo or a test app) with `npm run dev`/build working.
 - Playwright installed (the skill uses Python + Playwright).
 - An agent with vision capability (Claude, GPT-4o, Gemini).
 

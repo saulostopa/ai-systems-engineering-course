@@ -33,7 +33,7 @@ Quando a verdade mora no repo, o agente (e qualquer agente futuro, de qualquer f
 
 ## O sistema de registro no nosso ecossistema
 
-O `webmotors-harness-factory` define a hierarquia de arquivos de estado:
+O `harness-factory` define a hierarquia de arquivos de estado:
 
 | Arquivo | Papel | Quem lê |
 |---|---|---|
@@ -48,7 +48,7 @@ Repare no requisito do factory:
 
 Isso é o sistema de registro funcionando: **narração não é evidência**; o repo é.
 
-## Na Webmotors — o caso A1
+## Na prática — o caso A1
 
 Na primeira story deste projeto (A1 — setup do curso), o agente scaffoldou o VitePress e tentou marcar a story como DONE. O gatekeeper **recusou**: não existe transição direta para DONE — só via `validate_progress` com evidência. O que desbloqueou não foi a palavra "pronto" na conversa, foi:
 

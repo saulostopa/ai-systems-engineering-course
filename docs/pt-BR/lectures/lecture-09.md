@@ -25,7 +25,7 @@ O agente não mente de propósito — ele **completa o raciocínio na cabeça** 
 
 ## Evidência antes de "done"
 
-O `webmotors-harness-factory` transforma isso em política (`policies/evidence-required.md`):
+O `harness-factory` transforma isso em política (`policies/evidence-required.md`):
 
 > "A conclusão requer evidência registrada: comandos executados, esperado vs. real. Nunca afirme 'done' sem prova."
 
@@ -64,7 +64,7 @@ Antes de qualquer "pronto", o harness faz quatro perguntas — e a resposta é s
 | Está no escopo? | `git diff` mostrando só o declarado |
 | Está integrado? | E2E/gates/hooks passando |
 
-## Na Webmotors
+## Na prática
 
 - **Dev**: o "pronto" de uma tela inclui o e2e do `qa-playwright-e2e` passando no gate — não a opinião do agente.
 - **QA**: a triagem de flaky não aceita "deve ser flaky da rede" — exige trace viewer e evidência do teste.

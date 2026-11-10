@@ -1,5 +1,5 @@
 #!/bin/bash
-# init.sh — initializes the basic harness in a project (model of the webmotors-harness-factory)
+# init.sh — initializes the basic harness in a project (model of the harness-factory)
 # Usage: copy the templates/ package to the project root and run: ./init.sh
 set -e
 

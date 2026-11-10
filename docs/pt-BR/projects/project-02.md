@@ -37,7 +37,7 @@ harness-basico/
 
 ### 1. Escreva o `init.sh`
 
-O `init.sh` do `webmotors-harness-factory` é o modelo:
+O `init.sh` do `harness-factory` é o modelo:
 
 ```bash
 #!/bin/bash

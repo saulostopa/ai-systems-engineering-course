@@ -19,7 +19,7 @@ O agente abre o repo e começa a editar. A impressão de produtividade é engano
 
 ## A inicialização como protocolo
 
-O `webmotors-harness-factory` define o boot com `./init.sh`:
+O `harness-factory` define o boot com `./init.sh`:
 
 > "`init.sh` verifica o diretório de trabalho, valida as ferramentas, roda a validação de baseline e imprime os próximos comandos recomendados. **Nunca inicia processos longos por padrão.**"
 
@@ -45,7 +45,7 @@ Quando um projeto roda sobre um [workflow engine](/pt-BR/harness-designs/enterpr
 
 E o gatekeeper estende o boot para o meio da sessão: a cada edição, ele verifica se o arquivo está dentro de um projeto gerenciado e se há item ativo. **O agente não consegue trabalhar "sem saber onde está"** — o harness lembra por ele.
 
-## Na Webmotors — o caso do nosso scoping
+## Na prática — o caso do nosso scoping
 
 Quando escopamos o workflow engine para este curso, o "boot" foi literalmente refeito: removemos regras globais, instalamos as regras **no projeto** e verificamos que, dentro do `harness-plannig`, o projeto resolve e o workflow ativa — e fora dele, nada. A inicialização correta é o que garante que cada agente, em cada repo, comece com o harness certo.
 

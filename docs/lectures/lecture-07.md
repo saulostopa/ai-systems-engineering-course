@@ -19,7 +19,7 @@ Both sides are the same mistake: **autonomy without limits is not power, it is l
 
 ### 1. Declare the scope before editing
 
-The `webmotors-harness-factory` requires (via `policies/scope-control.md`):
+The `harness-factory` requires (via `policies/scope-control.md`):
 
 > "Record your scope before implementing: **What am I changing? Why? Which files are expected? What is explicitly out of scope? How will success be verified?**"
 
@@ -62,7 +62,7 @@ Excessive autonomy is also **when** the agent acts. That is why the harness defi
 - what requires human approval (deploys, merges, scope changes);
 - what is forbidden (outside the declared scope, editing files unrelated to the feature).
 
-## At Webmotors — the spirit, not the letter
+## In practice — the spirit, not the letter
 
 The goal of the harness is not to stiffen — it is to give **freedom within known limits**. The QA team gains E2E gates that protect the app; the finance team gains spreadsheet validation before the report goes up; the games team gains publish validation before shipping the build to the platform. Each area declares what is "too much" and what is "half-finished" — and the harness prevents both.
 

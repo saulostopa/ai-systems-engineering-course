@@ -84,7 +84,7 @@ The `hotfix` flow declares `artifacts: []` on purpose — an incident should not
 wait on a diagram, and the follow-up improvement item is where the explaining
 gets done.
 
-## The Webmotors palette
+## The Eleanor palette
 
 Archify has no theming field: `visual_preset` offers four fixed looks and
 `brandMark` is a per-node logo. What it *does* expose is 38 CSS custom

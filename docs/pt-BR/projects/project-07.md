@@ -83,7 +83,7 @@ wm-harness plan new feature/OEM-123 "Validação de e-mail"
 cat docs/exec-plans/active/feature-OEM-123.md
 ```
 
-O id segue a convenção de branch da Webmotors — `feature/OEM-123`,
+O id segue a convenção de branch de times de produto — `feature/OEM-123`,
 `bugfix/AC-455`, `release/EST-3445` — então plano e branch carregam o mesmo
 nome. No disco a barra é achatada para `feature-OEM-123.md`.
 

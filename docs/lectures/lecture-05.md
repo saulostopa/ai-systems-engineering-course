@@ -18,7 +18,7 @@ Without persistent state, each session starts from scratch: the agent re-reads e
 
 ## State between sessions: the harness trio
 
-The `webmotors-harness-factory` solves this with three complementary files:
+The `harness-factory` solves this with three complementary files:
 
 ```
 feature_list.json      → WHAT exists and in what state (scope source of truth)
@@ -42,7 +42,7 @@ A good resumption follows a fixed protocol — and the harness turns it into a h
 4. **Update the handoff** before closing: what remained verified, what broke, what the next action is.
 5. **Update the feature_list** with the real state of the features.
 
-## At Webmotors — continuity in practice
+## In practice — continuity in practice
 
 A workflow engine formalizes this protocol on top of the repo: each story carries status, comments with evidence and a test trail. When the agent resumes story A2, it doesn't ask "where did we stop?" — it reads the story, the comments and the state, and continues. The file-based triad above does the same job with no engine at all; what matters is that the record is in the repository.
 

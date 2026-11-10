@@ -13,9 +13,9 @@ The materials that underpin this course.
 - [Learn Harness Engineering (walkinglabs)](https://walkinglabs.github.io/learn-harness-engineering/en/) — the format that inspired this course.
 - [Awesome Harness Engineering](https://github.com/walkinglabs/awesome-harness-engineering)
 
-## Internal (Webmotors)
+## Internal product-team references
 
-- `webmotors-harness-factory` — the agent "OS": policies, hooks and process skills.
+- `harness-factory` — the agent "OS": policies, hooks and process skills.
 - `harness-agent-skills` — the catalog of shareable skills.
 - `agenfk` — the agentic engineering framework with items, flows and telemetry.
 
