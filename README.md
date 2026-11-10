@@ -101,7 +101,7 @@ first run. See `docs/skills/skill-guard.md` and
 | Folder | What it is |
 |---|---|
 | `docs/` | The course site (lessons, projects, library, designs) |
-| `skills-artifacts/` | v2 artifact skills + quiz (Eleanor, a11y, adaptive) |
+| `skills-artifacts/` | v2 artifact skills + quiz (SSTT, a11y, adaptive) |
 | `templates/` | Template package for the basic harness |
 | `pilots/` | Evidence from pilots G1–G4 + final demo |
 | [Standalone harness catalog](https://github.com/saulostopa/harnesses) | Runnable basic, App, RAG, domain, ADK, PostgreSQL and enterprise harnesses |

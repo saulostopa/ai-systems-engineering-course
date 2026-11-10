@@ -95,7 +95,7 @@ The course standard distribution installs these skills in `.agents/skills/`:
 | `qa-perf-triage` | Concurrency and latency-regression diagnosis |
 | `agentic-navigation` | Visual acceptance of a real application flow |
 
-`feature-report` and `feature-quiz` share Eleanor assets in
+`feature-report` and `feature-quiz` share SSTT assets in
 `.agents/skills/assets/`. `feature-archify` is the course wrapper; rendering
 also needs the third-party `archify` skill, installed only after
 `skill-guard`. The E2E gate stays inactive until `.harness/config.yaml`

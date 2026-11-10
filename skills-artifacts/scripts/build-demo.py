@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build-demo.py — mechanical proof of the v2 assets (Eleanor + a11y + i18n).
+"""build-demo.py — mechanical proof of the v2 assets (SSTT + a11y + i18n).
 
 Assembles the artifact the same way the skill does: injects system.css into
 the <style> block of skeleton.html and the content into <main>. Generates a

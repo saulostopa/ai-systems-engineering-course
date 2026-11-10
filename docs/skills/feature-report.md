@@ -22,7 +22,7 @@ Four sections, in this order, because the order is the argument:
 4. **Open questions** — what the delivery did *not* settle.
 
 Try the **PT/EN toggle** and the **theme switch** in the header: the artifact
-carries the Eleanor tokens, so it reads like the rest of the ecosystem, and it
+carries the SSTT tokens, so it reads like the rest of the ecosystem, and it
 works in both languages without a second file.
 
 ## How the harness calls it
@@ -62,7 +62,7 @@ swallowed every section after it. The file size looked right. Nobody opened it.
 | Piece | What it is |
 |---|---|
 | `skills-artifacts/feature-report/SKILL.md` | The skill: Gather → Write → Output, with an accessibility checklist |
-| `skills-artifacts/assets/system.css` | Eleanor tokens, light/dark, `:focus-visible`, AA contrast |
+| `skills-artifacts/assets/system.css` | SSTT tokens, light/dark, `:focus-visible`, AA contrast |
 | `skills-artifacts/assets/skeleton.html` | Accessible shell: `aria-live`, PT/EN toggle, progress |
 | `skills-artifacts/scripts/build-demo.py` | The generator — and `verify()`, which refuses to write an artifact whose content is invisible |
 

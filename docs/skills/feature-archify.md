@@ -84,11 +84,11 @@ The `hotfix` flow declares `artifacts: []` on purpose — an incident should not
 wait on a diagram, and the follow-up improvement item is where the explaining
 gets done.
 
-## The Eleanor palette
+## The SSTT palette
 
 Archify has no theming field: `visual_preset` offers four fixed looks and
 `brandMark` is a per-node logo. What it *does* expose is 38 CSS custom
-properties in the delivered HTML, so `scripts/eleanor-theme.css` overrides them
+properties in the delivered HTML, so `scripts/sstt-theme.css` overrides them
 after `archify deliver` — geometry untouched, which matters because geometry is
 what the validator approved.
 
@@ -97,7 +97,7 @@ Two details cost a round of debugging each:
 - Archify scopes its palette as `[data-preset="signal-flow"][data-theme="light"]`,
   which **outranks a bare `:root`**. The first attempt looked applied and changed
   nothing.
-- Eleanor is a two-mode system and the artifact has a working light/dark toggle,
+- SSTT is a two-mode system and the artifact has a working light/dark toggle,
   so shipping only the dark palette would have turned that toggle into a no-op.
 
 Contrast is not inherited from a brand, it is measured:
@@ -106,7 +106,7 @@ text (WCAG 1.4.3), 3:1 for strokes (1.4.11). It caught three tokens the first
 pass got wrong, one of them at 2.7:1.
 
 ```sh
-python3 scripts/check-contrast.py scripts/eleanor-theme.css
+python3 scripts/check-contrast.py scripts/sstt-theme.css
 # 28 token(s) checked, 0 below floor
 ```
 

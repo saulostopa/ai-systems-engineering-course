@@ -102,7 +102,7 @@ requiring another target.
 
 Install these under `.agents/skills/`: `feature-report`, `feature-quiz`,
 `feature-archify`, `skill-guard`, `qa-playwright-e2e`, `qa-perf-triage` and
-`agentic-navigation`. Keep shared Eleanor assets under
+`agentic-navigation`. Keep shared SSTT assets under
 `.agents/skills/assets/` and validate that every skill has a `SKILL.md` with
 matching frontmatter.
 

@@ -102,7 +102,7 @@ standalone pode continuar exigindo outro destino.
 
 Instale em `.agents/skills/`: `feature-report`, `feature-quiz`,
 `feature-archify`, `skill-guard`, `qa-playwright-e2e`, `qa-perf-triage` e
-`agentic-navigation`. Mantenha os assets Eleanor compartilhados em
+`agentic-navigation`. Mantenha os assets SSTT compartilhados em
 `.agents/skills/assets/` e valide que toda skill tem um `SKILL.md` com
 frontmatter correspondente.
 
