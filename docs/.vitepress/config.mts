@@ -26,7 +26,8 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['meta', { name: 'theme-color', content: '#d81f41' }],
+    ['meta', { name: 'theme-color', content: '#2563eb' }],
+    ['link', { rel: 'icon', href: '/h-mark.svg', type: 'image/svg+xml' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     [
@@ -178,7 +179,7 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    logo: '/wm-mark.svg',
+    logo: '/h-mark.svg',
     nav: [
       { text: 'Lessons', link: '/lectures/' },
       { text: 'Projects', link: '/projects/' },

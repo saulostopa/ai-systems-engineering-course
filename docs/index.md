@@ -6,7 +6,7 @@ hero:
   text: Harness Engineering for Product Teams
   tagline: An agent is model + harness. Learn to build the environment that turns models into reliable workers — for dev, QA, games, finance and sales.
   image:
-    src: /wm-mark.svg
+    src: /h-mark.svg
     alt: Product Teams
   actions:
     - theme: brand
