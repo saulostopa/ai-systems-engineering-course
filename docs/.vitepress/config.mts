@@ -173,7 +173,7 @@ export default defineConfig({
         darkModeSwitchTitle: 'Alternar para o tema escuro',
         footer: {
           message: 'Harness Foundation Course',
-          copyright: 'Construído com VitePress e o design system Eleanor.',
+          copyright: 'Construído com VitePress e o design system SSTT.',
         },
       },
     },
@@ -316,7 +316,7 @@ export default defineConfig({
     darkModeSwitchTitle: 'Switch to dark theme',
     footer: {
       message: 'Harness Foundation Course',
-      copyright: 'Built with VitePress and the Eleanor design system.',
+      copyright: 'Built with VitePress and the SSTT design system.',
     },
   },
   transformHead({ pageData }) {

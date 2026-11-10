@@ -3,7 +3,7 @@ name: feature-report
 description: Generates a self-contained, accessible HTML report of what a feature delivered — decisions, trade-offs, verification and open questions, with every number traced to a source. Use when the user asks for a report/summary of what was just implemented.
 ---
 
-# Feature report (v2 — Eleanor)
+# Feature report (v2 — SSTT)
 
 A result report, not a tutorial: what was delivered, the decisions with
 causal trade-offs, the verification that ran and the open questions. Every

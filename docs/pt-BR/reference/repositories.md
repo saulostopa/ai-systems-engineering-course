@@ -9,4 +9,4 @@
 | `cargroup-skills` | Skills específicas do grupo de carros. |
 | `harness-plannig` | **Este repositório** — o curso. |
 | [`ai-systems-engineering-harnesses`](https://github.com/saulostopa/ai-systems-engineering-harnesses) | Distribuição standalone dos projetos de harness executáveis, sem o site do curso. |
-| `eleanor.design.tokens` | Tokens do design system Eleanor (fonte deste tema). |
+| `sstt.design.tokens` | Tokens do design system SSTT (fonte deste tema). |

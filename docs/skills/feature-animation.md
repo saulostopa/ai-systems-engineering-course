@@ -47,7 +47,7 @@ working artifact from 2026-08-21, with real playback. What happened is more
 specific, and worth knowing if you write skills:
 
 `feature-animation` is told to splice in `system.css` and `skeleton.html` from
-`feature-report`. When those assets were rewritten for Eleanor, **report and
+`feature-report`. When those assets were rewritten for SSTT, **report and
 quiz were carried across and the animation styles were not**. The v1 stylesheet
 had eight `.flow-*` rules; the v2 had zero. The skill kept pointing at a design
 system that could no longer style what it produced.
@@ -59,7 +59,7 @@ depends on shared assets breaks silently when those assets move on.**
 Two defects came with it, both now fixed:
 
 - **The accent was `#2554c7` blue.** Every other artifact in the catalog had
-  moved to Eleanor red. Ported: the demo above measures `rgb(216, 31, 65)`.
+  moved to SSTT red. Ported: the demo above measures `rgb(216, 31, 65)`.
 - **The track scrolled horizontally.** At 1440px the row was 1355px wide inside
   a 1040px box, so the last stage sat off-screen on load — a stage the reader
   never knew existed. Stages now share the row instead of demanding a width

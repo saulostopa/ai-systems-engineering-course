@@ -23,7 +23,7 @@ A distribuição completa do curso seleciona sete skills deste ecossistema e
 as instala em `.agents/skills/`: `feature-report`, `feature-quiz`,
 `feature-archify`, `skill-guard`, `qa-playwright-e2e`, `qa-perf-triage` e
 `agentic-navigation` (a skill de aceite visual do App Harness). Os assets
-Eleanor compartilhados ficam em `.agents/skills/assets/` e são arquivos de
+SSTT compartilhados ficam em `.agents/skills/assets/` e são arquivos de
 suporte, não uma skill adicional.
 
 Esse perfil é intencionalmente menor que o catálogo completo. O
@@ -31,7 +31,7 @@ Esse perfil é intencionalmente menor que o catálogo completo. O
 derivados optam pelo perfil de sete skills.
 
 ::: tip Status
-A evolução destas skills (design system Eleanor, acessibilidade, quiz adaptativo)
+A evolução destas skills (design system SSTT, acessibilidade, quiz adaptativo)
 é o **EPIC F** do projeto. A página de cada skill descreve seu design atual.
 :::
 
