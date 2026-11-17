@@ -1,0 +1,13 @@
+This plan is a sketch of a harness project that is already underway in several different formats. We already have some repos here, such as agnfk, agenfk-report, cargroup-skill, harness-agent-skills, and harness-factory, which are some pieces and a complete basic harness that will serve this plan. The idea is to build a course and the harnesses possible for real product teams, initially as HTML in the format of https://github.com/walkinglabs/learn-harness-engineering (https://walkinglabs.github.io/learn-harness-engineering/en/) using the SSTT design system.
+
+The idea of the course is to present what a harness is, its purpose, and which type of harness engineering applies to each area and project. For example, an App harness should include two types of tests: the ones already known to the QA team with their skills for App testing, and also a harness with direct in-app navigation tools, from the build to the final validation controlled by an AI agent such as Claude Code and Code, where they can open the app, navigate it, and test everything.
+
+Another harness idea you will also see in the documentation and code of these repos/directories I mentioned are the basic harnesses you can download into your project, which work for small projects; but there are also larger harnesses for projects where many teams work on them.
+
+Another front of this course and harness project is a Cursor-type harness with a database + RAG, which will serve both programming projects and projects from other areas, where people can store contexts of their own projects — such as business files, spreadsheets, images, and data from their own area — to manage the features they need to develop with the help of the harness and its RAG context power.
+
+One piece of information I will also be sharing here as references are some current ideas I have seen teams using and posting on YouTube. I will put the references in this folder shortly.
+
+Another need of this course, and this is a key piece worth its weight in gold, will be to improve some skills that generate HTML and other artifacts showing what the AI did in that feature and teaching the person what was actually done there, with a Quiz at the end, so they do not lose the critical and analytical ability of both software development and their own area. These skills already exist in one of the projects mentioned above, but need improvements. I thought about adding maybe a .md or a new page in a kind of intranet with the learning artifacts of what each person is deploying.
+
+This course also obviously needs to produce the harness artifacts, that is, have functional harnesses, to be demonstrated in practice, with pilot projects.

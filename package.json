@@ -1,0 +1,22 @@
+{
+  "name": "harness-plannig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Harness Foundation Course — Harness Engineering for product teams (VitePress + SSTT, en)",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "check:i18n": "node scripts/check-locales.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  },
+  "overrides": {
+    "vite": "6.4.3",
+    "esbuild": "0.25.12"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}

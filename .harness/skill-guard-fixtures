@@ -1,0 +1,10 @@
+# skill-guard allowlist: paths (relative to the root) that `--all` skips.
+#
+# These are deliberately bad fixtures, used to prove that the gate blocks.
+# This list lives OUTSIDE the scanned tree on purpose: a marker inside the
+# skill directory would be controlled by the skill itself, and any hostile PR
+# would hide from the gate by shipping the marker along.
+#
+# One path per line; `#` comments out.
+
+pilots/skillspector-demo/fixture-reprovada

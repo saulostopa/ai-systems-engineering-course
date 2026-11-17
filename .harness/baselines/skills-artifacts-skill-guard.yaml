@@ -1,0 +1,39 @@
+# SkillSpector baseline — skill-guard
+#
+# The skill that teaches recognizing `curl | bash` was flagged for writing
+# `curl | bash`. The two SC2 occurrences are in the lines where the skill
+# NAMES the pattern for whoever will read the scanner report — it is
+# documentation vocabulary, not an execution instruction.
+#
+# Verified on 2026-09-17: SKILL.md:55 (list of pattern IDs) and SKILL.md:103
+# (the rule "the static mode catches curl | bash and ~/.ssh reads").
+#
+# The alternative would be paraphrasing the pattern so it does not match the
+# rule. That would be worse: whoever reads the report needs to find in the
+# text the same string they saw in the finding. Security documentation must be
+# able to quote what it describes.
+
+version: 2
+
+rules:
+  - id: "SC2"
+    path: "SKILL.md"
+    reason: >-
+      False positive by self-reference: the skill cites the `curl | bash`
+      pattern while explaining what the scanner detects and what the static
+      mode catches well. There is no execution, remote fetch, or script to be
+      retrieved — it is didactic prose naming its own SC2 rule.
+
+  # This one is circular and worth explaining: by citing its own baseline
+  # file, the SKILL.md generates a reference the scanner cannot resolve —
+  # because SkillSpector deliberately excludes the selected baseline from the
+  # content analysis (so that the suppression text does not become a finding).
+  # The reference stays "out_of_scope" and comes out as a coverage signal.
+  - id: "AE1"
+    path: "SKILL.md"
+    message: "*.skillspector-baseline.yaml*"
+    reason: >-
+      Reference to `.skillspector-baseline.yaml` flagged as out_of_scope:
+      SkillSpector itself excludes the baseline from the content analysis, so
+      the reference never resolves. Coverage signal over a file excluded by
+      design, not uninspected content.
